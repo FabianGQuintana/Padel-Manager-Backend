@@ -67,8 +67,8 @@ Para mantener el código limpio y organizado en el **Team Versori 2**, utilizare
 
 Nuestro punto de encuentro oficial para dudas, revisiones de código y sincronización es nuestro servidor de **Discord**:
 
-🔗 [Link al Servidor de Discord - Team Versori 2]
+🔗 [(https://discord.gg/6pPkH9af)]
 
 ---
 
-✨ *Llevando el deporte al siguiente nivel tecnológico.* **Desarrollado por Fabian Quintana & Team Versori 2**
+✨ *Llevando el deporte al siguiente nivel tecnológico.* **Desarrollado  Team Versori 2**
