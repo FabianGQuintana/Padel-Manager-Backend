@@ -1,0 +1,6 @@
+@PadelManager.API_HostAddress = http://localhost:5048
+
+GET {{PadelManager.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

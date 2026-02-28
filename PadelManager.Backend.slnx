@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="PadelManager.API/PadelManager.API.csproj" />
+  <Project Path="PadelManager.Application/PadelManager.Application.csproj" />
+  <Project Path="PadelManager.Domain/PadelManager.Domain.csproj" />
+  <Project Path="PadelManager.Infrastructure/PadelManager.Infrastructure.csproj" />
+</Solution>
