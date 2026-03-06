@@ -14,7 +14,7 @@ namespace PadelManager.Domain.Entities
 
         //Relationships FK
         public Guid ManagerId { get; set; }
-
+        
         //Navigation properties
         public required Manager Manager { get; set; }
 

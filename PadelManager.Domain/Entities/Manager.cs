@@ -7,7 +7,7 @@ namespace PadelManager.Domain.Entities
     public class Manager : BaseEntity
     {
         public required string Name { get; set; }
-        
+
         public required string LastName { get; set; }
 
         public required int Dni { get; set; }
