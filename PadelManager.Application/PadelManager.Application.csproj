@@ -16,4 +16,8 @@
     <Folder Include="Validators\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PadelManager.Domain\PadelManager.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -8,10 +8,19 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.3">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Filters\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PadelManager.Application\PadelManager.Application.csproj" />
+    <ProjectReference Include="..\PadelManager.Infrastructure\PadelManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
