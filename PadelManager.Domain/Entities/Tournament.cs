@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PadelManager.Domain.Enum;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -11,6 +12,12 @@ namespace PadelManager.Domain.Entities
         public required DateTime StartDate { get; set; }
 
         public required string Regulations { get; set; }
+
+        public required TournamentStatus Status { get; set; } 
+
+        public required string TournamentType { get; set; } //Para diferenciar si es "Veteranos", "Libres" o "Menores".
+
+        public required int MaxTeamsPerCategory { get; set; } // Límite de parejas por categoría para cerrar inscripciones automáticamente.
 
         //Relationships FK
         public Guid ManagerId { get; set; }
