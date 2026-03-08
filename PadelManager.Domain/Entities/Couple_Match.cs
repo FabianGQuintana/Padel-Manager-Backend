@@ -6,14 +6,14 @@ namespace PadelManager.Domain.Entities
 {
     public class Couple_Match : BaseEntity
     {
-        
-            // Foreign Keys
-            public Guid CoupleId { get; set; }
-            public Guid MatchId { get; set; }
+        public bool IsWinner { get; set; }
+        // Foreign Keys
+        public Guid CoupleId { get; set; }
+        public Guid MatchId { get; set; }
 
-            // Navigation properties
-            public required Couple Couple { get; set; }
-            public required Match Match { get; set; }
+        // Navigation properties
+        public required Couple Couple { get; set; }
+        public required Match Match { get; set; }
         
     }
 }

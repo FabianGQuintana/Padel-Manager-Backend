@@ -6,7 +6,6 @@ namespace PadelManager.Domain.Entities
 {
     internal class Match : BaseEntity   
     {
-        public required int WinnerCoupleId { get; set; }
         public required int LoserId { get; set; }
         public DateOnly DateTime { get; set; }
         public required bool status { get; set; }
