@@ -6,22 +6,26 @@ namespace PadelManager.Domain.Entities
 {
     public class Statistics : BaseEntity
     {
-        public int Wo { get; set; }
+        public required int Points { get; set; }
 
-        public int SetsWon { get; set; }
+        public required int WoCount { get; set; }
 
-        public int SetsLost { get; set; }
+        public required int MatchesPlayed { get; set; }
 
-        public int GamesWon { get; set; }
+        public required int MatchesWon { get; set; }
 
-        public int GamesLost { get; set; }
+        public required string SetsWon { get; set; }
 
-        //Relationships FK
+        public required string SetsLost { get; set; }
+
+        public required int GamesWon { get; set; }
+
+        public required int GamesLost { get; set; }
+
         public Guid CoupleId { get; set; }
 
         public Guid ZoneId { get; set; }
 
-        //Navigation properties
         public required Couple Couple { get; set; }
 
         public required Zone Zone { get; set; }
