@@ -13,7 +13,7 @@ namespace PadelManager.Domain.Entities
         // Navigation properties
         public required Player Player { get; set; }
         // Relationships FK
-        public Guid ZonaId { get; set; }
+        public Guid ZoneId { get; set; }
         // Navigation properties
         public required Zone Zone { get; set; }
     }
