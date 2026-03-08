@@ -12,5 +12,5 @@ public class Instance
     public string? Description { get; set; }
     public int IdStage { get; set; }
     public virtual Stage Stage { get; set; } = null!;
-    public virtual ICollection<Match> Matches { get; set; } = new List<Match>();
+    public virtual ICollection<System.Text.RegularExpressions.Match> Matches { get; set; } = new List<System.Text.RegularExpressions.Match>();
 }
