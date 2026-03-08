@@ -15,7 +15,6 @@ namespace PadelManager.Domain.Entities
 
         public int IdCouple { get; set; }
         public int IdZone { get; set; }
-
         public virtual Couple Couple { get; set; } = null!;
         public virtual Zone Zone { get; set; } = null!;
     }
