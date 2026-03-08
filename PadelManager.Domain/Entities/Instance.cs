@@ -3,14 +3,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace PadelManager.Domain.Entities;
+using System.Collections.Generic;
 
-public class Instance
+namespace PadelManager.Domain.Entities
 {
-    public int IdInstance { get; set; }
-    public string Name { get; set; } = null!;
-    public string? Description { get; set; }
-    public int IdStage { get; set; }
-    public virtual Stage Stage { get; set; } = null!;
-    public virtual ICollection<System.Text.RegularExpressions.Match> Matches { get; set; } = new List<System.Text.RegularExpressions.Match>();
+    public class Instance : BaseEntity
+    {
+        public required string Name { get; set; }
+
+        public string? Description { get; set; }
+
+        //Relationships FK
+        public Guid StageId { get; set; }
+
+        //Navigation properties
+        public required Stage Stage { get; set; }
+
+        public virtual ICollection<Match> Matches { get; set; } = new List<Match>();
+    }
 }
