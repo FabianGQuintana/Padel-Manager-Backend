@@ -13,8 +13,14 @@ namespace PadelManager.Domain.Entities
         // Relationships FK
         public Guid CategoryId { get; set; }
 
+
         // Navigation properties
         public required Category Category { get; set; }
+
+        public   ICollection<Instance> Instances { get; set; } = new List<Instance>();
+
+        public   ICollection<Zone> Zones { get; set; } = new List<Zone>();
+
 
     }
 }

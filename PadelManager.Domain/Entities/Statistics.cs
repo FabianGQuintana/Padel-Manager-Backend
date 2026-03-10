@@ -22,10 +22,12 @@ namespace PadelManager.Domain.Entities
 
         public required int GamesLost { get; set; }
 
+        // Relationships FK
         public Guid CoupleId { get; set; }
 
         public Guid ZoneId { get; set; }
-
+        
+        // Navigation properties
         public required Couple Couple { get; set; }
 
         public required Zone Zone { get; set; }

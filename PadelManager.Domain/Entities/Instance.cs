@@ -19,6 +19,6 @@ namespace PadelManager.Domain.Entities
         //Navigation properties
         public required Stage Stage { get; set; }
 
-        public virtual ICollection<Match> Matches { get; set; } = new List<Match>();
+        public  ICollection<Match> Matches { get; set; } = new List<Match>();
     }
 }

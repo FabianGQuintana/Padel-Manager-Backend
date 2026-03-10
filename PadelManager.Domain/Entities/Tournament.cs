@@ -23,7 +23,7 @@ namespace PadelManager.Domain.Entities
         public Guid ManagerId { get; set; }
         
         //Navigation properties
-        public required Manager Manager { get; set; }
-
+        public  ICollection<Category> Categories { get; set; } = new List<Category>();
+        
     }
 }

@@ -14,6 +14,10 @@ namespace PadelManager.Domain.Entities
         public Guid TournamentId { get; set; }
 
         //Navigation properties
-        public required Tournament Tournament { get; set; }
+        public virtual required Tournament Tournament { get; set; }
+
+        public virtual required ICollection<Stage> Stages { get; set; } = new List<Stage>();
+
+        public   ICollection<Registration> Registrations { get; set; } = new List<Registration>();
     }
 }

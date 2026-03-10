@@ -5,16 +5,18 @@ using System.Text.RegularExpressions;
 
 namespace PadelManager.Domain.Entities
 {
-    internal class Zone : BaseEntity
+    public class Zone : BaseEntity
     {
         public required string Name { get; set; }
 
         //Relationships FK
-        public Guid IdStage { get; set; }
+        public Guid StageId { get; set; }
 
         //Navigation properties
         public required Stage Stage { get; set; }
 
+        public  ICollection<Couple> Couples { get; set; } = new List<Couple>();
 
+        public  ICollection<Statistics> Statistics { get; set; } = new List<Statistics>();
     }
 }
