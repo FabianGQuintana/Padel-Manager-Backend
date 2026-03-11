@@ -7,10 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Status\**" />
+    <EmbeddedResource Remove="Status\**" />
+    <None Remove="Status\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Interfaces\" />
     <Folder Include="Exceptions\" />
     <Folder Include="ConstantsRoles\" />
-    <Folder Include="Status\" />
   </ItemGroup>
 
 </Project>

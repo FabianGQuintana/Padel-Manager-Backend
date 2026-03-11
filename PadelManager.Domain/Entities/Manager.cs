@@ -12,8 +12,8 @@ namespace PadelManager.Domain.Entities
 
         public required int Dni { get; set; }
 
-        public required string PhoneNumer { get; set; }
+        public required string PhoneNumber { get; set; }
 
-        public required string email { get; set; }
+        public required string Email { get; set; }
     }
 }
