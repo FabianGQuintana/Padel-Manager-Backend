@@ -17,7 +17,7 @@ namespace PadelManager.Infrastructure.Repositories
             _context = context;
         }
 
-
+        //Implementación de los métodos específicos para el repositorio de Managers
         public async Task<Manager?> GetManagerByNameAsync(string nameManager)
         {
             return await _context.Managers

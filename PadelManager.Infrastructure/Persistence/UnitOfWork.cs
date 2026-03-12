@@ -12,9 +12,19 @@ namespace PadelManager.Infrastructure.Persistence
        private readonly PadelManagerDbContext _context;
 
         // Campos privados para los repositorios (Lazy Initialization)
-        private IGenericRepository<Player> _players;
-        private IGenericRepository<Match> _matches;
-        private IGenericRepository<Manager> _managers;
+        private IGenericRepository<Player>? _players;
+        private IGenericRepository<Match>? _matches;
+        private IGenericRepository<Manager>? _managers;
+        private IGenericRepository<Tournament>? _tournaments;
+        private IGenericRepository<Zone>? _zones;
+        private IGenericRepository<Statistics>? _statistics;
+        private IGenericRepository<Stage>? _stages;
+        private IGenericRepository<Instance>? _instances;
+        private IGenericRepository<Couple>? _couples;
+        private IGenericRepository<Registration>? _registrations;
+        private IGenericRepository<Category>? _categories;
+
+
         public UnitOfWork(PadelManagerDbContext context)
         {
             _context = context;
@@ -28,8 +38,24 @@ namespace PadelManager.Infrastructure.Persistence
 
         public IGenericRepository<Manager> Managers => _managers ??= new GenericRepository<Manager>(_context);
 
+        public IGenericRepository<Tournament> Tournaments => _tournaments ??= new GenericRepository<Tournament>(_context);
+
+        public IGenericRepository<Couple> Couples => _couples ??= new GenericRepository<Couple>(_context);
+
+        public IGenericRepository<Instance> Instances => _instances ??= new GenericRepository<Instance>(_context);
+
+        public IGenericRepository<Statistics> Statistics => _statistics ??= new GenericRepository<Statistics>(_context);
+
+        public IGenericRepository<Stage> Stages => _stages ??= new GenericRepository<Stage>(_context);
+
+        public IGenericRepository<Zone> Zones => _zones ??= new GenericRepository<Zone>(_context);
+
+        public IGenericRepository<Registration> Registrations => _registrations ??= new GenericRepository<Registration>(_context);
+
+        public IGenericRepository<Category> Categories => _categories ??= new GenericRepository<Category>(_context);
+
         // Guarda todos los cambios pendientes en la DB
-        public async Task<int> SaveAsync()
+        public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
         }
@@ -37,6 +63,7 @@ namespace PadelManager.Infrastructure.Persistence
         public void Dispose()
         {
             _context.Dispose();
+            GC.SuppressFinalize(this); // Buena práctica para liberar memoria
         }
 
     }

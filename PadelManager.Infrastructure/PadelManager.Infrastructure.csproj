@@ -10,7 +10,6 @@
     <Folder Include="Migrations\" />
     <Folder Include="Utils\" />
     <Folder Include="Services\" />
-    <Folder Include="Repositories\" />
     <Folder Include="Persistence\Factories\" />
     <Folder Include="Persistence\Specifications\" />
   </ItemGroup>

@@ -13,7 +13,7 @@ namespace PadelManager.Domain.Entities
 
         public required string Regulations { get; set; }
 
-        public required TournamentStatus Status { get; set; } 
+        public required TournamentStatus Status { get; set; } = TournamentStatus.Draft;
 
         public required string TournamentType { get; set; } //Para diferenciar si es "Veteranos", "Libres" o "Menores".
 

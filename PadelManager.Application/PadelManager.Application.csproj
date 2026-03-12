@@ -9,8 +9,6 @@
   <ItemGroup>
     <Folder Include="DTOs\" />
     <Folder Include="Interfaces\Services\" />
-    <Folder Include="Interfaces\Repositories\" />
-    <Folder Include="Interfaces\Persistence\" />
     <Folder Include="Mappers\" />
     <Folder Include="Services\" />
     <Folder Include="Validators\" />
