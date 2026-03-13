@@ -34,8 +34,9 @@ builder.Services.AddDbContext<PadelManagerDbContext>(options =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // --- Espacio para que el equipo agregue sus repositorios específicos ---
- builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
- builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
 
 
 
