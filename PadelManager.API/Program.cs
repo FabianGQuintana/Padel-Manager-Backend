@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Infrastructure.Persistence;
 using PadelManager.Infrastructure.Repositories;
@@ -38,8 +39,8 @@ builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
 builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
-
-
+builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
+builder.Services.AddScoped<IMatchRepository, MatchRepository>();
 
 
 #endregion
