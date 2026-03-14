@@ -37,6 +37,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
+builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
 
 
 

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PadelManager.Domain.Entities
 {
-    public class Statistics : BaseEntity
+    public class Statistic : BaseEntity
     {
         public required int Points { get; set; }
 
