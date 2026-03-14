@@ -1,4 +1,4 @@
-# 🎾 Padel Manager - Backend (API)
+# Padel Manager - Backend (API)
 
 ![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=white)
@@ -8,7 +8,7 @@ Bienvenido al repositorio central de la API para **Padel Manager**. Este sistema
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
+## Arquitectura del Proyecto
 
 El backend sigue los principios de **Clean Architecture**, dividiendo las responsabilidades en 4 capas principales para facilitar el mantenimiento y el testing:
 
@@ -19,7 +19,7 @@ El backend sigue los principios de **Clean Architecture**, dividiendo las respon
 
 ---
 
-## 🛠️ Stack Tecnológica
+## Stack Tecnológica
 
 * **Lenguaje:** C# 12 / .NET 8.0+
 * **Base de Datos:** PostgreSQL
@@ -30,7 +30,7 @@ El backend sigue los principios de **Clean Architecture**, dividiendo las respon
 
 ---
 
-## 🚀 Configuración para Desarrolladores
+## Configuración para Desarrolladores
 
 Para poner el proyecto en marcha en tu entorno local, sigue estos pasos:
 
@@ -50,7 +50,7 @@ Para poner el proyecto en marcha en tu entorno local, sigue estos pasos:
 
 ---
 
-## 🤝 Reglas de Trabajo (Git Workflow)
+## Reglas de Trabajo (Git Workflow)
 
 Para mantener el código limpio y organizado en el **Team Versori 2**, utilizaremos el siguiente flujo:
 
@@ -63,12 +63,11 @@ Para mantener el código limpio y organizado en el **Team Versori 2**, utilizare
 
 ---
 
-## 🎙️ Comunicación y Meetings
+## Comunicación y Meetings
 
 Nuestro punto de encuentro oficial para dudas, revisiones de código y sincronización es nuestro servidor de **Discord**:
 
-🔗 [Link al Servidor de Discord - Team Versori 2]
+🔗 [(https://discord.gg/6pPkH9af)]
 
 ---
-
-✨ *Llevando el deporte al siguiente nivel tecnológico.* **Desarrollado por Fabian Quintana & Team Versori 2**
+ *Desarrollado  Team Versori 2*
