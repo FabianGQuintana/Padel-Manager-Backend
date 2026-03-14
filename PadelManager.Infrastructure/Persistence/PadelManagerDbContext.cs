@@ -34,7 +34,7 @@ namespace PadelManager.Infrastructure.Persistence
 
         public DbSet<Stage> Stages { get; set; }
 
-        public DbSet<Statistics> Statistics { get; set; }
+        public DbSet<Statistic> Statistics { get; set; }
 
         public DbSet<Zone> Zones { get; set; }
 
