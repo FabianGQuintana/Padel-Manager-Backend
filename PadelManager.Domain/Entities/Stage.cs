@@ -8,7 +8,7 @@ namespace PadelManager.Domain.Entities
     {
         public required string Group { get; set; } // Grupo A, B, C, etc.
         public required string Deletion { get; set; }
-        public required string Order { get; set; } // Para ordenar las fases (1, 2, 3, etc.)
+        public required int Order { get; set; } // Para ordenar las fases (1, 2, 3, etc.)
 
         // Relationships FK
         public Guid CategoryId { get; set; }
