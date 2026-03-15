@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Infrastructure.Persistence;
 using PadelManager.Infrastructure.Repositories;
