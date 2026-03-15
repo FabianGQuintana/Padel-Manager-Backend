@@ -18,5 +18,7 @@ namespace PadelManager.Domain.Entities
         public  ICollection<Couple> Couples { get; set; } = new List<Couple>();
 
         public  ICollection<Statistic> Statistics { get; set; } = new List<Statistic>();
+
+        public ICollection<Match> Matches { get; set; } = new List<Match>();
     }
 }

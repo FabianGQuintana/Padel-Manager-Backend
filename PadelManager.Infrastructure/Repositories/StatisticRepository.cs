@@ -26,7 +26,8 @@ namespace PadelManager.Infrastructure.Repositories
                 //Esto es opcional pero sirve para ordenar directamente por puntos descendente para que la tabla ya venga armada
                 .OrderByDescending(s => s.Points)          // 1º Criterio: El que tiene más puntos
                 .ThenByDescending(s => s.MatchesWon)       // 2º Criterio (Desempate): El que ganó más partidos
-                .ThenByDescending(s => s.GamesWon)         // 3º Criterio (Desempate final): El que ganó más games
+                .ThenByDescending(s => s.SetsWon - s.SetsLost)
+                .ThenByDescending(s => s.GamesWon - s.GamesLost)        // 3º Criterio (Desempate final): El que ganó más games
                 .ToListAsync();
         }
 

@@ -37,11 +37,14 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // --- Espacio para que el equipo agregue sus repositorios específicos ---
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
-builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
 builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
 builder.Services.AddScoped<ICoupleRepository, CoupleRepository>();
 builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
 builder.Services.AddScoped<IStageRepository, StageRepository>();
+builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
+builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
+builder.Services.AddScoped<IMatchRepository,MatchRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 
 #endregion

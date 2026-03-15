@@ -17,6 +17,8 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             //Primary Key
             builder.HasKey(m => m.Id);
 
+            builder.HasQueryFilter(t => t.DeletedAt == null);
+
             //Properties configuration
             builder.Property(m => m.Name)
                 .IsRequired()

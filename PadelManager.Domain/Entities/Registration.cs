@@ -4,22 +4,22 @@ using System.Text;
 
 namespace PadelManager.Domain.Entities
 {
-    public class Registration
+    public class Registration : BaseEntity
     {
         public required DateOnly RegistrationDate { get; set; }
 
         public required TimeOnly RegistrationTime { get; set; }
 
         //Relations FK
-        public required Guid CoupleId { get; set; }
+        public  Guid CoupleId { get; set; }
 
-        public required Guid CategoryId { get; set; }
+        public  Guid CategoryId { get; set; }
 
         //Relations Navigation
 
-        public required Couple Couple { get; set; }
+        public Couple Couple { get; set; } = null!;
 
-        public required Category Category { get; set; }
+        public  Category Category { get; set; } = null!;
 
     }
 }

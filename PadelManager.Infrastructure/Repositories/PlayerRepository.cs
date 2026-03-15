@@ -33,7 +33,7 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<Player?> GetPlayerByPhoneNumberAsync(string phoneNumber)
         {
             return await _context.Players
-                .Where(p => p.PhoneNumer == phoneNumber && p.DeletedAt == null)
+                .Where(p => p.PhoneNumber == phoneNumber && p.DeletedAt == null)
                 .FirstOrDefaultAsync();
         }
 

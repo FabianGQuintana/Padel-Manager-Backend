@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Domain.Entities;
-using PadelManager.Infrastructure.Persistence;
 using PadelManager.Domain.Enum;
+using PadelManager.Infrastructure.Persistence;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace PadelManager.Infrastructure.Repositories
 {
@@ -25,7 +26,22 @@ namespace PadelManager.Infrastructure.Repositories
 
         #region Búsquedas por propiedades directas
 
-        public async Task<IEnumerable<Match>> GetMatchesByDate(DateTime date)
+        public async Task<IEnumerable<Match>> GetMatchesByWinnerAsync(Guid coupleId)
+        {
+            return await _context.Matches
+                .Where(m => m.WinnerCoupleId == coupleId && m.DeletedAt == null)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Match>> GetMatchesByPlayerIdAsync(Guid playerId)
+        {
+            // Buscamos partidos donde el jugador esté en cualquiera de las dos parejas
+            return await _context.Matches
+                .Where(m => (m.Couple.Player1Id == playerId || m.Couple.Player2Id == playerId ||
+                             m.Couple2.Player1Id == playerId || m.Couple2.Player2Id == playerId) 
+                            && m.DeletedAt == null)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Match>> GetMatchesByDateAsync(DateTime date)
         {
             // Usamos .Date para comparar solo el día y no la hora exacta
             return await _context.Matches
@@ -33,57 +49,60 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Match>> GetMatchesByStatus(MatchStatus status)
+        public async Task<IEnumerable<Match>> GetMatchesByStatusAsync(MatchStatus status)
         {
             return await _context.Matches
                 .Where(m => m.Status == status && m.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Match>> GetMatchesByLocation(string locationName)
+        public async Task<IEnumerable<Match>> GetMatchesByLocationAsync(string locationName)
         {
             return await _context.Matches
                 .Where(m => m.LocationName == locationName && m.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Match>> GetMatchesByCourt(string courtName)
+        public async Task<IEnumerable<Match>> GetMatchesByStageIdAsync(Guid stageId)
+        {
+            return await _context.Matches
+                .Where(m => m.StageId == stageId && m.DeletedAt == null)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Match>> GetMatchesByCourtNameAsync(string courtName)
         {
             return await _context.Matches
                 .Where(m => m.CourtName == courtName && m.DeletedAt == null)
                 .ToListAsync();
         }
 
-        #endregion
 
-        #region Búsquedas con relaciones y FKs
-
-        public async Task<IEnumerable<Match>> GetMatchesByInstanceId(Guid instanceId)
+        public async Task<IEnumerable<Match>> GetMatchesByZoneIdAsync(Guid zoneId)
         {
             return await _context.Matches
-                .Where(m => m.InstanceId == instanceId && m.DeletedAt == null)
+                .Where(m => m.ZoneId == zoneId && m.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Match>> GetMatchesByCoupleId(Guid coupleId)
+        public async Task<IEnumerable<Match>> GetMatchesByCoupleIdAsync(Guid coupleId)
         {
-            // OJO ACÁ: Se usa el operador OR (||) porque la pareja buscada puede ser la Couple 1 o la Couple 2
+           
             return await _context.Matches
                 .Where(m => (m.CoupleId == coupleId || m.CoupleId2 == coupleId) && m.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<Match?> GetMatchWithDetailsById(Guid matchId)
+        public async Task<Match?> GetMatchWithDetailsByIdAsync(Guid matchId)
         {
-            // Traemos el partido e incluimos las tablas relacionadas para tener los datos completos
             return await _context.Matches
-                .Include(m => m.Instance)
+                .Include(m => m.Stage)
+                .Include(m => m.Zone) 
                 .Include(m => m.Couple)
                 .Include(m => m.Couple2)
-                .Where(m => m.Id == matchId && m.DeletedAt == null)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(m => m.Id == matchId && m.DeletedAt == null);
         }
 
-        #endregion
+       
     }
 }

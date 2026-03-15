@@ -3,85 +3,73 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadelManager.Domain.Entities;
 using System;
 
-
 namespace PadelManager.Infrastructure.Persistence.Configurations
 {
-    public class MatchConfiguration : IEntityTypeConfiguration<Match>   
+    public class MatchConfiguration : IEntityTypeConfiguration<Match>
     {
         public void Configure(EntityTypeBuilder<Match> builder)
         {
-            //Naming the table
             builder.ToTable("Matches");
 
-            //Primary Key
             builder.HasKey(m => m.Id);
 
-            //Properties configuration
+            // ==========================================
+            // CONFIGURACIÓN DE PROPIEDADES
+            // ==========================================
 
-            builder.Property(m => m.Loser)
-                .IsRequired();
+            // Filtro para Soft Delete
+            builder.HasQueryFilter(m => m.DeletedAt == null);
 
-            builder.Property(m => m.DateTime)
-                .IsRequired();
-
+            // Mapeo del Enum como String (más fácil de leer en pgAdmin)
             builder.Property(m => m.Status)
-                .IsRequired()
-                .HasConversion<string>();
+                   .HasConversion<string>()
+                   .HasMaxLength(20)
+                   .IsRequired();
 
             builder.Property(m => m.LocationName)
-                .IsRequired()
-                .HasMaxLength(100);
+                   .HasMaxLength(100)
+                   .IsRequired();
 
             builder.Property(m => m.CourtName)
-                .IsRequired()
-                .HasMaxLength(100);
+                   .HasMaxLength(50)
+                   .IsRequired();
 
-            builder.Property(m => m.Set1_coupleA)
-                .IsRequired();
+            // Los IDs de ganador y perdedor pueden ser nulos al inicio
+            builder.Property(m => m.WinnerCoupleId)
+                   .IsRequired(false);
 
-            builder.Property(m => m.Set1_coupleB)
-                .IsRequired();
+            builder.Property(m => m.LoserCoupleId)
+                   .IsRequired(false);
 
-            builder.Property(m => m.Set2_coupleA)
-                .IsRequired();
+            // ==========================================
+            // RELACIONES
+            // ==========================================
 
-            builder.Property(m => m.Set2_coupleB)
-                .IsRequired();
-
-            //SETS condicionales
-            builder.Property(m => m.Set3_coupleA)
-                .IsRequired(false);
-
-
-            builder.Property(m => m.Set3_coupleB)
-                .IsRequired(false);
-
-            //Foreign Keys configuration
-
-            // 1. Relación con Instance (1:N)
-            // Una Instancia tiene muchos Partidos, un Partido tiene una Instancia.
-            builder.HasOne(m => m.Instance)
-                   .WithMany(i => i.Matches)
-                   .HasForeignKey(m => m.InstanceId)
+            // 1. Relación con Stage (Obligatoria)
+            builder.HasOne(m => m.Stage)
+                   .WithMany(s => s.Matches)
+                   .HasForeignKey(m => m.StageId)
                    .OnDelete(DeleteBehavior.Cascade);
+            // Si se borra la etapa (ej. "8vos"), se borran sus partidos.
 
-            // 2. Relación con la Pareja A (Primer "Padre")
-            builder.HasOne(m => m.Couple) 
-                   .WithMany() 
+            // 2. Relación con Zone (Opcional)
+            builder.HasOne(m => m.Zone)
+                   .WithMany(z => z.Matches)
+                   .HasForeignKey(m => m.ZoneId)
+                   .OnDelete(DeleteBehavior.Restrict);
+            // Restrict para evitar borrar zonas por accidente si tienen partidos. 
+
+            // 3. Relación con Pareja A (Couple)
+            builder.HasOne(m => m.Couple)
+                   .WithMany() // Couple no necesita una lista de "Partidos donde soy Pareja A"
                    .HasForeignKey(m => m.CoupleId)
                    .OnDelete(DeleteBehavior.Restrict);
 
-            // 3. Relación con la Pareja B (Segundo "Padre")
+            // 4. Relación con Pareja B (Couple2)
             builder.HasOne(m => m.Couple2)
                    .WithMany()
                    .HasForeignKey(m => m.CoupleId2)
                    .OnDelete(DeleteBehavior.Restrict);
-            //No ponemos una relacion de N:M porque si no, en un partido pueden haber 50
-            //parejas por ejemplo.
-            // En este caso, cada partido tiene exactamente dos parejas,
-            // y cada pareja puede participar en muchos partidos,
-            // pero no queremos que una pareja pueda ser eliminada si está
-            // asociada a un partido, por eso usamos Restrict.
         }
     }
 }

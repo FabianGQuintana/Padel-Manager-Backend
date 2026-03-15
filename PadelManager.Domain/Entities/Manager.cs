@@ -15,5 +15,8 @@ namespace PadelManager.Domain.Entities
         public required string PhoneNumber { get; set; }
 
         public required string Email { get; set; }
+
+        public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
     }
+}
 }

@@ -6,18 +6,17 @@ namespace PadelManager.Domain.Entities
 {
     public class Category : BaseEntity
     {
-        public required string Name { get; set; } 
+        public required string Name { get; set; }
 
-        public  string? Description { get; set; }
+        public string? Description { get; set; }
 
-        //Relationships FK
+        // Relación obligatoria por FK (Un torneo es dueño de la categoría)
         public Guid TournamentId { get; set; }
 
-        //Navigation properties
-        public virtual required Tournament Tournament { get; set; }
+        public Tournament? Tournament { get; set; }
 
-        public virtual required ICollection<Stage> Stages { get; set; } = new List<Stage>();
+        public ICollection<Stage> Stages { get; set; } = new List<Stage>();
 
-        public   ICollection<Registration> Registrations { get; set; } = new List<Registration>();
+        public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
     }
 }

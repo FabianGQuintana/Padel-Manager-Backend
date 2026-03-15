@@ -24,14 +24,14 @@ namespace PadelManager.Infrastructure.Repositories
 
         #region Búsquedas por propiedades directas
 
-        public async Task<Zone?> GetZoneByName(string name)
+        public async Task<Zone?> GetZoneByNameAsync(string name)
         {
             return await _context.Zones
                 .Where(z => z.Name == name && z.DeletedAt == null) // Filtro de borrado lógico
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Zone>> GetZonesByStageId(Guid stageId)
+        public async Task<IEnumerable<Zone>> GetZonesByStageIdAsync(Guid stageId)
         {
             return await _context.Zones
                 .Where(z => z.StageId == stageId && z.DeletedAt == null)
@@ -42,7 +42,7 @@ namespace PadelManager.Infrastructure.Repositories
 
         #region Búsquedas con relaciones (Navigation Properties)
 
-        public async Task<Zone?> GetZoneWithDetailsById(Guid zoneId)
+        public async Task<Zone?> GetZoneWithDetailsByIdAsync(Guid zoneId)
         {
             return await _context.Zones
                 .Include(z => z.Stage)       // Incluimos la etapa a la que pertenece
@@ -52,7 +52,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Zone>> GetZonesByCoupleId(Guid coupleId)
+        public async Task<IEnumerable<Zone>> GetZonesByCoupleIdAsync(Guid coupleId)
         {
             // Usamos .Any() para buscar dentro de la colección de parejas de la zona
             return await _context.Zones

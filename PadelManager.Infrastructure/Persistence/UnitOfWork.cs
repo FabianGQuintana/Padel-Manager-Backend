@@ -19,7 +19,6 @@ namespace PadelManager.Infrastructure.Persistence
         private IGenericRepository<Zone>? _zones;
         private IGenericRepository<Statistic>? _statistics;
         private IGenericRepository<Stage>? _stages;
-        private IGenericRepository<Instance>? _instances;
         private IGenericRepository<Couple>? _couples;
         private IGenericRepository<Registration>? _registrations;
         private IGenericRepository<Category>? _categories;
@@ -41,8 +40,6 @@ namespace PadelManager.Infrastructure.Persistence
         public IGenericRepository<Tournament> Tournaments => _tournaments ??= new GenericRepository<Tournament>(_context);
 
         public IGenericRepository<Couple> Couples => _couples ??= new GenericRepository<Couple>(_context);
-
-        public IGenericRepository<Instance> Instances => _instances ??= new GenericRepository<Instance>(_context);
 
         public IGenericRepository<Statistic> Statistics => _statistics ??= new GenericRepository<Statistic>(_context);
 

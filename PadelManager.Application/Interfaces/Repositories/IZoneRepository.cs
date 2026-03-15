@@ -7,17 +7,16 @@ namespace PadelManager.Application.Interfaces.Repositories
 {
     public interface IZoneRepository : IGenericRepository<Zone>
     {
-        
-        // Búsqueda por propiedades directas
-        Task<Zone?> GetZoneByName(string name);
-        Task<IEnumerable<Zone>> GetZonesByStageId(Guid stageId);
+       
+        Task<Zone?> GetZoneByNameAsync(string name);
+        Task<IEnumerable<Zone>> GetZonesByStageIdAsync(Guid stageId);
         
         //* Búsquedas relacionadas (Navigation Properties)
   
         // Obtener una zona incluyendo sus parejas y estadísticas
-        Task<Zone?> GetZoneWithDetailsById(Guid zoneId);
+        Task<Zone?> GetZoneWithDetailsByIdAsync(Guid zoneId);
 
         // Buscar todas las zonas en las que participa una pareja específica
-        Task<IEnumerable<Zone>> GetZonesByCoupleId(Guid coupleId);
+        Task<IEnumerable<Zone>> GetZonesByCoupleIdAsync(Guid coupleId);
     }
 }

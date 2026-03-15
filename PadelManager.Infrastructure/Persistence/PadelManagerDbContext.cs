@@ -24,8 +24,6 @@ namespace PadelManager.Infrastructure.Persistence
 
         public DbSet<Couple> Couples { get; set; }
 
-        public DbSet<Instance> Instances { get; set; }
-
         public DbSet<Manager> Managers { get; set; }
 
         public DbSet<Tournament> Tournaments { get; set; }
@@ -37,6 +35,8 @@ namespace PadelManager.Infrastructure.Persistence
         public DbSet<Statistic> Statistics { get; set; }
 
         public DbSet<Zone> Zones { get; set; }
+
+       public DbSet<Category> Categories { get; set; }
 
         //Metodo que dispara cuando el sistema se inicia para dar las reglas de cada entidad.
         //Buscara en el proyecto las clases de configuracion de cada entidad y las aplicara.

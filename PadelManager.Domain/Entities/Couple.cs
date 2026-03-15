@@ -21,9 +21,9 @@ namespace PadelManager.Domain.Entities
         public Guid? ZoneId { get; set; }
 
         // Propiedad de navegación
-        public  required Zone? Zone { get; set; } = null!;
+        public  Zone? Zone { get; set; } = null!;
 
-       
-        
+       public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
+
     }
 }
