@@ -39,8 +39,9 @@ builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IInstanceRepository, InstanceRepository>();
 builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
-builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
-builder.Services.AddScoped<IMatchRepository, MatchRepository>();
+builder.Services.AddScoped<ICoupleRepository, CoupleRepository>();
+builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
+builder.Services.AddScoped<IStageRepository, StageRepository>();
 
 
 #endregion

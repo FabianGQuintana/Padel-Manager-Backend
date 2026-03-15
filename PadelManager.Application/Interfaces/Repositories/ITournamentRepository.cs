@@ -6,18 +6,18 @@ namespace PadelManager.Application.Interfaces.Repositories
 {
     public interface ITournamentRepository : IGenericRepository<Tournament>
     {
-        Task<Tournament?> GetTournamentByName(string name);
+        Task<Tournament?> GetTournamentsByNameAsync(string name);
         
-        Task<IEnumerable<Tournament>> GetTournamentByStartDate(DateTime startDate);
+        Task<IEnumerable<Tournament>> GetTournamentsByStartDateAsync(DateTime startDate);
 
-        Task<IEnumerable<Tournament>> GetTournamentByStatus(TournamentStatus status);
+        Task<IEnumerable<Tournament>> GetTournamentsByStatusAsync(TournamentStatus status);
 
-        Task<IEnumerable<Tournament>> GetTournamentByType(string tournamentType);
+        Task<IEnumerable<Tournament>> GetTournamentsByTypeAsync(string tournamentType);
 
-        Task<IEnumerable<Tournament>> GetTournamentByMaxTeamsPerCategory(int maxTeams);
+        Task<IEnumerable<Tournament>> GetTournamentsByMaxTeamsPerCategoryAsync(int maxTeams);
 
-        Task<IEnumerable<Tournament>> GetTournamentsByManagerId(Guid managerId);
+        Task<IEnumerable<Tournament>> GetTournamentsByManagerIdAsync(Guid managerId);
 
-        Task<IEnumerable<Tournament>> GetTournamentsByCategoryId(Guid categoryId);
+        Task<IEnumerable<Tournament>> GetTournamentsByCategoryIdAsync(Guid categoryId);
     }
 }

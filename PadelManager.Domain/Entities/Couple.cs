@@ -18,10 +18,10 @@ namespace PadelManager.Domain.Entities
         public Player Player2 { get; set; } = null!;
 
         // Relación FK
-        public Guid ZoneId { get; set; }
+        public Guid? ZoneId { get; set; }
 
         // Propiedad de navegación
-        public  required Zone Zone { get; set; } = null!;
+        public  required Zone? Zone { get; set; } = null!;
 
        
         

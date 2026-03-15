@@ -18,7 +18,7 @@ namespace PadelManager.Infrastructure.Repositories
 
         //Implementación de los métodos específicos para el repositorio de torneos
 
-        public async Task<Tournament?> GetTournamentByName(string name)
+        public async Task<Tournament?> GetTournamentsByNameAsync(string name)
         {
             return await _context.Tournaments
                 .Include(t => t.Categories) // Incluir las categorías relacionadas
@@ -27,42 +27,42 @@ namespace PadelManager.Infrastructure.Repositories
         }
 
 
-        public async Task<IEnumerable<Tournament>> GetTournamentByStartDate(DateTime startDate)
+        public async Task<IEnumerable<Tournament>> GetTournamentsByStartDateAsync(DateTime startDate)
         {
             return await _context.Tournaments // Me aseguro de mirar la fecha unicamente y no la hora , por eso el .Date chicas
                 .Where (t => t.StartDate.Date == startDate.Date && t.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Tournament>> GetTournamentByStatus(TournamentStatus status)
+        public async Task<IEnumerable<Tournament>> GetTournamentsByStatusAsync(TournamentStatus status)
         {
             return await _context.Tournaments
                 .Where(t => t.Status == status && t.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Tournament>> GetTournamentByType(string tournamentType)
+        public async Task<IEnumerable<Tournament>> GetTournamentsByTypeAsync(string tournamentType)
         {
             return await _context.Tournaments
                 .Where(t => t.TournamentType == tournamentType && t.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Tournament>> GetTournamentByMaxTeamsPerCategory(int maxTeams)
+        public async Task<IEnumerable<Tournament>> GetTournamentsByMaxTeamsPerCategoryAsync(int maxTeams)
         {
             return await _context.Tournaments
                 .Where(t => t.MaxTeamsPerCategory == maxTeams && t.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Tournament>> GetTournamentsByManagerId(Guid managerId)
+        public async Task<IEnumerable<Tournament>> GetTournamentsByManagerIdAsync(Guid managerId)
         {
             return await _context.Tournaments
                 .Where(t => t.ManagerId == managerId && t.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Tournament>> GetTournamentsByCategoryId(Guid categoryId)
+        public async Task<IEnumerable<Tournament>> GetTournamentsByCategoryIdAsync(Guid categoryId)
         {
             return await _context.Tournaments
                 .Where(t => t.Categories.Any(c => c.Id == categoryId) && t.DeletedAt == null)
