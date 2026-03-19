@@ -22,7 +22,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Tournaments
                 .Include(t => t.Categories) // Incluir las categorías relacionadas
-                .Where(t => t.Name == name && t.DeletedAt == null) //De esta forma me puedo asegurar de filtrar los borrados lógicamente
+                .Where(t => t.Name.ToLower() == name.ToLower() && t.DeletedAt == null) //De esta forma me puedo asegurar de filtrar los borrados lógicamente
                 .FirstOrDefaultAsync();
         }
 
@@ -69,5 +69,46 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Tournament>> GetTournamentsByManagerEmailAsync(string email)
+        {
+            return await _context.Tournaments
+                .Include(t => t.Managers) // Asumiendo la relación en tu entidad
+                .Where(t => t.Managers.Any(m => m.Email == email && t.DeletedAt == null))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Tournament>> GetTournamentsByManagerDniAsync(string dni)
+        {
+            // 1. Intentamos convertir el string a int
+            if (!int.TryParse(dni, out int dniNumeric))
+            {
+                // Si el string no es un número válido (ej: "abc"), 
+                // devolvemos una lista vacía para evitar que el sistema explote.
+                return Enumerable.Empty<Tournament>();
+            }
+
+            // 2. Ahora comparamos int con int
+            return await _context.Tournaments
+                .Include(t => t.Managers)
+                .Where(t => t.DeletedAt == null && t.Managers.Any(m => m.Dni == dniNumeric))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Tournament>> GetTournamentsByManagerNameAsync(string name)
+        {
+            return await _context.Tournaments
+                .Include(t => t.Managers)
+                .Where(t => t.DeletedAt == null &&
+                       t.Managers.Any(m => (m.Name + " " + m.LastName).ToLower().Contains(name.ToLower())))
+                .ToListAsync();
+        }
+
+        public async Task<Tournament?> GetTournamentWithCategoriesAsync(Guid id)
+        {
+            return await _context.Tournaments
+                .Include(t => t.Categories)
+                .Where(t => t.Id == id && t.DeletedAt == null)
+                .FirstOrDefaultAsync();
+        }
     }
 }

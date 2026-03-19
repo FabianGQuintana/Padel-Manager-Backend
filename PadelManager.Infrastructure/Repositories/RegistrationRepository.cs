@@ -24,6 +24,13 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<int> CountByTournamentIdAsync(Guid tournamentId)
+        {
+            // Buscamos todas las registraciones que pertenezcan a las categorías de ese torneo
+            return await _context.Registrations
+                .CountAsync(r => r.Category.TournamentId == tournamentId && r.DeletedAt == null);
+        }
+
         public async Task<IEnumerable<Registration>> GetRegistrationsByTimeAsync(TimeOnly time)
         {
             return await _context.Registrations

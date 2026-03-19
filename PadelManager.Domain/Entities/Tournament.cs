@@ -21,6 +21,14 @@ namespace PadelManager.Domain.Entities
         [Range(6, 48, ErrorMessage = "El torneo debe tener entre 6 y 48 parejas.")]
         public required int MaxTeamsPerCategory { get; set; } = 48;
 
+        // Lógica de Negocio que usaremos en los SERVICES
+        public bool IsFull(int registrationCount) => registrationCount >= MaxTeamsPerCategory;
+
+        public bool CanStart(int registrationCount) => registrationCount >= 6 && registrationCount <= MaxTeamsPerCategory;
+
+        public bool IsIdealForZones(int registrationCount) => registrationCount % 3 == 0;
+
+
         //Relationships FK
         public Guid ManagerId { get; set; }
         

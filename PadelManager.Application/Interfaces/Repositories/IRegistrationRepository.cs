@@ -18,6 +18,6 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         Task<int> CountRegistrationsByCategoryIdAsync(Guid categoryId);
 
-
+        Task<int> CountByTournamentIdAsync(Guid tournamentId);
     }
 }

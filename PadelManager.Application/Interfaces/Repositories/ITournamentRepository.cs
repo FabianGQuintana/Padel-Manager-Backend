@@ -19,5 +19,13 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<IEnumerable<Tournament>> GetTournamentsByManagerIdAsync(Guid managerId);
 
         Task<IEnumerable<Tournament>> GetTournamentsByCategoryIdAsync(Guid categoryId);
+
+        Task<IEnumerable<Tournament>> GetTournamentsByManagerEmailAsync(string email);
+
+        Task<IEnumerable<Tournament>> GetTournamentsByManagerDniAsync(string dni);
+
+        Task<IEnumerable<Tournament>> GetTournamentsByManagerNameAsync(string name);
+
+        Task<Tournament?> GetTournamentWithCategoriesAsync(Guid id);
     }
 }
