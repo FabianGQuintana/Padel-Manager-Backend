@@ -15,7 +15,6 @@
     <Folder Include="DTOs\Stage\" />
     <Folder Include="DTOs\Statistic\" />
     <Folder Include="DTOs\Zone\" />
-    <Folder Include="DTOs\Player\" />
     <Folder Include="Validators\" />
   </ItemGroup>
 
