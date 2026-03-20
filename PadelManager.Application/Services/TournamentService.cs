@@ -82,10 +82,10 @@ namespace PadelManager.Application.Services
             return tournament.ToResponseDto(count);
         }
 
-        public async Task<TournamentResponseDto?> GetTournamentByNameAsync(string name)
+        public async Task<IEnumerable<TournamentResponseDto>> GetTournamentByNameAsync(string name)
         {
-            var tournament = await _tournamentRepo.GetTournamentsByNameAsync(name);
-            return tournament?.ToResponseDto(0);
+            var tournaments = await _tournamentRepo.GetTournamentsByNameAsync(name);
+            return tournaments.ToResponseDto();
         }
 
         public async Task<IEnumerable<TournamentResponseDto>> GetAllTournamentsAsync()

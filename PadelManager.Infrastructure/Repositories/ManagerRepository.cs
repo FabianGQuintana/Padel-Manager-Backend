@@ -18,14 +18,21 @@ namespace PadelManager.Infrastructure.Repositories
         }
 
         //Implementación de los métodos específicos para el repositorio de Managers
-        public async Task<Manager?> GetManagerByNameAsync(string nameManager)
+        public async Task<IEnumerable<Manager>> GetManagersByNameAsync(string nameManager)
         {
             return await _context.Managers
                 .Where(m => m.Name == nameManager)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
         }
 
-        public async Task<Manager?> GetManagerByDNIAsync (int dniManager)
+        public async Task<IEnumerable<Manager>> GetManagersByLastNameAsync(string lastName)
+        {
+            return await _context.Managers
+                .Where(m =>m.LastName == lastName)
+                .ToListAsync();
+        }
+
+        public async Task<Manager?> GetManagerByDNIAsync (string dniManager)
         {
             return await _context.Managers
             .FirstOrDefaultAsync(m => m.Dni == dniManager);
@@ -44,6 +51,13 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Managers
                 .Where(m => m.PhoneNumber == phoneManager)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<Manager?> GetManagerWithTournamentsAsync(Guid id)
+        {
+            return await _context.Managers
+                .Include(m => m.Tournaments)
+                .FirstOrDefaultAsync(m => m.Id == id && m.DeletedAt == null);
         }
 
     }

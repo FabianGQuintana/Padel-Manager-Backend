@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Infrastructure.Persistence;
 using PadelManager.Infrastructure.Repositories;
+using PadelManager.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,8 @@ builder.Services.AddDbContext<PadelManagerDbContext>(options =>
 // Es vital registrar el UnitOfWork primero
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddHttpContextAccessor();
+
 // --- Espacio para que el equipo agregue sus repositorios específicos ---
 builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
@@ -46,7 +50,7 @@ builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
 builder.Services.AddScoped<IMatchRepository,MatchRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
-
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 #endregion
 
 

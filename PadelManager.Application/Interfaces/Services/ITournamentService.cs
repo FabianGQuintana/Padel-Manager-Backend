@@ -14,7 +14,7 @@ public interface ITournamentService
 
     // LECTURA
     Task<TournamentResponseDto?> GetTournamentByIdAsync(Guid tournamentId);
-    Task<TournamentResponseDto?> GetTournamentByNameAsync(string name);
+    Task<IEnumerable<TournamentResponseDto>> GetTournamentByNameAsync(string name);
     Task<IEnumerable<TournamentResponseDto>> GetAllTournamentsAsync();
     Task<IEnumerable<TournamentResponseDto>> GetTournamentsByManagerIdAsync(Guid managerId);
     Task<IEnumerable<TournamentResponseDto>> GetTournamentsByStatusAsync(TournamentStatus status);
