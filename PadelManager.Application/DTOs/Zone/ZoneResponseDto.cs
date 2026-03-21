@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace PadelManager.Application.DTOs.Zone
+{
+    public class ZoneResponseDto
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = null!;
+        public Guid StageId { get; set; }
+
+        // Relaciones transformadas a DTOs
+        public List<CoupleResponseDto> Couples { get; set; } = new();
+        public List<MatchResponseDto> Matches { get; set; } = new();
+
+        // Opcional
+        public List<StatisticResponseDto> Statistics { get; set; } = new();
+
+    }
+}

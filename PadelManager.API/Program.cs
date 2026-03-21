@@ -2,9 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
+using PadelManager.Application.Interfaces.Services;
 using PadelManager.Infrastructure.Persistence;
 using PadelManager.Infrastructure.Repositories;
-using PadelManager.Infrastructure.Services;
+using PadelManager.Application.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +63,10 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // =========================================================================
 // Aquí irán los Services que consumirán los repositorios
 // builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<IManagerService, ManagerService>();
+
+
+
 
 #endregion
 

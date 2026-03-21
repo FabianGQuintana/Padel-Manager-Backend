@@ -24,11 +24,11 @@ namespace PadelManager.Infrastructure.Repositories
 
         #region Búsquedas por propiedades directas
 
-        public async Task<Zone?> GetZoneByNameAsync(string name)
+        public async Task<IEnumerable<Zone>> GetZonesByNameAsync(string name)
         {
             return await _context.Zones
                 .Where(z => z.Name == name && z.DeletedAt == null) // Filtro de borrado lógico
-                .FirstOrDefaultAsync();
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Zone>> GetZonesByStageIdAsync(Guid stageId)
@@ -45,9 +45,10 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<Zone?> GetZoneWithDetailsByIdAsync(Guid zoneId)
         {
             return await _context.Zones
-                .Include(z => z.Stage)       // Incluimos la etapa a la que pertenece
-                .Include(z => z.Couples)     // Incluimos la lista de parejas
-                .Include(z => z.Statistics)  // Incluimos las estadísticas
+                .Include(z => z.Stage)
+                .Include(z => z.Matches)
+                .Include(z => z.Couples)     
+                .Include(z => z.Statistics)  
                 .Where(z => z.Id == zoneId && z.DeletedAt == null)
                 .FirstOrDefaultAsync();
         }
