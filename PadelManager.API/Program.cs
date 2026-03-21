@@ -64,7 +64,7 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // Aquí irán los Services que consumirán los repositorios
 // builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<IManagerService, ManagerService>();
-
+builder.Services.AddScoped<IZoneService, ZoneService>();
 
 
 
