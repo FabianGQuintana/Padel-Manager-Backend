@@ -14,6 +14,8 @@ namespace PadelManager.Application.Interfaces.Services
         Task<bool> SoftDeleteToggleManagerAsync(Guid id);
 
         Task<ManagerResponseDto?> GetManagerByIdAsync(Guid managerId);
+
+        Task<IEnumerable<ManagerResponseDto>> GetAllManagersAsync();
         Task<IEnumerable<ManagerResponseDto>> GetManagersByNameAsync(string name);
         Task<IEnumerable<ManagerResponseDto>>GetManagersByLastNameAsync(string lastName);
         Task<ManagerResponseDto?> GetManagerByDniAsync(string dni);

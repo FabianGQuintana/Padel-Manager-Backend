@@ -84,6 +84,12 @@ namespace PadelManager.Application.Services
             return manager.ToResponseDto();
         }
 
+        public async Task<IEnumerable<ManagerResponseDto>> GetAllManagersAsync()
+        {
+            var managers = await _managerRepository.GetAllAsync();
+            return managers.ToResponseDto();
+        }
+
         public async Task<IEnumerable<ManagerResponseDto>> GetManagersByNameAsync(string name)
         {
             var managersName = await _managerRepository.GetManagersByNameAsync(name);
