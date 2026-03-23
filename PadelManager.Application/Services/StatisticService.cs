@@ -62,6 +62,12 @@ namespace PadelManager.Application.Services
             return statistics.ToResponseDto();
         }
 
+        public async Task<IEnumerable<StatisticResponseDto>> GetAllStatisticsAsync()
+        {
+            var statistics = await _statisticRepo.GetAllAsync();
+            return statistics.ToResponseDto();
+        }
+
         public async Task<IEnumerable<StatisticResponseDto>> GetStatisticsByCoupleIdAsync(Guid coupleId)
         {
             var statistics = await _statisticRepo.GetStatisticsByCoupleIdAsync(coupleId);
