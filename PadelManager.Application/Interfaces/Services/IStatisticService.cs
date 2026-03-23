@@ -17,6 +17,8 @@ namespace PadelManager.Application.Interfaces.Services
         // LECTURA
         Task<StatisticResponseDto?> GetStatisticByIdAsync(Guid id);
 
+        Task<IEnumerable<StatisticResponseDto>> GetAllStatisticsAsync();
+
         Task<IEnumerable<StatisticResponseDto>> GetStatisticsByZoneIdAsync(Guid zoneId);
 
         Task<IEnumerable<StatisticResponseDto>> GetStatisticsByCoupleIdAsync(Guid coupleId);
