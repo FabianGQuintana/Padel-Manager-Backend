@@ -15,11 +15,15 @@ namespace PadelManager.Domain.Entities
 
         public  Guid CategoryId { get; set; }
 
+        public Guid TournamentId { get; set; }
+
         //Relations Navigation
 
         public Couple Couple { get; set; } = null!;
 
         public  Category Category { get; set; } = null!;
+
+        public Tournament Tournament { get; set; } = null!;
 
     }
 }

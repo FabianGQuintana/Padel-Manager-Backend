@@ -54,5 +54,15 @@ namespace PadelManager.Infrastructure.Repositories
                 .Where(c => c.ZoneId == null)
                 .ToListAsync();
         }
+
+        public async Task<Couple?> GetCoupleWithRegistrationDetailsAsync(Guid coupleId)
+        {
+            return await _context.Couples
+                .Include(c => c.Player1)
+                .Include(c => c.Player2)
+                .Include(c => c.Registrations)
+                    .ThenInclude(r => r.Category) 
+                .FirstOrDefaultAsync(c => c.Id == coupleId);
+        }
     }
 }

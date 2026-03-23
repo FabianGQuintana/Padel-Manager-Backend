@@ -24,6 +24,6 @@ namespace PadelManager.Domain.Entities
         public  Zone? Zone { get; set; } = null!;
 
        public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
-
+       public ICollection<CoupleAvailability> Availabilities { get; set; } = new List<CoupleAvailability>();
     }
 }

@@ -38,6 +38,8 @@ namespace PadelManager.Infrastructure.Persistence
 
        public DbSet<Category> Categories { get; set; }
 
+       public DbSet<CoupleAvailability> CoupleAvailabilities { get; set; }
+
         //Metodo que dispara cuando el sistema se inicia para dar las reglas de cada entidad.
         //Buscara en el proyecto las clases de configuracion de cada entidad y las aplicara.
         protected override void OnModelCreating(ModelBuilder modelBuilder)

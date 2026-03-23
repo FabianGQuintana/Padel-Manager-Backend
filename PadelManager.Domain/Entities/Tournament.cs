@@ -37,6 +37,8 @@ namespace PadelManager.Domain.Entities
 
         public ICollection<Manager> Managers { get; set; } = new List<Manager>();
 
+        public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
+
         // Método para validar si se puede cambiar el estado a "InProgress" 
         public bool CanChangeStatusToInProgress(int registrationCount)
         {
