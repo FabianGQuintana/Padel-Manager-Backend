@@ -3,6 +3,7 @@ using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Infrastructure.Persistence;
 using PadelManager.Infrastructure.Repositories;
+using PadelManager.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,8 +58,8 @@ builder.Services.AddScoped<ICoupleAvailabilityRepository, CoupleAvailabilityRepo
 // 4. INYECCIÓN DE DEPENDENCIAS - SERVICIOS (Lógica de Negocio)
 // =========================================================================
 // Aquí irán los Services que consumirán los repositorios
-// builder.Services.AddScoped<ITournamentService, TournamentService>();
-
+ builder.Services.AddScoped<ITournamentService, TournamentService>();
+ 
 #endregion
 
 
