@@ -72,8 +72,8 @@ builder.Services.AddScoped<IStatisticService, StatisticService>();
 builder.Services.AddScoped<IStageService, StageService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 
-
-
+builder.Services.AddScoped<IMatchService, MatchService>();    
+builder.Services.AddScoped<ICoupleService, CoupleService>();    
 #endregion
 
 
