@@ -23,6 +23,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .Include(c => c.Player1)
                 .Include(c => c.Player2)
                 .Include(c => c.Zone)
+                .Include(c => c.Availabilities)
                 .FirstOrDefaultAsync(c => c.Nickname == nickname);
         }
 
@@ -32,6 +33,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .Include(c => c.Player1)
                 .Include(c => c.Player2)
                 .Include(c => c.Zone)
+                .Include(c => c.Availabilities)
                 .Where(c => c.Player1Id == playerId || c.Player2Id == playerId)
                 .ToListAsync();
         }
@@ -42,6 +44,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .Include(c => c.Player1)
                 .Include(c => c.Player2)
                 .Include(c => c.Zone)
+                .Include(c => c.Availabilities)
                 .Where(c => c.ZoneId == zoneId)
                 .ToListAsync();
         }
@@ -51,6 +54,7 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Couples
                 .Include(c => c.Player1)
                 .Include(c => c.Player2)
+                .Include(c => c.Availabilities)
                 .Where(c => c.ZoneId == null)
                 .ToListAsync();
         }
@@ -60,6 +64,7 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Couples
                 .Include(c => c.Player1)
                 .Include(c => c.Player2)
+                .Include(c => c.Availabilities)
                 .Include(c => c.Registrations)
                     .ThenInclude(r => r.Category) 
                 .FirstOrDefaultAsync(c => c.Id == coupleId);
