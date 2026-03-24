@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace PadelManager.Domain.Entities
+namespace PadelManager.Application.DTOs.Manager
 {
-    public class Manager : BaseEntity
+    public class CreateManagerDto
     {
         public required string Name { get; set; }
 
         public required string LastName { get; set; }
 
-        public required string Dni { get; set; }
+        public required string Dni { get; set; } 
 
         public required string PhoneNumber { get; set; }
 
         public required string Email { get; set; }
-
-        public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
     }
-}
 }

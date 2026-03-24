@@ -1,49 +1,71 @@
 ﻿using System;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using PadelManager.Domain.Entities;
-using System.Reflection;
+using PadelManager.Application.Interfaces.Common; 
 
 namespace PadelManager.Infrastructure.Persistence
 {
     public class PadelManagerDbContext : DbContext
     {
-        //Constructor que recibe la connection string de appsettings.json y
-        //la pasa a la clase base DbContext para establecer la conexion con la base de datos.
-        public PadelManagerDbContext(DbContextOptions<PadelManagerDbContext> options) : base(options)
-        
+        private readonly ICurrentUser _currentUser;
+
+        // Ahora el constructor recibe también nuestro servicio de usuario actual
+        public PadelManagerDbContext(
+            DbContextOptions<PadelManagerDbContext> options,
+            ICurrentUser currentUser) : base(options)
         {
-            //Base(options) = Ejecutá primero el constructor de mi madre(DbContext) usando esta
-            //configuración (las credenciales de pgAdmin4) para que ella prepare el
-            //terreno antes de que yo haga mis cosas
+            _currentUser = currentUser;
         }
 
-        //Tablas para cada entidad
+        #region DbSets (Tablas)
         public DbSet<Match> Matches { get; set; }
-
         public DbSet<Player> Players { get; set; }
-
         public DbSet<Couple> Couples { get; set; }
-
         public DbSet<Manager> Managers { get; set; }
-
         public DbSet<Tournament> Tournaments { get; set; }
-
         public DbSet<Registration> Registrations { get; set; }
-
         public DbSet<Stage> Stages { get; set; }
-
         public DbSet<Statistic> Statistics { get; set; }
-
         public DbSet<Zone> Zones { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        #endregion
 
-       public DbSet<Category> Categories { get; set; }
-
-        //Metodo que dispara cuando el sistema se inicia para dar las reglas de cada entidad.
-        //Buscara en el proyecto las clases de configuracion de cada entidad y las aplicara.
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());  
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        }
+
+        // ==========================================
+        // LÓGICA DE AUDITORÍA AUTOMÁTICA (no estoy seguro)
+        // ==========================================
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            // Interceptamos todas las entidades que hereden de BaseEntity
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>())
+            {
+                var now = DateTime.UtcNow;
+                var user = _currentUser.UserId ?? "System";
+
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.CreatedAt = now;
+                        entry.Entity.CreatedBy = user;
+                        entry.Entity.Status = "Active"; // Estado inicial por defecto
+                        break;
+
+                    case EntityState.Modified:
+                        entry.Entity.LastModifiedAt = now;
+                        entry.Entity.LastModifiedBy = user;
+                        break;
+                }
+            }
+
+            return await base.SaveChangesAsync(cancellationToken);
         }
     }
 }

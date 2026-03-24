@@ -18,12 +18,12 @@ namespace PadelManager.Infrastructure.Repositories
 
         //Implementación de los métodos específicos para el repositorio de torneos
 
-        public async Task<Tournament?> GetTournamentsByNameAsync(string name)
+        public async Task<IEnumerable<Tournament>> GetTournamentsByNameAsync(string name)
         {
             return await _context.Tournaments
                 .Include(t => t.Categories) // Incluir las categorías relacionadas
                 .Where(t => t.Name.ToLower() == name.ToLower() && t.DeletedAt == null) //De esta forma me puedo asegurar de filtrar los borrados lógicamente
-                .FirstOrDefaultAsync();
+                .ToListAsync();
         }
 
 
@@ -79,19 +79,10 @@ namespace PadelManager.Infrastructure.Repositories
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByManagerDniAsync(string dni)
         {
-            // 1. Intentamos convertir el string a int
-            if (!int.TryParse(dni, out int dniNumeric))
-            {
-                // Si el string no es un número válido (ej: "abc"), 
-                // devolvemos una lista vacía para evitar que el sistema explote.
-                return Enumerable.Empty<Tournament>();
-            }
-
-            // 2. Ahora comparamos int con int
             return await _context.Tournaments
-                .Include(t => t.Managers)
-                .Where(t => t.DeletedAt == null && t.Managers.Any(m => m.Dni == dniNumeric))
-                .ToListAsync();
+            .Include(t => t.Managers)
+            .Where(t => t.DeletedAt == null && t.Managers.Any(m => m.Dni == dni)) 
+            .ToListAsync();
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByManagerNameAsync(string name)

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="DTOs\Category\" />
-    <Folder Include="DTOs\Manager\" />
     <Folder Include="DTOs\Couple\" />
     <Folder Include="DTOs\Match\" />
     <Folder Include="DTOs\Registration\" />
