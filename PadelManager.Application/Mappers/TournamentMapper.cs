@@ -21,12 +21,8 @@ namespace PadelManager.Application.Mappers
                 Regulations = tournament.Regulations,
                 Status = tournament.Status,
                 TournamentType = tournament.TournamentType,
-                MaxTeamsPerCategory = tournament.MaxTeamsPerCategory,
                 ManagerId = tournament.ManagerId,
 
-                IsFull = tournament.IsFull(currentRegistrations),
-                IsReadyToStart = tournament.CanStart(currentRegistrations),
-                HasIdealZoneCount = tournament.IsIdealForZones(currentRegistrations)
             };
         }
 
@@ -50,24 +46,9 @@ namespace PadelManager.Application.Mappers
             if (dto.StartDate != null)
                 existingEntity.StartDate = dto.StartDate.Value;
 
-            if (dto.MaxTeamsPerCategory != null)
-                existingEntity.MaxTeamsPerCategory = dto.MaxTeamsPerCategory.Value;
 
             if (dto.ManagerId != null)
                 existingEntity.ManagerId = dto.ManagerId.Value;
-            //Ejemplo par tipos INT?
-            // Tipo de valor (int?) requiere una comprobación HasValue
-            //if (dto.PropertyNumber.HasValue)
-            //{
-            //    existingEntity.PropertyNumber = dto.PropertyNumber.Value;
-            //}
-
-
-            // Auditoría de actualización
-            //existingEntity.LastModifiedAt = DateTime.UtcNow;
-            //existingEntity.LastModifiedBy = 
-            // ESTA PARTE ESTA BIEN PERO ES MAS PROFESIONAL REALIZARLO LUEGO EN UN SERVICIO APARTE
-            // CurrentUserService. PARA DEJAR LOS MAPPERS MAS LIMPIOS Y DELEGAR ESA TAREA A UN SERVICE ESPECIFICO
         }
 
 
@@ -80,7 +61,6 @@ namespace PadelManager.Application.Mappers
                 StartDate = dto.StartDate,
                 TournamentType = dto.TournamentType,
                 ManagerId = dto.ManagerId,
-                MaxTeamsPerCategory = dto.MaxTeamsPerCategory,
                 Status = TournamentStatus.Draft
                 
                // CreatedBy = Dejaremos luego para otro servicio en especifico estas tareas de AUDITORIAS

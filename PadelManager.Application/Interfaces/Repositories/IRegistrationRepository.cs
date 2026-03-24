@@ -6,6 +6,8 @@ namespace PadelManager.Application.Interfaces.Repositories
 {
     public interface IRegistrationRepository : IGenericRepository<Registration>
     {
+
+        Task<List<Couple>> GetCouplesByCategoryAsync(Guid categoryId);
         Task<IEnumerable<Registration>> GetRegistrationsByDateAsync(DateTime date);
           
         Task<IEnumerable<Registration>> GetRegistrationsByTimeAsync(TimeOnly time);

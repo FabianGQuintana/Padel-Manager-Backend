@@ -33,6 +33,8 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             builder.HasIndex(c => new { c.Name, c.TournamentId })
                    .IsUnique();
 
+            builder.Property(c => c.MaxTeams).IsRequired();
+
             // ==========================================
             // RELACIONES
             // ==========================================

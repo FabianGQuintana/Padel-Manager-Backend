@@ -8,7 +8,7 @@ namespace PadelManager.Application.Interfaces.Repositories
     public interface IZoneRepository : IGenericRepository<Zone>
     {
        
-        Task<Zone?> GetZoneByNameAsync(string name);
+        Task<IEnumerable<Zone>> GetZonesByNameAsync(string name);
         Task<IEnumerable<Zone>> GetZonesByStageIdAsync(Guid stageId);
         
         //* Búsquedas relacionadas (Navigation Properties)

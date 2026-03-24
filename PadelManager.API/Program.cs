@@ -2,10 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
+using PadelManager.Application.Interfaces.Services;
 using PadelManager.Infrastructure.Persistence;
 using PadelManager.Infrastructure.Repositories;
 using PadelManager.Infrastructure.Services;
 using PadelManager.Application.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,8 +63,12 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // 4. INYECCIÓN DE DEPENDENCIAS - SERVICIOS (Lógica de Negocio)
 // =========================================================================
 // Aquí irán los Services que consumirán los repositorios
- builder.Services.AddScoped<ITournamentService, TournamentService>();
- 
+// builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<IManagerService, ManagerService>();
+builder.Services.AddScoped<IZoneService, ZoneService>();
+
+
+
 #endregion
 
 
