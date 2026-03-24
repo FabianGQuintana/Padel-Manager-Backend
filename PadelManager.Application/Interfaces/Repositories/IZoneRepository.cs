@@ -18,5 +18,6 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         // Buscar todas las zonas en las que participa una pareja específica
         Task<IEnumerable<Zone>> GetZonesByCoupleIdAsync(Guid coupleId);
+        Task<int> CountByStageIdAsync(Guid stageId);
     }
 }
