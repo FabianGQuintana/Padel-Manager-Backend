@@ -15,7 +15,5 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         Task <Couple?> GetCoupleWithRegistrationDetailsAsync(Guid coupleId);
 
-
-
     }
 }
