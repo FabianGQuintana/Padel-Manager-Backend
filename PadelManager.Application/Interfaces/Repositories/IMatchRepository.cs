@@ -15,5 +15,6 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<IEnumerable<Match>> GetMatchesByZoneIdAsync(Guid zoneId);
         Task<IEnumerable<Match>> GetMatchesByCoupleIdAsync(Guid coupleId);
         Task<Match?> GetMatchWithDetailsByIdAsync(Guid matchId);
+        Task<int> CountByStageIdAsync(Guid stageId);
     }
 }

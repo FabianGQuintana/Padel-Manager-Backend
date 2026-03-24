@@ -11,7 +11,6 @@
     <Folder Include="DTOs\Couple\" />
     <Folder Include="DTOs\Match\" />
     <Folder Include="DTOs\Registration\" />
-    <Folder Include="DTOs\Stage\" />
     <Folder Include="DTOs\Statistic\" />
     <Folder Include="DTOs\Player\" />
     <Folder Include="Validators\" />
