@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using PadelManager.Domain.Entities;
 using PadelManager.Application.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -8,11 +11,21 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class RegistrationRepository : GenericRepository<Registration>, IRegistrationRepository
     {
-        private readonly PadelManagerDbContext _context;
+        private new readonly PadelManagerDbContext _context;
 
         public RegistrationRepository(PadelManagerDbContext context) : base(context)
         {
             _context = context;
+        }
+
+        public async Task<List<Couple>> GetCouplesByCategoryAsync(Guid categoryId)
+        {
+            return await _context.Registrations
+                .Include(r => r.Couple) 
+                .Where(r => r.CategoryId == categoryId && r.DeletedAt == null)
+                .Select(r => r.Couple) 
+                .Distinct()        
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Registration>> GetRegistrationsByDateAsync(DateTime date)
@@ -36,7 +49,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Registration>> GetRegistrationsByCategoryId(Guid categoryId)
+        public async Task<IEnumerable<Registration>> GetRegistrationsByCategoryIdAsync(Guid categoryId)
         {
             return await _context.Registrations
                 .Where(r => r.CategoryId == categoryId && r.DeletedAt == null)
@@ -71,14 +84,12 @@ namespace PadelManager.Infrastructure.Repositories
                 .CountAsync(r => r.CategoryId == categoryId && r.DeletedAt == null);
         }
 
-        // Esto es clave para validar si un torneo está lleno o no, y también para mostrar el número de parejas registradas en la vista del torneo
         public async Task<int> CountByTournamentIdAsync(Guid tournamentId)
         {
             return await _context.Registrations
                 .CountAsync(r => r.TournamentId == tournamentId && r.DeletedAt == null);
         }
 
-        // Esto es clave para evitar que una pareja se registre dos veces en el mismo torneo
         public async Task<bool> ExistsByCoupleAndTournamentAsync(Guid coupleId, Guid tournamentId)
         {
             return await _context.Registrations

@@ -1,0 +1,25 @@
+﻿using System.Collections.Generic;
+using System.Text;
+using System;
+
+namespace PadelManager.Application.DTOs.Registration
+{
+    public class RegistrationResponseDto
+    {
+        public Guid Id { get; set; }
+
+        public DateOnly RegistrationDate { get; set; }
+
+        public TimeOnly RegistrationTime { get; set; }
+
+        public Guid CoupleId { get; set; }
+        public Guid CategoryId { get; set; }
+        public Guid TournamentId { get; set; }
+
+        // Datos extra calculados (útiles para la interfaz visual)
+        // Se llenan en el Mapper usando Include() en el Repositorio
+        public string? CoupleNames { get; set; } 
+        public string? CategoryName { get; set; }
+        public string? TournamentName { get; set; }
+    }
+}
