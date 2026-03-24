@@ -15,6 +15,5 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         public Task<IEnumerable<Player>> GetPlayerByAgeAsync(Byte age);
 
-        public Task<IEnumerable<Player>> GetPlayerByAvailabilityAsync(string availability);
     }
 }

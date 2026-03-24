@@ -37,7 +37,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Player?> GetPlayerByDniAsync(int dni)
+        public async Task<Player?> GetPlayerByDniAsync(string dni)
         {
             return await _context.Players
                 .Where(p => p.Dni == dni && p.DeletedAt == null)
@@ -51,12 +51,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Player>> GetPlayerByAvailabilityAsync(string availability)
-        {
-            return await _context.Players
-                .Where(p => p.Availability == availability && p.DeletedAt == null)
-                .ToListAsync();
 
-        }
+        
     }
 }

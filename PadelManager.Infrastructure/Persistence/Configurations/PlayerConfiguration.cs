@@ -37,9 +37,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             builder.Property(p => p.Age)
                 .IsRequired(false);
 
-            builder.Property(p => p.Availability)
-                .IsRequired()
-                .HasMaxLength(50);
+
 
 
         }

@@ -52,6 +52,7 @@ builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
 builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
 builder.Services.AddScoped<IMatchRepository,MatchRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<ICoupleAvailabilityRepository, CoupleAvailabilityRepository>();
 
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 #endregion

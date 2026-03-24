@@ -13,5 +13,9 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<IEnumerable<Couple>> GetCouplesByZoneIdAsync(Guid zoneId);
         Task<IEnumerable<Couple>> GetCouplesWithoutZoneAsync();
 
+        Task <Couple?> GetCoupleWithRegistrationDetailsAsync(Guid coupleId);
+
+
+
     }
 }

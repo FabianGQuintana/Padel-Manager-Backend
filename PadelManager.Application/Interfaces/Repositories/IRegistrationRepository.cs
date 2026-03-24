@@ -9,10 +9,10 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         Task<List<Couple>> GetCouplesByCategoryAsync(Guid categoryId);
         Task<IEnumerable<Registration>> GetRegistrationsByDateAsync(DateTime date);
-          
+
         Task<IEnumerable<Registration>> GetRegistrationsByTimeAsync(TimeOnly time);
 
-        Task<Registration?> GetRegistrationByCoupleIdAsync(Guid coupleId);
+        Task<IEnumerable<Registration>> GetRegistrationsByCoupleIdAsync(Guid coupleId);
 
         Task<IEnumerable<Registration>> GetRegistrationsByCategoryId(Guid categoryId);
 
@@ -21,5 +21,7 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<int> CountRegistrationsByCategoryIdAsync(Guid categoryId);
 
         Task<int> CountByTournamentIdAsync(Guid tournamentId);
+        Task<bool> ExistsByCoupleAndTournamentAsync(Guid coupleId, Guid tournamentId);
+        Task<IEnumerable<Registration>> GetRegistrationsByTournamentIdAsync(Guid tournamentId);
     }
 }

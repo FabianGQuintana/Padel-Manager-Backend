@@ -22,7 +22,7 @@ namespace PadelManager.Infrastructure.Persistence
         private IGenericRepository<Couple>? _couples;
         private IGenericRepository<Registration>? _registrations;
         private IGenericRepository<Category>? _categories;
-
+        private IGenericRepository<CoupleAvailability>? _coupleAvailabilities;
 
         public UnitOfWork(PadelManagerDbContext context)
         {
