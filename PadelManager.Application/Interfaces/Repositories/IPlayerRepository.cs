@@ -11,7 +11,7 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         public Task<Player?> GetPlayerByPhoneNumberAsync(string phoneNumber);
         
-        public Task<Player?> GetPlayerByDniAsync(int dni);
+        public Task<Player?> GetPlayerByDniAsync(string dni);
 
         public Task<IEnumerable<Player>> GetPlayerByAgeAsync(Byte age);
 
