@@ -27,14 +27,23 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             builder.HasOne(z => z.Stage)
                 .WithMany(s => s.Zones)
                 .HasForeignKey(z => z.StageId)
-                .OnDelete(DeleteBehavior.Cascade);
-            // Si borras la "Fase de Grupos", se borran sus zonas automáticamente.
+                .OnDelete(DeleteBehavior.Restrict);
+           
 
             // 2. Relación con Statistics (1:N)
             builder.HasMany(z => z.Statistics)
                 .WithOne(s => s.Zone)
                 .HasForeignKey(s => s.ZoneId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasMany(z => z.Couples)
+                .WithMany() // Si tu entidad Couple no tiene ICollection<Zone>, dejalo así.
+                .UsingEntity<Dictionary<string, object>>(
+                "ZoneCouples", // Nombre de la tabla intermedia en la DB
+                j => j.HasOne<Couple>().WithMany().HasForeignKey("CoupleId"),
+                j => j.HasOne<Zone>().WithMany().HasForeignKey("ZoneId")
+                );
+
 
             // 3. Relación con Matches (1:N) - Opcional
             // Ya la configuramos en MatchConfiguration, pero EF la reconoce aquí también.

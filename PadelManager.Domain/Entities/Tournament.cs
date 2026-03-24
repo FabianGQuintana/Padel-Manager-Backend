@@ -18,16 +18,7 @@ namespace PadelManager.Domain.Entities
 
         public required string TournamentType { get; set; } //Para diferenciar si es "Veteranos", "Libres" o "Menores".
 
-        [Range(6, 48, ErrorMessage = "El torneo debe tener entre 6 y 48 parejas.")]
-        public required int MaxTeamsPerCategory { get; set; } = 48;
-
-        // Lógica de Negocio que usaremos en los SERVICES
-        public bool IsFull(int registrationCount) => registrationCount >= MaxTeamsPerCategory;
-
-        public bool CanStart(int registrationCount) => registrationCount >= 6 && registrationCount <= MaxTeamsPerCategory;
-
-        public bool IsIdealForZones(int registrationCount) => registrationCount % 3 == 0;
-
+    
 
         //Relationships FK
         public Guid ManagerId { get; set; }
@@ -37,22 +28,14 @@ namespace PadelManager.Domain.Entities
 
         public ICollection<Manager> Managers { get; set; } = new List<Manager>();
 
-        // Método para validar si se puede cambiar el estado a "InProgress" 
-        public bool CanChangeStatusToInProgress(int registrationCount)
+        public bool CanChangeStatusToInProgress(IEnumerable<Category> categoriesWithCounts)
         {
-            //  Mínimo 6, Máximo el tope configurado
-            if (registrationCount < 6 || registrationCount > MaxTeamsPerCategory)
-            {
-                return false;
-            }
+            // El torneo solo puede empezar si está en borrador
+            if (Status != TournamentStatus.Draft) return false;
 
-            //  No se puede empezar un torneo que ya terminó o ya está en curso
-            if (Status != TournamentStatus.Draft)
-            {
-                return false;
-            }
-
-            return true;
+            // Regla de negocio global: ¿Necesitamos que TODAS las categorías estén listas?
+            // O quizás que al menos una tenga el mínimo para arrancar.
+            return categoriesWithCounts.All(c => c.CanStartCategory(c.Registrations.Count));
         }
 
     }

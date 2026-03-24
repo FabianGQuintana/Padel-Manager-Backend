@@ -41,17 +41,18 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Tournament>> GetTournamentsByMaxTeamsAsync(int maxTeams)
+        {
+            return await _context.Tournaments
+                .Include(t => t.Categories) // Importante cargar las categorías
+                .Where(t => t.Categories.Any(c => c.MaxTeams == maxTeams) && t.DeletedAt == null)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Tournament>> GetTournamentsByTypeAsync(string tournamentType)
         {
             return await _context.Tournaments
                 .Where(t => t.TournamentType == tournamentType && t.DeletedAt == null)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Tournament>> GetTournamentsByMaxTeamsPerCategoryAsync(int maxTeams)
-        {
-            return await _context.Tournaments
-                .Where(t => t.MaxTeamsPerCategory == maxTeams && t.DeletedAt == null)
                 .ToListAsync();
         }
 

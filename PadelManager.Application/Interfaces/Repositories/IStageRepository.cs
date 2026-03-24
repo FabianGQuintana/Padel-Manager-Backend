@@ -9,5 +9,6 @@ namespace PadelManager.Application.Interfaces.Repositories
     {
         Task <IEnumerable<Stage>> GetStagesByCategoryIdAsync(Guid categoryId);
         Task<Stage?> GetStageByCategoryIdAndOrderAsync(Guid categoryId, int order);
+        Task<Stage?> GetGroupStageByCategoryAsync(Guid categoryId);
     }
 }

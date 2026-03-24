@@ -71,5 +71,14 @@ namespace PadelManager.Infrastructure.Repositories
                 .CountAsync(r => r.CategoryId == categoryId && r.DeletedAt == null);
         }
 
+        public async Task<List<Couple>> GetCouplesByCategoryAsync(Guid categoryId)
+        {
+            return await _context.Registrations
+                .Include(r => r.Couple) 
+                .Where(r => r.CategoryId == categoryId && r.DeletedAt == null)
+                .Select(r => r.Couple) 
+                .ToListAsync();
+        }
+
     }
 }

@@ -14,8 +14,6 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         Task<IEnumerable<Tournament>> GetTournamentsByTypeAsync(string tournamentType);
 
-        Task<IEnumerable<Tournament>> GetTournamentsByMaxTeamsPerCategoryAsync(int maxTeams);
-
         Task<IEnumerable<Tournament>> GetTournamentsByManagerIdAsync(Guid managerId);
 
         Task<IEnumerable<Tournament>> GetTournamentsByCategoryIdAsync(Guid categoryId);
@@ -23,6 +21,8 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<IEnumerable<Tournament>> GetTournamentsByManagerEmailAsync(string email);
 
         Task<IEnumerable<Tournament>> GetTournamentsByManagerDniAsync(string dni);
+
+        Task<IEnumerable<Tournament>> GetTournamentsByMaxTeamsAsync(int maxTeams);
 
         Task<IEnumerable<Tournament>> GetTournamentsByManagerNameAsync(string name);
 
