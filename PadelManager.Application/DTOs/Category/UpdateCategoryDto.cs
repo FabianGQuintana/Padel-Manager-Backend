@@ -4,7 +4,10 @@ using System.Text;
 
 namespace PadelManager.Application.DTOs.Category
 {
-    internal class UpdateCategoryDto
+    public class UpdateCategoryDto
     {
+        public string? Name { get; set; }
+        public string? Description { get; set; }
+        public int? MaxTeams { get; set; }
     }
 }

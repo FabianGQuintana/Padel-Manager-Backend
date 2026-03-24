@@ -64,9 +64,13 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // 4. INYECCIÓN DE DEPENDENCIAS - SERVICIOS (Lógica de Negocio)
 // =========================================================================
 // Aquí irán los Services que consumirán los repositorios
-// builder.Services.AddScoped<ITournamentService, TournamentService>();
+builder.Services.AddScoped<ITournamentService, TournamentService>();
 builder.Services.AddScoped<IManagerService, ManagerService>();
 builder.Services.AddScoped<IZoneService, ZoneService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IStatisticService, StatisticService>();
+builder.Services.AddScoped<IStageService, StageService>();
+builder.Services.AddScoped<IPlayerService, PlayerService>();
 
 
 

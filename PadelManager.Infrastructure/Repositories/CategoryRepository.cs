@@ -55,5 +55,38 @@ namespace PadelManager.Infrastructure.Repositories
                 .Where(c => c.Id == categoryId && c.DeletedAt == null)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<Category?> GetCategoryWithRegistrationsAsync(Guid id)
+        {
+            return await _context.Categories
+                .Include(c => c.Registrations)
+                .FirstOrDefaultAsync(c => c.Id == id && c.DeletedAt == null);
+        }
+
+        public async Task<IEnumerable<Category>> GetCategoriesByTournamentWithRegistrationsAsync(Guid tournamentId)
+        {
+            return await _context.Categories
+                .Include(c => c.Registrations)
+                .Where(c => c.TournamentId == tournamentId && c.DeletedAt == null)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Category>> GetCategoriesByMaxTeamsWithRegistrationsAsync(int maxTeams)
+        {
+            return await _context.Categories
+                .Include(c => c.Registrations)
+                .Where(c => c.MaxTeams == maxTeams && c.DeletedAt == null)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Category>> GetCategoriesByNameWithRegistrationsAsync(string name)
+        {
+            return await _context.Categories
+                .Include(c => c.Registrations) //  Cargamos los hijos
+                                               // Usamos .Contains para que la búsqueda sea más flexible (ej: "6ta" traiga "6ta Caballeros")
+                .Where(c => c.Name.Contains(name) && c.DeletedAt == null)
+                .ToListAsync();
+        }
+
     }
 }
