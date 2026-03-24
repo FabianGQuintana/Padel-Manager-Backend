@@ -1,4 +1,5 @@
 ﻿using PadelManager.Application.DTOs.Tournament;
+using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
 using PadelManager.Application.Mappers;
@@ -12,12 +13,16 @@ namespace PadelManager.Application.Services
         private readonly ITournamentRepository _tournamentRepo;
         private readonly IRegistrationRepository _registrationRepo;
         private readonly IManagerRepository _managerRepo;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICategoryRepository _categoryRepo;
 
-        public TournamentService(ITournamentRepository tournamentRepo, IRegistrationRepository registrationRepo, IManagerRepository managerRepo)
+        public TournamentService(ITournamentRepository tournamentRepo, IRegistrationRepository registrationRepo, IManagerRepository managerRepo, IUnitOfWork unitOfWork, ICategoryRepository categoryRepo)
         {
             _tournamentRepo = tournamentRepo;
             _registrationRepo = registrationRepo;
             _managerRepo = managerRepo;
+            _unitOfWork = unitOfWork;
+            _categoryRepo = categoryRepo;
         }
 
         #region CRUD BÁSICO
@@ -27,6 +32,7 @@ namespace PadelManager.Application.Services
             var tournament = dto.ToEntity();
             var result = await _tournamentRepo.AddAsync(tournament);
             // Al ser nuevo, las registraciones son 0 por defecto
+            await _unitOfWork.SaveChangesAsync();
             return result.ToResponseDto(0);
         }
 
@@ -37,14 +43,16 @@ namespace PadelManager.Application.Services
 
             existingTournament.MapToEntity(dto);
             await _tournamentRepo.UpdateAsync(existingTournament);
-            return true;
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SoftDeleteToggleTournamentAsync(Guid id)
         {
-            // El repo devuelve la entidad (Tournament), evaluamos si no es nula para devolver el bool
             var result = await _tournamentRepo.SoftDeleteToggleAsync(id);
-            return result != null;
+            if (result == null) return false;
+
+            
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         #endregion
@@ -53,19 +61,39 @@ namespace PadelManager.Application.Services
 
         public async Task<bool> CloseRegistrationsAndStartAsync(Guid tournamentId)
         {
+            // 1. Buscamos el torneo
             var tournament = await _tournamentRepo.GetByIdAsync(tournamentId);
             if (tournament == null) return false;
 
-            var totalRegistrations = await _registrationRepo.CountByTournamentIdAsync(tournamentId);
+            // 2. Buscamos todas las categorías de este torneo (con sus inscripciones cargadas)
+            // Usamos el método que creamos recién en el CategoryRepository
+            var categories = await _categoryRepo.GetCategoriesByTournamentWithRegistrationsAsync(tournamentId);
 
-            if (!tournament.CanStart(totalRegistrations))
+            if (!categories.Any())
             {
-                throw new InvalidOperationException($"No se cumple el mínimo APA de 6 parejas. Actualmente hay: {totalRegistrations}");
+                throw new InvalidOperationException("No se puede iniciar un torneo sin categorías.");
             }
 
+            // 3. Validamos cada categoría usando la lógica que movimos a la entidad pura
+            foreach (var category in categories)
+            {
+                int totalRegistrations = category.Registrations.Count;
+
+                // Usamos el método 'CanStart' que ya tenés en la entidad Category
+                if (!category.CanStart(totalRegistrations))
+                {
+                    throw new InvalidOperationException(
+                        $"La categoría '{category.Name}' no cumple el mínimo APA de 6 parejas. " +
+                        $"Actual tiene: {totalRegistrations}. Por favor, revisá los cupos antes de iniciar.");
+                }
+            }
+
+            // 4. Si todas pasaron la validación, cambiamos el estado del torneo
+            // Asegurate de si tu propiedad se llama Status o TournamentStatus (según tu Enum)
             tournament.Status = TournamentStatus.InProgress;
-            await _tournamentRepo.UpdateAsync(tournament);
-            return true;
+
+            // 5. Guardamos los cambios mediante la unidad de trabajo
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         #endregion
