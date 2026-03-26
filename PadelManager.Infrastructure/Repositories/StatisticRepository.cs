@@ -11,11 +11,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class StatisticRepository : GenericRepository<Statistic>, IStatisticRepository
     {
-        private readonly PadelManagerDbContext _context;
+        
 
         public StatisticRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context;
+          
         }
 
         public async Task<IEnumerable<Statistic>> GetStatisticsByZoneIdAsync(Guid zoneId)

@@ -25,7 +25,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(2000);
 
-            builder.Property(t => t.Status)
+            builder.Property(t => t.StatusType)
                 .IsRequired();
 
             builder.Property(t => t.TournamentType)

@@ -71,9 +71,10 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();
 builder.Services.AddScoped<IStageService, StageService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
-builder.Services.AddScoped<ICoupleService, CoupleService>();    
-
-
+builder.Services.AddScoped<ICoupleService, CoupleService>();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<ICoupleAvailabilityService, CoupleAvailabilityService>();
+builder.Services.AddScoped<IMatchService, MatchService>();
 #endregion
 
 

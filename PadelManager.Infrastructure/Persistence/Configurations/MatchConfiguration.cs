@@ -21,7 +21,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             builder.HasQueryFilter(m => m.DeletedAt == null);
 
             // Mapeo del Enum como String (más fácil de leer en pgAdmin)
-            builder.Property(m => m.Status)
+            builder.Property(m => m.StatusType)
                    .HasConversion<string>()
                    .HasMaxLength(20)
                    .IsRequired();

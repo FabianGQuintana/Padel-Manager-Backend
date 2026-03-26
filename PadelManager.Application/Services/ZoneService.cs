@@ -72,7 +72,7 @@ namespace PadelManager.Application.Services
                 foreach (var match in zone.Matches)
                 {
                     match.DeletedAt = DateTime.UtcNow;
-                    match.Status = MatchStatus.Canceled;
+                    match.StatusType = MatchStatus.Canceled;
                 }
             }
 

@@ -15,7 +15,7 @@ namespace PadelManager.Application.Mappers
                 PhoneNumber = player.PhoneNumber,
                 Dni = player.Dni,
                 Age = player.Age,
-                Availability = player.Availability
+                Availability = player.Availability ?? string.Empty
             };
         }
 
@@ -26,8 +26,8 @@ namespace PadelManager.Application.Mappers
 
         public static void MapToEntity(this Player existingEntity, UpdatePlayerDto dto)
         {
-            if (dto.Name != null) existingEntity.Name = dto.Name;
-            if (dto.LastName != null) existingEntity.LastName = dto.LastName;
+            if (dto.Name != null) existingEntity.Name = dto.Name.Trim();
+            if (dto.LastName != null) existingEntity.LastName = dto.LastName.Trim();
             if (dto.PhoneNumber != null) existingEntity.PhoneNumber = dto.PhoneNumber;
             if (dto.Dni != null) existingEntity.Dni = dto.Dni;
             if (dto.Availability != null) existingEntity.Availability = dto.Availability;

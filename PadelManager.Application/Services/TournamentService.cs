@@ -89,8 +89,8 @@ namespace PadelManager.Application.Services
             }
 
             // 4. Si todas pasaron la validación, cambiamos el estado del torneo
-            // Asegurate de si tu propiedad se llama Status o TournamentStatus (según tu Enum)
-            tournament.Status = TournamentStatus.InProgress;
+            // Asegurate de si tu propiedad se llama StatusType o TournamentStatus (según tu Enum)
+            tournament.StatusType = TournamentStatus.InProgress;
 
             // 5. Guardamos los cambios mediante la unidad de trabajo
             return await _unitOfWork.SaveChangesAsync() > 0;

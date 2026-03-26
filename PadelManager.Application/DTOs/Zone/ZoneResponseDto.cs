@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using PadelManager.Application.DTOs.Match;
+using PadelManager.Application.DTOs.Couple;
+using PadelManager.Application.DTOs.Statistic;
 
 namespace PadelManager.Application.DTOs.Zone
 {

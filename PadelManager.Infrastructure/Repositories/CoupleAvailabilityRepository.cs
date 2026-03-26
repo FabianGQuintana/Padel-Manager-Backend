@@ -7,11 +7,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class CoupleAvailabilityRepository : GenericRepository<CoupleAvailability>, ICoupleAvailabilityRepository
     {
-        private readonly PadelManagerDbContext _context;
+       
 
         public CoupleAvailabilityRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context;
+           
         }
 
         public async Task<IEnumerable<CoupleAvailability>> GetAvailabilitiesByCoupleIdAsync(Guid coupleId)

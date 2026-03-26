@@ -85,7 +85,7 @@ namespace PadelManager.Application.Services
 
         public async Task<IEnumerable<PlayerResponseDto>> GetPlayersByAvailabilityAsync(string availability)
         {
-            var players = await _playerRepo.GetPlayerByAvailabilityAsync(availability);
+            var players = await _playerRepo.GetPlayersByAvailabilityAsync(availability);
 
             return players.ToResponseDto();
         }

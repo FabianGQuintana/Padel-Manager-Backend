@@ -19,7 +19,7 @@ namespace PadelManager.Application.Mappers
                 Name = tournament.Name,
                 StartDate = tournament.StartDate,
                 Regulations = tournament.Regulations,
-                Status = tournament.Status,
+                Status = tournament.StatusType,
                 TournamentType = tournament.TournamentType,
                 ManagerId = tournament.ManagerId,
 
@@ -61,7 +61,7 @@ namespace PadelManager.Application.Mappers
                 StartDate = dto.StartDate,
                 TournamentType = dto.TournamentType,
                 ManagerId = dto.ManagerId,
-                Status = TournamentStatus.Draft
+                StatusType = TournamentStatus.Draft
                 
                // CreatedBy = Dejaremos luego para otro servicio en especifico estas tareas de AUDITORIAS
             };

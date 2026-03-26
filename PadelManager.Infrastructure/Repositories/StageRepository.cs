@@ -11,11 +11,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class StageRepository : GenericRepository<Stage>, IStageRepository
     {
-        private readonly PadelManagerDbContext _context;
+        
 
         public StageRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context;
+            
         }
 
         public async Task<IEnumerable<Stage>> GetStagesByCategoryIdAsync(Guid categoryId)
@@ -42,6 +42,15 @@ namespace PadelManager.Infrastructure.Repositories
                 .FirstOrDefaultAsync(s => s.CategoryId == categoryId
                                      && s.Type == StageType.GroupPhase 
                                      && s.DeletedAt == null);
+        }
+
+        public async Task<IEnumerable<Stage>> GetStagesByTypeAsync(StageType type)
+        {
+            return await _context.Stages
+                .AsNoTracking() //  Optimizamos memoria para lectura
+                .Include(s => s.Category) // Opcional: Incluimos la categoría por si necesitás el nombre
+                .Where(s => s.Type == type && s.DeletedAt == null)
+                .ToListAsync();
         }
 
     }

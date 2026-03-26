@@ -63,7 +63,7 @@ namespace PadelManager.Application.Services
             match.Set3_coupleB = dto.Set3_coupleB;
 
             // Regla: el partido finaliza automáticamente
-            match.Status = MatchStatus.Completed;
+            match.StatusType = MatchStatus.Completed;
 
             await _matchRepo.UpdateAsync(match);
             return true;

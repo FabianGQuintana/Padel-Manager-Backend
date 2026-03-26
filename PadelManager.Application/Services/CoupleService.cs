@@ -4,6 +4,7 @@ using PadelManager.Application.Interfaces.Services;
 using PadelManager.Application.Mappers;
 using PadelManager.Domain.Entities;
 using PadelManager.Domain.Enum;
+using PadelManager.Application.DTOs.CoupleAvailability;
 
 namespace PadelManager.Application.Services
 {
@@ -11,7 +12,7 @@ namespace PadelManager.Application.Services
     {
         private readonly ICoupleRepository _coupleRepository;
         private readonly IPlayerRepository _playerRepository;
-
+        
         public CoupleService(
             ICoupleRepository coupleRepository,
             IPlayerRepository playerRepository)
@@ -214,6 +215,10 @@ namespace PadelManager.Application.Services
 
             foreach (var availability in availabilities)
             {
+                //  Validamos que no sean nulos antes de comparar
+                if (!availability.From.HasValue || !availability.To.HasValue)
+                    throw new Exception("Las horas de inicio y fin son obligatorias.");
+
                 if (availability.From >= availability.To)
                     throw new Exception("La hora de inicio debe ser menor que la hora de fin.");
             }
@@ -222,8 +227,8 @@ namespace PadelManager.Application.Services
                 availabilities.Select(a => new AvailabilityCheckDto
                 {
                     Day = a.Day,
-                    From = a.From,
-                    To = a.To
+                    From = a.From.Value,
+                    To = a.To.Value
                 }).ToList());
         }
 
@@ -254,14 +259,14 @@ namespace PadelManager.Application.Services
             if (tournament == null)
                 return false;
 
-            return tournament.Status == TournamentStatus.InProgress ||
+            return tournament.StatusType == TournamentStatus.InProgress ||
                    DateTime.UtcNow >= tournament.StartDate;
         }
 
         // DTO interno auxiliar para validación
         private class AvailabilityCheckDto
         {
-            public DayOfWeek Day { get; set; }
+            public DayOfWeek? Day { get; set; }
             public TimeOnly From { get; set; }
             public TimeOnly To { get; set; }
         }

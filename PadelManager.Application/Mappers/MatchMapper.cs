@@ -20,7 +20,7 @@ namespace PadelManager.Application.Mappers
                 WinnerCoupleId = match.WinnerCoupleId,
                 LoserCoupleId = match.LoserCoupleId,
                 DateTime = match.DateTime,
-                Status = match.Status,
+                Status = match.StatusType,
                 LocationName = match.LocationName,
                 CourtName = match.CourtName,
 
@@ -61,7 +61,7 @@ namespace PadelManager.Application.Mappers
             if (dto.LoserCoupleId.HasValue) existingEntity.LoserCoupleId = dto.LoserCoupleId.Value;
 
             if (dto.DateTime.HasValue) existingEntity.DateTime = dto.DateTime.Value;
-            if (dto.Status.HasValue) existingEntity.Status = dto.Status.Value;
+            if (dto.Status.HasValue) existingEntity.StatusType = dto.Status.Value;
 
             // Mapeo de los resultados de los sets
             if (dto.Set1_coupleA.HasValue) existingEntity.Set1_coupleA = dto.Set1_coupleA.Value;
@@ -90,7 +90,7 @@ namespace PadelManager.Application.Mappers
                 CoupleId2 = dto.CoupleId2,
 
                 // Valores iniciales por defecto que la DB necesita al crear el partido
-                Status = MatchStatus.Pending,
+                StatusType = MatchStatus.Pending,
                 WinnerCoupleId = null,
                 LoserCoupleId = null,
                 Set1_coupleA = 0,

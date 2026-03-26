@@ -9,12 +9,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class ManagerRepository : GenericRepository<Manager> , IManagerRepository
     {
-        private readonly PadelManagerDbContext _context;
+        
 
         public ManagerRepository(PadelManagerDbContext context) : base(context)
         {
-           //Aca ya no hace falta inicializar el _context porque ya lo hace el constructor de la clase base (GenericRepository) pero lo dejo por claridad. 
-            _context = context;
+         
         }
 
         //Implementación de los métodos específicos para el repositorio de Managers

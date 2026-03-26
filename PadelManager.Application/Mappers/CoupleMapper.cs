@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using PadelManager.Application.DTOs.Couple;
 using PadelManager.Domain.Entities;
+using PadelManager.Application.DTOs.CoupleAvailability;
 
 namespace PadelManager.Application.Mappers
 {
@@ -80,9 +81,9 @@ namespace PadelManager.Application.Mappers
                 couple.Availabilities = dto.Availabilities
                     .Select(a => new CoupleAvailability
                     {
-                        Day = a.Day,
-                        From = a.From,
-                        To = a.To,
+                        Day = (DayOfWeek)a.Day,
+                        From = a.From.Value,
+                        To = a.To.Value,
                         CoupleId = couple.Id
                     })
                     .ToList();

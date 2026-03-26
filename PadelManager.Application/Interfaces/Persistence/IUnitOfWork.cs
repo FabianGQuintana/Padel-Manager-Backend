@@ -17,7 +17,7 @@ namespace PadelManager.Application.Interfaces.Persistence
         IGenericRepository<Statistic> Statistics { get; }
         IGenericRepository<Match> Matches { get; }
         IGenericRepository<Zone> Zones { get; }
-
+        IGenericRepository<CoupleAvailability> CoupleAvailabilities { get; }
 
 
 

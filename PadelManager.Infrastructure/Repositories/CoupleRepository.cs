@@ -10,11 +10,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class CoupleRepository : GenericRepository<Couple>, ICoupleRepository
     {
-        private readonly PadelManagerDbContext _context;
+       
 
         public CoupleRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context;
+           
         }
 
         public async Task<Couple?> GetCoupleByNicknameAsync(string nickname)

@@ -180,7 +180,7 @@ namespace PadelManager.Application.Services
             if (tournament == null)
                 return false;
 
-            return tournament.Status == TournamentStatus.InProgress ||
+            return tournament.StatusType == TournamentStatus.InProgress ||
                    DateTime.UtcNow >= tournament.StartDate;
         }
     }

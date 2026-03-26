@@ -35,22 +35,32 @@ namespace PadelManager.Infrastructure.Persistence
         // Propiedad para acceder al repositorio de Matches
         public IGenericRepository<Match> Matches => _matches ??= new GenericRepository<Match>(_context);
 
+        // Propiedad para acceder al repositorio de Managers
         public IGenericRepository<Manager> Managers => _managers ??= new GenericRepository<Manager>(_context);
 
+        // Propiedad para acceder al repositorio de Tournaments
         public IGenericRepository<Tournament> Tournaments => _tournaments ??= new GenericRepository<Tournament>(_context);
 
+        // Propiedad para acceder al repositorio de Couples
         public IGenericRepository<Couple> Couples => _couples ??= new GenericRepository<Couple>(_context);
 
+        // Propiedad para acceder al repositorio de Statistics
         public IGenericRepository<Statistic> Statistics => _statistics ??= new GenericRepository<Statistic>(_context);
 
+        // Propiedad para acceder al repositorio de Stages
         public IGenericRepository<Stage> Stages => _stages ??= new GenericRepository<Stage>(_context);
 
+        // Propiedad para acceder al repositorio de Zones
         public IGenericRepository<Zone> Zones => _zones ??= new GenericRepository<Zone>(_context);
 
+        // Propiedad para acceder al repositorio de Registrations
         public IGenericRepository<Registration> Registrations => _registrations ??= new GenericRepository<Registration>(_context);
 
+        // Propiedad para acceder al repositorio de Categories
         public IGenericRepository<Category> Categories => _categories ??= new GenericRepository<Category>(_context);
 
+        // Propiedad para acceder al repositorio de CoupleAvailabilities
+        public IGenericRepository<CoupleAvailability> CoupleAvailabilities => _coupleAvailabilities ??= new GenericRepository<CoupleAvailability>(_context);
         // Guarda todos los cambios pendientes en la DB
         public async Task<int> SaveChangesAsync()
         {

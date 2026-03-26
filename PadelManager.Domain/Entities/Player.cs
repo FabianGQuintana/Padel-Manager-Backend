@@ -17,6 +17,6 @@ namespace PadelManager.Domain.Entities
 
         public Byte? Age { get; set; }
 
-
+        public string? Availability { get; set; }
     }
 }

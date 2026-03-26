@@ -13,18 +13,17 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class MatchRepository : GenericRepository<Match>, IMatchRepository
     {
-        private readonly PadelManagerDbContext _context;
+       
 
         public MatchRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context;
+           
         }
 
         // ========================================================================
         // Implementación de métodos específicos para el repositorio de Partidos
         // ========================================================================
 
-        #region Búsquedas por propiedades directas
 
         public async Task<IEnumerable<Match>> GetMatchesByWinnerAsync(Guid coupleId)
         {
@@ -41,27 +40,7 @@ namespace PadelManager.Infrastructure.Repositories
                             && m.DeletedAt == null)
                 .ToListAsync();
         }
-        public async Task<IEnumerable<Match>> GetMatchesByDateAsync(DateTime date)
-        {
-            // Usamos .Date para comparar solo el día y no la hora exacta
-            return await _context.Matches
-                .Where(m => m.DateTime.Date == date.Date && m.DeletedAt == null)
-                .ToListAsync();
-        }
 
-        public async Task<IEnumerable<Match>> GetMatchesByStatusAsync(MatchStatus status)
-        {
-            return await _context.Matches
-                .Where(m => m.Status == status && m.DeletedAt == null)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Match>> GetMatchesByLocationAsync(string locationName)
-        {
-            return await _context.Matches
-                .Where(m => m.LocationName == locationName && m.DeletedAt == null)
-                .ToListAsync();
-        }
 
         public async Task<IEnumerable<Match>> GetMatchesByStageIdAsync(Guid stageId)
         {
@@ -69,14 +48,6 @@ namespace PadelManager.Infrastructure.Repositories
                 .Where(m => m.StageId == stageId && m.DeletedAt == null)
                 .ToListAsync();
         }
-
-        public async Task<IEnumerable<Match>> GetMatchesByCourtNameAsync(string courtName)
-        {
-            return await _context.Matches
-                .Where(m => m.CourtName == courtName && m.DeletedAt == null)
-                .ToListAsync();
-        }
-
 
         public async Task<IEnumerable<Match>> GetMatchesByZoneIdAsync(Guid zoneId)
         {
@@ -103,6 +74,46 @@ namespace PadelManager.Infrastructure.Repositories
                 .FirstOrDefaultAsync(m => m.Id == matchId && m.DeletedAt == null);
         }
 
-       
+        public async Task<IEnumerable<Match>> GetMatchesByDateAsync(DateTime date)
+        {
+            // Usamos .Date para comparar solo el día, ignorando la hora exacta del partido
+            return await _context.Matches
+                .AsNoTracking()
+                .Where(m => m.DateTime.Date == date.Date && m.DeletedAt == null)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Match>> GetMatchesByLocationAsync(string location)
+        {
+            return await _context.Matches
+                .AsNoTracking()
+                .Where(m => m.LocationName == location && m.DeletedAt == null)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Match>> GetMatchesByCourtAsync(string courtName)
+        {
+            // Ajustamos el nombre para que coincida exactamente con tu interfaz
+            return await _context.Matches
+                .AsNoTracking()
+                .Where(m => m.CourtName == courtName && m.DeletedAt == null)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Match>> GetMatchesByStatusAsync(MatchStatus status)
+        {
+            return await _context.Matches
+                .AsNoTracking()
+                .Where(m => m.StatusType == status && m.DeletedAt == null)
+                .ToListAsync();
+        }
+
+        public async Task<int> CountByStageIdAsync(Guid stageId)
+        {
+            // Solo contamos los partidos que no han sido eliminados (Soft Delete)
+            return await _context.Matches
+                .CountAsync(m => m.StageId == stageId && m.DeletedAt == null);
+        }
+
     }
 }

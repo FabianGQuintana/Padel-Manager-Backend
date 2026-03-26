@@ -8,11 +8,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class PlayerRepository : GenericRepository<Player>, IPlayerRepository
     {
-        private readonly PadelManagerDbContext _context;
+   
 
         public PlayerRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context;
+            
         }
 
         // Implementación de métodos específicos para Player
@@ -42,6 +42,16 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Players
                 .Where(p => p.Dni == dni && p.DeletedAt == null)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Player>> GetPlayersByAvailabilityAsync(string availability)
+        {
+            return await _context.Players
+                .AsNoTracking()
+                .Where(p => p.Availability != null &&
+                            p.Availability.Contains(availability) &&
+                            p.DeletedAt == null)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Player>> GetPlayerByAgeAsync(Byte age)

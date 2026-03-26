@@ -11,11 +11,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class ZoneRepository : GenericRepository<Zone>, IZoneRepository
     {
-        private readonly PadelManagerDbContext _context;
+        
 
         public ZoneRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context; // Mantenemos la asignación local por claridad
+            
         }
 
         // ========================================================================
@@ -60,6 +60,14 @@ namespace PadelManager.Infrastructure.Repositories
                 .Where(z => z.Couples.Any(c => c.Id == coupleId) && z.DeletedAt == null)
                 .ToListAsync();
         }
+
+        public async Task<int> CountByStageIdAsync(Guid stageId)
+        {
+            // Realiza un SELECT COUNT(*) directamente en la base de datos
+            return await _context.Zones
+                .CountAsync(z => z.StageId == stageId && z.DeletedAt == null);
+        }
+
 
         #endregion
     }

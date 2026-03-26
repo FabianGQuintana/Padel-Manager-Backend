@@ -29,4 +29,4 @@ namespace PadelManager.Application.DTOs.Match
         public Guid CoupleId { get; set; }
         public Guid CoupleId2 { get; set; }
     }
-}}
+}

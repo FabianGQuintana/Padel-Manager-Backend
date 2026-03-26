@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using PadelManager.Application.DTOs.CoupleAvailability;
 
 namespace PadelManager.Application.DTOs.Couple
 {

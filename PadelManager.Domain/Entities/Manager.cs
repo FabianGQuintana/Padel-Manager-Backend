@@ -19,4 +19,4 @@ namespace PadelManager.Domain.Entities
         public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
     }
 }
-}
+

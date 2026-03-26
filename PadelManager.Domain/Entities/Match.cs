@@ -10,7 +10,7 @@ namespace PadelManager.Domain.Entities
         public Guid? WinnerCoupleId { get; set; }
         public Guid? LoserCoupleId { get; set; }
         public DateTime DateTime { get; set; }
-        public MatchStatus Status { get; set; } = MatchStatus.Pending;
+        public MatchStatus StatusType { get; set; } = MatchStatus.Pending;
         public string LocationName { get; set; } = string.Empty;
         public string CourtName { get; set; } = string.Empty;
 

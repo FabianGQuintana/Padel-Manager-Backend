@@ -9,11 +9,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class TournamentRepository : GenericRepository<Tournament> , ITournamentRepository
     {
-        private readonly PadelManagerDbContext _context;
+        
 
         public TournamentRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context; //No hace falta, ya recibe el contexto en el constructor de la clase base, pero lo dejo por claridad.
+
         }
 
         //Implementación de los métodos específicos para el repositorio de torneos
@@ -37,7 +37,7 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Tournament>> GetTournamentsByStatusAsync(TournamentStatus status)
         {
             return await _context.Tournaments
-                .Where(t => t.Status == status && t.DeletedAt == null)
+                .Where(t => t.StatusType == status && t.DeletedAt == null)
                 .ToListAsync();
         }
 
