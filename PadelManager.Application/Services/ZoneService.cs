@@ -2,9 +2,14 @@
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
+using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Mappers;
 using PadelManager.Domain.Entities;
 using PadelManager.Domain.Enum;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PadelManager.Application.Services
 {
@@ -14,27 +19,33 @@ namespace PadelManager.Application.Services
         private readonly IRegistrationRepository _registrationRepo;
         private readonly IStageRepository _stageRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUser _currentUser;
 
-        public ZoneService(IZoneRepository zoneRepo,
+        public ZoneService(
+            IZoneRepository zoneRepo,
             IRegistrationRepository registrationRepo,
             IStageRepository stageRepo,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ICurrentUser currentUser)
         {
             _zoneRepo = zoneRepo;
             _unitOfWork = unitOfWork;
             _registrationRepo = registrationRepo;
             _stageRepo = stageRepo;
+            _currentUser = currentUser;
         }
 
         public async Task<ZoneResponseDto> AddZoneAsync(CreateZoneDto dto)
         {
-            // 1. Transformamos DTO a Entidad
             var zone = dto.ToEntity();
+            var user = _currentUser.UserName ?? "System";
 
-            // 2. Guardamos (La auditoría ICurrentUser se dispara sola en el SaveChanges)
+            zone.CreatedBy = user;
+            zone.LastModifiedBy = user;
+
             var result = await _zoneRepo.AddAsync(zone);
+            await _unitOfWork.SaveChangesAsync();
 
-            // 3. Devolvemos el DTO de respuesta
             return result.ToResponseDto();
         }
 
@@ -43,45 +54,48 @@ namespace PadelManager.Application.Services
             var existingZone = await _zoneRepo.GetByIdAsync(id);
             if (existingZone == null) return false;
 
-          
             existingZone.MapToEntity(dto);
 
+            existingZone.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingZone.LastModifiedAt = DateTime.UtcNow;
+
             await _zoneRepo.UpdateAsync(existingZone);
-            return true;
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SoftDeleteZoneAsync(Guid id)
         {
-            // 1. Buscamos la zona incluyendo los hijos que queremos "apagar"
             var zone = await _zoneRepo.GetZoneWithDetailsByIdAsync(id);
             if (zone == null) return false;
 
-            // 2. Usamos la lógica de Toggle pero extendida
+            var user = _currentUser.UserName ?? "System";
+            zone.LastModifiedBy = user;
+            zone.LastModifiedAt = DateTime.UtcNow;
+
             if (zone.DeletedAt.HasValue)
             {
                 zone.DeletedAt = null;
                 zone.Status = "Active";
-                // Opcional: ¿Restaurar también los partidos? Depende de tu regla de negocio
             }
             else
             {
                 zone.DeletedAt = DateTime.UtcNow;
                 zone.Status = "Inactive";
 
-                // 🚀 CASCADA MANUAL: Apagamos los partidos de esta zona
                 foreach (var match in zone.Matches)
                 {
                     match.DeletedAt = DateTime.UtcNow;
                     match.StatusType = MatchStatus.Canceled;
+                    match.LastModifiedBy = user;
+                    match.LastModifiedAt = DateTime.UtcNow;
                 }
             }
 
-            // 3. Guardamos todo mediante el Unit of Work
             await _zoneRepo.UpdateAsync(zone);
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
-        public  IEnumerable<int> GetZoneDistribution(int totalCouples)
+        public IEnumerable<int> GetZoneDistribution(int totalCouples)
         {
             if (totalCouples < 6)
                 throw new InvalidOperationException("Mínimo 6 parejas para armar zonas.");
@@ -100,7 +114,7 @@ namespace PadelManager.Application.Services
                 for (int i = 0; i < zonesOfThree; i++) zoneSizes.Add(3);
                 zoneSizes.Add(4);
             }
-            else // remainder == 2
+            else
             {
                 int zonesOfThree = (totalCouples - 8) / 3;
                 for (int i = 0; i < zonesOfThree; i++) zoneSizes.Add(3);
@@ -108,11 +122,10 @@ namespace PadelManager.Application.Services
                 zoneSizes.Add(4);
             }
 
-            return zoneSizes; // C# lo convierte automáticamente a IEnumerable
+            return zoneSizes;
         }
 
         public bool IsRegistrationCountIdeal(int count) => count % 3 == 0;
-
 
         public async Task<bool> GenerateZonesWithDrawAsync(Guid categoryId)
         {
@@ -124,9 +137,8 @@ namespace PadelManager.Application.Services
 
             var random = new Random();
             var shuffledCouples = couples.OrderBy(c => random.Next()).ToList();
-
-            // 🎯 Aquí ya no da error el foreach porque el método no es Task
             var distribution = GetZoneDistribution(shuffledCouples.Count);
+            var user = _currentUser.UserName ?? "System";
 
             int currentCoupleIndex = 0;
             int zoneNumber = 1;
@@ -139,7 +151,11 @@ namespace PadelManager.Application.Services
                     Name = $"Zona {zoneNumber++}",
                     StageId = groupStage.Id,
                     Stage = null!,
-                    Couples = new List<Couple>()
+                    Couples = new List<Couple>(),
+                    CreatedBy = user,
+                    LastModifiedBy = user,
+                    CreatedAt = DateTime.UtcNow,
+                    LastModifiedAt = DateTime.UtcNow
                 };
 
                 for (int i = 0; i < size; i++)
@@ -156,14 +172,14 @@ namespace PadelManager.Application.Services
 
         public async Task<ZoneResponseDto?> GetZoneByIdAsync(Guid id)
         {
-            var zoneId = await _zoneRepo.GetByIdAsync(id);
-            return zoneId?.ToResponseDto();
+            var zone = await _zoneRepo.GetByIdAsync(id);
+            return zone?.ToResponseDto();
         }
 
         public async Task<IEnumerable<ZoneResponseDto>> GetZonesByNameAsync(string name)
         {
-           var zonesName = await _zoneRepo.GetZonesByNameAsync(name);
-            return zonesName.ToResponseDto();
+            var zones = await _zoneRepo.GetZonesByNameAsync(name);
+            return zones.ToResponseDto();
         }
 
         public async Task<IEnumerable<ZoneResponseDto>> GetAllZonesAsync()
@@ -174,9 +190,7 @@ namespace PadelManager.Application.Services
 
         public async Task<ZoneResponseDto?> GetZoneWithDetailsAsync(Guid id)
         {
-          
             var zoneWithDetails = await _zoneRepo.GetZoneWithDetailsByIdAsync(id);
-
             return zoneWithDetails?.ToResponseDto();
         }
     }

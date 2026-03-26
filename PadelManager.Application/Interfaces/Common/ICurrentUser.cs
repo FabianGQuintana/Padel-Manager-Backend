@@ -8,6 +8,7 @@ namespace PadelManager.Application.Interfaces.Common
     {
         string? UserId { get; }      // El ID del usuario (sub en el JWT)
         string? UserName { get; }    // El nombre/email del usuario
+        Guid Id { get; }
         bool IsAuthenticated { get; }
     }
 }

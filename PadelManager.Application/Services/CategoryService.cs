@@ -2,7 +2,9 @@
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
+using PadelManager.Application.Interfaces.Common; // Agregado para ICurrentUser
 using PadelManager.Application.Mappers;
+using System;
 
 namespace PadelManager.Application.Services
 {
@@ -10,11 +12,16 @@ namespace PadelManager.Application.Services
     {
         private readonly ICategoryRepository _categoryRepo;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICurrentUser _currentUser; //  Agregado
 
-        public CategoryService(ICategoryRepository categoryRepo, IUnitOfWork unitOfWork)
+        public CategoryService(
+            ICategoryRepository categoryRepo,
+            IUnitOfWork unitOfWork,
+            ICurrentUser currentUser) //  Inyectado
         {
             _categoryRepo = categoryRepo;
             _unitOfWork = unitOfWork;
+            _currentUser = currentUser;
         }
 
         // ==========================================
@@ -23,14 +30,16 @@ namespace PadelManager.Application.Services
 
         public async Task<CategoryResponseDto> AddNewCategoryAsync(CreateCategoryDto dto)
         {
-            // 1. Usamos el Mapper para convertir DTO -> Entidad
             var category = dto.ToEntity();
 
-            // 2. Persistencia
+            // AUDITORÍA
+            var user = _currentUser.UserName ?? "System";
+            category.CreatedBy = user;
+            category.LastModifiedBy = user;
+
             await _categoryRepo.AddAsync(category);
             await _unitOfWork.SaveChangesAsync();
 
-            // 3. Devolvemos el ResponseDto
             return category.ToResponseDto();
         }
 
@@ -39,18 +48,28 @@ namespace PadelManager.Application.Services
             var existingCategory = await _categoryRepo.GetByIdAsync(id);
             if (existingCategory == null) return false;
 
-            // 1. Mapeamos los cambios del DTO a la entidad existente
             existingCategory.MapToEntity(dto);
 
-            // 2. Guardamos (La auditoría se encarga del LastModifiedAt)
+            // AUDITORÍA
+            existingCategory.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingCategory.LastModifiedAt = DateTime.UtcNow;
+
+            // PERSISTENCIA (UoW ya estaba, ahora confirmamos el impacto)
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SoftDeleteToggleCategoryAsync(Guid id)
         {
-            // Usamos tu método genérico del repositorio
-            var result = await _categoryRepo.SoftDeleteToggleAsync(id);
-            if (result == null) return false;
+            // Buscamos la categoría primero para poder auditar quién hace el toggle
+            var category = await _categoryRepo.GetByIdAsync(id);
+            if (category == null) return false;
+
+            //  AUDITORÍA
+            category.LastModifiedBy = _currentUser.UserName ?? "System";
+            category.LastModifiedAt = DateTime.UtcNow;
+
+            // Ejecutamos el toggle
+            await _categoryRepo.SoftDeleteToggleAsync(id);
 
             return await _unitOfWork.SaveChangesAsync() > 0;
         }

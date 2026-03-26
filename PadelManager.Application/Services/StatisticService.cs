@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using PadelManager.Application.DTOs.Statistic;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
+using PadelManager.Application.Interfaces.Common;
+using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Mappers;
 using PadelManager.Domain.Entities;
 
@@ -12,10 +14,17 @@ namespace PadelManager.Application.Services
     public class StatisticService : IStatisticService
     {
         private readonly IStatisticRepository _statisticRepo;
+        private readonly ICurrentUser _currentUser;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public StatisticService(IStatisticRepository statisticRepo)
+        public StatisticService(
+            IStatisticRepository statisticRepo,
+            ICurrentUser currentUser,
+            IUnitOfWork unitOfWork)
         {
             _statisticRepo = statisticRepo;
+            _currentUser = currentUser;
+            _unitOfWork = unitOfWork;
         }
 
         #region CRUD BÁSICO
@@ -23,7 +32,13 @@ namespace PadelManager.Application.Services
         public async Task<StatisticResponseDto> AddNewStatisticAsync(CreateStatisticDto dto)
         {
             var statistic = dto.ToEntity();
+            var user = _currentUser.UserName ?? "System";
+
+            statistic.CreatedBy = user;
+            statistic.LastModifiedBy = user;
+
             var result = await _statisticRepo.AddAsync(statistic);
+            await _unitOfWork.SaveChangesAsync();
 
             return result.ToResponseDto();
         }
@@ -34,14 +49,24 @@ namespace PadelManager.Application.Services
             if (existingStatistic == null) return false;
 
             existingStatistic.MapToEntity(dto);
+
+            existingStatistic.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingStatistic.LastModifiedAt = DateTime.UtcNow;
+
             await _statisticRepo.UpdateAsync(existingStatistic);
-            return true;
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SoftDeleteToggleStatisticAsync(Guid id)
         {
-            var result = await _statisticRepo.SoftDeleteToggleAsync(id);
-            return result != null;
+            var existingStatistic = await _statisticRepo.GetByIdAsync(id);
+            if (existingStatistic == null) return false;
+
+            existingStatistic.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingStatistic.LastModifiedAt = DateTime.UtcNow;
+
+            await _statisticRepo.SoftDeleteToggleAsync(id);
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         #endregion
@@ -51,9 +76,7 @@ namespace PadelManager.Application.Services
         public async Task<StatisticResponseDto?> GetStatisticByIdAsync(Guid id)
         {
             var statistic = await _statisticRepo.GetByIdAsync(id);
-            if (statistic == null) return null;
-
-            return statistic.ToResponseDto();
+            return statistic?.ToResponseDto();
         }
 
         public async Task<IEnumerable<StatisticResponseDto>> GetStatisticsByZoneIdAsync(Guid zoneId)

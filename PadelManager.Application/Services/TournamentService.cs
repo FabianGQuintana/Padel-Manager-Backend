@@ -2,9 +2,14 @@
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
+using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Mappers;
 using PadelManager.Domain.Entities;
 using PadelManager.Domain.Enum;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PadelManager.Application.Services
 {
@@ -15,14 +20,22 @@ namespace PadelManager.Application.Services
         private readonly IManagerRepository _managerRepo;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICategoryRepository _categoryRepo;
+        private readonly ICurrentUser _currentUser;
 
-        public TournamentService(ITournamentRepository tournamentRepo, IRegistrationRepository registrationRepo, IManagerRepository managerRepo, IUnitOfWork unitOfWork, ICategoryRepository categoryRepo)
+        public TournamentService(
+            ITournamentRepository tournamentRepo,
+            IRegistrationRepository registrationRepo,
+            IManagerRepository managerRepo,
+            IUnitOfWork unitOfWork,
+            ICategoryRepository categoryRepo,
+            ICurrentUser currentUser)
         {
             _tournamentRepo = tournamentRepo;
             _registrationRepo = registrationRepo;
             _managerRepo = managerRepo;
             _unitOfWork = unitOfWork;
             _categoryRepo = categoryRepo;
+            _currentUser = currentUser;
         }
 
         #region CRUD BÁSICO
@@ -30,9 +43,14 @@ namespace PadelManager.Application.Services
         public async Task<TournamentResponseDto> AddNewTournamentAsync(CreateTournamentDto dto)
         {
             var tournament = dto.ToEntity();
+            var user = _currentUser.UserName ?? "System";
+
+            tournament.CreatedBy = user;
+            tournament.LastModifiedBy = user;
+
             var result = await _tournamentRepo.AddAsync(tournament);
-            // Al ser nuevo, las registraciones son 0 por defecto
             await _unitOfWork.SaveChangesAsync();
+
             return result.ToResponseDto(0);
         }
 
@@ -42,16 +60,23 @@ namespace PadelManager.Application.Services
             if (existingTournament == null) return false;
 
             existingTournament.MapToEntity(dto);
+
+            existingTournament.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingTournament.LastModifiedAt = DateTime.UtcNow;
+
             await _tournamentRepo.UpdateAsync(existingTournament);
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SoftDeleteToggleTournamentAsync(Guid id)
         {
-            var result = await _tournamentRepo.SoftDeleteToggleAsync(id);
-            if (result == null) return false;
+            var tournament = await _tournamentRepo.GetByIdAsync(id);
+            if (tournament == null) return false;
 
-            
+            tournament.LastModifiedBy = _currentUser.UserName ?? "System";
+            tournament.LastModifiedAt = DateTime.UtcNow;
+
+            await _tournamentRepo.SoftDeleteToggleAsync(id);
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
@@ -61,12 +86,9 @@ namespace PadelManager.Application.Services
 
         public async Task<bool> CloseRegistrationsAndStartAsync(Guid tournamentId)
         {
-            // 1. Buscamos el torneo
             var tournament = await _tournamentRepo.GetByIdAsync(tournamentId);
             if (tournament == null) return false;
 
-            // 2. Buscamos todas las categorías de este torneo (con sus inscripciones cargadas)
-            // Usamos el método que creamos recién en el CategoryRepository
             var categories = await _categoryRepo.GetCategoriesByTournamentWithRegistrationsAsync(tournamentId);
 
             if (!categories.Any())
@@ -74,12 +96,10 @@ namespace PadelManager.Application.Services
                 throw new InvalidOperationException("No se puede iniciar un torneo sin categorías.");
             }
 
-            // 3. Validamos cada categoría usando la lógica que movimos a la entidad pura
             foreach (var category in categories)
             {
                 int totalRegistrations = category.Registrations.Count;
 
-                // Usamos el método 'CanStart' que ya tenés en la entidad Category
                 if (!category.CanStart(totalRegistrations))
                 {
                     throw new InvalidOperationException(
@@ -88,11 +108,10 @@ namespace PadelManager.Application.Services
                 }
             }
 
-            // 4. Si todas pasaron la validación, cambiamos el estado del torneo
-            // Asegurate de si tu propiedad se llama StatusType o TournamentStatus (según tu Enum)
             tournament.StatusType = TournamentStatus.InProgress;
+            tournament.LastModifiedBy = _currentUser.UserName ?? "System";
+            tournament.LastModifiedAt = DateTime.UtcNow;
 
-            // 5. Guardamos los cambios mediante la unidad de trabajo
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
@@ -105,7 +124,6 @@ namespace PadelManager.Application.Services
             var tournament = await _tournamentRepo.GetByIdAsync(tournamentId);
             if (tournament == null) return null;
 
-            // Buscamos las registraciones reales para que el DTO muestre si está lleno o no
             var count = await _registrationRepo.CountByTournamentIdAsync(tournamentId);
             return tournament.ToResponseDto(count);
         }

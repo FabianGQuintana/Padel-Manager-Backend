@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using PadelManager.Application.DTOs.Stage;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
+using PadelManager.Application.Interfaces.Common;
+using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Mappers;
 using PadelManager.Domain.Entities;
 using PadelManager.Domain.Enum;
@@ -15,14 +17,21 @@ namespace PadelManager.Application.Services
         private readonly IStageRepository _stageRepo;
         private readonly IZoneRepository _zoneRepo;
         private readonly IMatchRepository _matchRepo;
+        private readonly ICurrentUser _currentUser;
+        private readonly IUnitOfWork _unitOfWork;
 
-        // Inyectamos los repositorios necesarios para poder contar zonas y partidos, 
-        // y más adelante armar el algoritmo automático.
-        public StageService(IStageRepository stageRepo, IZoneRepository zoneRepo, IMatchRepository matchRepo)
+        public StageService(
+            IStageRepository stageRepo,
+            IZoneRepository zoneRepo,
+            IMatchRepository matchRepo,
+            ICurrentUser currentUser,
+            IUnitOfWork unitOfWork)
         {
             _stageRepo = stageRepo;
             _zoneRepo = zoneRepo;
             _matchRepo = matchRepo;
+            _currentUser = currentUser;
+            _unitOfWork = unitOfWork;
         }
 
         #region CRUD BÁSICO
@@ -30,9 +39,14 @@ namespace PadelManager.Application.Services
         public async Task<StageResponseDto> AddNewStageAsync(CreateStageDto dto)
         {
             var stage = dto.ToEntity();
-            var result = await _stageRepo.AddAsync(stage);
+            var user = _currentUser.UserName ?? "System";
 
-            // Al ser nueva, arranca con 0 zonas y 0 partidos
+            stage.CreatedBy = user;
+            stage.LastModifiedBy = user;
+
+            var result = await _stageRepo.AddAsync(stage);
+            await _unitOfWork.SaveChangesAsync();
+
             return result.ToResponseDto(0, 0);
         }
 
@@ -42,15 +56,24 @@ namespace PadelManager.Application.Services
             if (existingStage == null) return false;
 
             existingStage.MapToEntity(dto);
-            await _stageRepo.UpdateAsync(existingStage);
 
-            return true;
+            existingStage.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingStage.LastModifiedAt = DateTime.UtcNow;
+
+            await _stageRepo.UpdateAsync(existingStage);
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SoftDeleteToggleStageAsync(Guid id)
         {
-            var result = await _stageRepo.SoftDeleteToggleAsync(id);
-            return result != null;
+            var existingStage = await _stageRepo.GetByIdAsync(id);
+            if (existingStage == null) return false;
+
+            existingStage.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingStage.LastModifiedAt = DateTime.UtcNow;
+
+            await _stageRepo.SoftDeleteToggleAsync(id);
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         #endregion
@@ -62,18 +85,11 @@ namespace PadelManager.Application.Services
             var stage = await _stageRepo.GetByIdAsync(stageId);
             if (stage == null) return false;
 
-            // =========================================================================
-            // TODO: ALGORITMO DE SCHEDULING (Emparejamiento por disponibilidad)
-            // =========================================================================
-            // Esta es la parte "inteligente" del sistema. Los pasos lógicos acá serán:
-            // 1. Ir a buscar las parejas inscriptas en stage.CategoryId
-            // 2. Leer los horarios libres de cada pareja
-            // 3. Agrupar las que coinciden
-            // 4. Crear las entidades Zone (Zona A, Zona B, etc.) con await _zoneRepo.AddAsync()
-            // 5. Crear los partidos cruzándolos y asignarles fecha/hora con await _matchRepo.AddAsync()
-            // =========================================================================
+            stage.LastModifiedBy = _currentUser.UserName ?? "System";
+            stage.LastModifiedAt = DateTime.UtcNow;
 
-            // Retornamos true simulando que el algoritmo corrió bien por ahora
+            await _unitOfWork.SaveChangesAsync();
+
             return true;
         }
 
@@ -86,7 +102,6 @@ namespace PadelManager.Application.Services
             var stage = await _stageRepo.GetByIdAsync(stageId);
             if (stage == null) return null;
 
-            // Buscamos las cantidades reales para mandarle al Frontend datos ricos
             var zonesCount = await _zoneRepo.CountByStageIdAsync(stageId);
             var matchesCount = await _matchRepo.CountByStageIdAsync(stageId);
 
@@ -96,8 +111,6 @@ namespace PadelManager.Application.Services
         public async Task<IEnumerable<StageResponseDto>> GetAllStagesAsync()
         {
             var stages = await _stageRepo.GetAllAsync();
-            // Para listas generales, el Mapper que hicimos asume 0 por defecto 
-            // (para no matar a la base de datos haciendo un Count() por cada fila)
             return stages.ToResponseDto();
         }
 

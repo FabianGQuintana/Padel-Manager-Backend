@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using PadelManager.Application.DTOs.Match;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
+using PadelManager.Application.Interfaces.Common;
+using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Mappers;
 using PadelManager.Domain.Enum;
 
@@ -12,10 +14,17 @@ namespace PadelManager.Application.Services
     public class MatchService : IMatchService
     {
         private readonly IMatchRepository _matchRepo;
+        private readonly ICurrentUser _currentUser;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public MatchService(IMatchRepository matchRepo)
+        public MatchService(
+            IMatchRepository matchRepo,
+            ICurrentUser currentUser,
+            IUnitOfWork unitOfWork)
         {
             _matchRepo = matchRepo;
+            _currentUser = currentUser;
+            _unitOfWork = unitOfWork;
         }
 
         #region CRUD BÁSICO
@@ -23,7 +32,14 @@ namespace PadelManager.Application.Services
         public async Task<MatchResponseDto> AddNewMatchAsync(CreateMatchDto dto)
         {
             var match = dto.ToEntity();
+            var user = _currentUser.UserName ?? "System";
+
+            match.CreatedBy = user;
+            match.LastModifiedBy = user;
+
             var result = await _matchRepo.AddAsync(match);
+            await _unitOfWork.SaveChangesAsync();
+
             return result.ToResponseDto();
         }
 
@@ -33,14 +49,24 @@ namespace PadelManager.Application.Services
             if (existingMatch == null) return false;
 
             existingMatch.MapToEntity(dto);
+
+            existingMatch.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingMatch.LastModifiedAt = DateTime.UtcNow;
+
             await _matchRepo.UpdateAsync(existingMatch);
-            return true;
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SoftDeleteToggleMatchAsync(Guid id)
         {
-            var result = await _matchRepo.SoftDeleteToggleAsync(id);
-            return result != null;
+            var existingMatch = await _matchRepo.GetByIdAsync(id);
+            if (existingMatch == null) return false;
+
+            existingMatch.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingMatch.LastModifiedAt = DateTime.UtcNow;
+
+            await _matchRepo.SoftDeleteToggleAsync(id);
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         #endregion
@@ -52,7 +78,6 @@ namespace PadelManager.Application.Services
             var match = await _matchRepo.GetByIdAsync(matchId);
             if (match == null) return false;
 
-            // Actualizamos solo los datos del resultado
             match.WinnerCoupleId = dto.WinnerCoupleId;
             match.LoserCoupleId = dto.LoserCoupleId;
             match.Set1_coupleA = dto.Set1_coupleA;
@@ -62,11 +87,13 @@ namespace PadelManager.Application.Services
             match.Set3_coupleA = dto.Set3_coupleA;
             match.Set3_coupleB = dto.Set3_coupleB;
 
-            // Regla: el partido finaliza automáticamente
             match.StatusType = MatchStatus.Completed;
 
+            match.LastModifiedBy = _currentUser.UserName ?? "System";
+            match.LastModifiedAt = DateTime.UtcNow;
+
             await _matchRepo.UpdateAsync(match);
-            return true;
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         #endregion

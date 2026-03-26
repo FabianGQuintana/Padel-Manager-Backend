@@ -1,10 +1,12 @@
 ﻿using PadelManager.Application.DTOs.Couple;
+using PadelManager.Application.DTOs.CoupleAvailability;
+using PadelManager.Application.Interfaces.Common;
+using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
 using PadelManager.Application.Mappers;
 using PadelManager.Domain.Entities;
 using PadelManager.Domain.Enum;
-using PadelManager.Application.DTOs.CoupleAvailability;
 
 namespace PadelManager.Application.Services
 {
@@ -12,13 +14,19 @@ namespace PadelManager.Application.Services
     {
         private readonly ICoupleRepository _coupleRepository;
         private readonly IPlayerRepository _playerRepository;
-        
+        private readonly ICurrentUser _currentUser; 
+        private readonly IUnitOfWork _unitOfWork;   
+
         public CoupleService(
             ICoupleRepository coupleRepository,
-            IPlayerRepository playerRepository)
+            IPlayerRepository playerRepository,
+            ICurrentUser currentUser,
+            IUnitOfWork unitOfWork)
         {
             _coupleRepository = coupleRepository;
             _playerRepository = playerRepository;
+            _currentUser = currentUser;
+            _unitOfWork = unitOfWork;
         }
 
         // =========================
@@ -30,19 +38,28 @@ namespace PadelManager.Application.Services
             await ValidatePlayersAsync(dto.Player1Id, dto.Player2Id);
             ValidateAvailabilities(dto.Availabilities);
 
+            // Verificación de existencia (podrías mover esto a un método específico en el repo para eficiencia)
             var existingCouples = await _coupleRepository.GetAllAsync();
-
             bool coupleAlreadyExists = existingCouples.Any(c =>
                 (c.Player1Id == dto.Player1Id && c.Player2Id == dto.Player2Id) ||
                 (c.Player1Id == dto.Player2Id && c.Player2Id == dto.Player1Id));
 
             if (coupleAlreadyExists)
-                throw new Exception("La pareja ya existe");
+                throw new Exception("La pareja ya existe.");
 
             var couple = dto.ToEntity();
 
+            //  AUDITORÍA
+            var user = _currentUser.UserName ?? "System";
+            couple.CreatedBy = user;
+            couple.LastModifiedBy = user;
+
             await _coupleRepository.AddAsync(couple);
 
+            //  PERSISTENCIA
+            await _unitOfWork.SaveChangesAsync();
+
+            // Buscamos detalles para el Response
             var createdCouple = await _coupleRepository.GetCoupleWithRegistrationDetailsAsync(couple.Id)
                                ?? await _coupleRepository.GetByIdAsync(couple.Id);
 
@@ -52,33 +69,36 @@ namespace PadelManager.Application.Services
         public async Task<bool> UpdateCoupleAsync(Guid id, UpdateCoupleDto dto)
         {
             var existingCouple = await _coupleRepository.GetCoupleWithRegistrationDetailsAsync(id);
-
-            if (existingCouple == null)
-                return false;
+            if (existingCouple == null) return false;
 
             await ValidatePlayersAsync(dto.Player1Id, dto.Player2Id);
 
             bool tournamentStarted = HasTournamentStarted(existingCouple);
-
             if (!tournamentStarted)
             {
                 ValidateAvailabilities(dto.Availabilities);
             }
 
-            // Si el torneo empezó, actualiza todo menos availabilities
             dto.MapToEntity(existingCouple, updateAvailabilities: !tournamentStarted);
+
+            //  AUDITORÍA
+            existingCouple.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingCouple.LastModifiedAt = DateTime.UtcNow;
 
             await _coupleRepository.UpdateAsync(existingCouple);
 
-            return true;
+            //  PERSISTENCIA
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> SoftDeleteToggleCoupleAsync(Guid id)
         {
             var existingCouple = await _coupleRepository.GetByIdAsync(id);
+            if (existingCouple == null) return false;
 
-            if (existingCouple == null)
-                return false;
+            // AUDITORÍA
+            existingCouple.LastModifiedBy = _currentUser.UserName ?? "System";
+            existingCouple.LastModifiedAt = DateTime.UtcNow;
 
             if (existingCouple.DeletedAt == null)
                 existingCouple.DeletedAt = DateTime.UtcNow;
@@ -87,47 +107,38 @@ namespace PadelManager.Application.Services
 
             await _coupleRepository.UpdateAsync(existingCouple);
 
-            return true;
+            //  PERSISTENCIA
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
-
-        // =========================
-        // LÓGICA DE NEGOCIO
-        // =========================
 
         public async Task<bool> ReplacePlayerInCoupleAsync(Guid coupleId, ReplaceCouplePlayerDto dto)
         {
             var couple = await _coupleRepository.GetCoupleWithRegistrationDetailsAsync(coupleId);
+            if (couple == null) return false;
 
-            if (couple == null)
-                return false;
-
-            // Validar que el jugador viejo forme parte de la pareja
             if (dto.OldPlayerId != couple.Player1Id && dto.OldPlayerId != couple.Player2Id)
-                throw new Exception("El jugador a reemplazar no pertenece a la pareja");
+                throw new Exception("El jugador a reemplazar no pertenece a la pareja.");
 
-            // Validar que el nuevo jugador exista
             var newPlayer = await _playerRepository.GetByIdAsync(dto.NewPlayerId);
-            if (newPlayer == null)
-                throw new Exception("El nuevo jugador no existe");
+            if (newPlayer == null) throw new Exception("El nuevo jugador no existe.");
 
-            // Validar que no quede duplicado
             if (dto.NewPlayerId == couple.Player1Id || dto.NewPlayerId == couple.Player2Id)
-                throw new Exception("Una pareja no puede tener el mismo jugador dos veces");
+                throw new Exception("Una pareja no puede tener el mismo jugador dos veces.");
 
-            // Reemplazo
+            // Aplicar reemplazo
             if (dto.OldPlayerId == couple.Player1Id)
                 couple.Player1Id = dto.NewPlayerId;
             else
                 couple.Player2Id = dto.NewPlayerId;
 
-            // Regla:
-            // si el torneo ya empezó, NO se tocan availabilities
-            // si no empezó, tampoco las tocamos acá porque este método es solo para reemplazo
-            // las availabilities se modifican desde UpdateCoupleAsync
+            //  AUDITORÍA
+            couple.LastModifiedBy = _currentUser.UserName ?? "System";
+            couple.LastModifiedAt = DateTime.UtcNow;
 
             await _coupleRepository.UpdateAsync(couple);
 
-            return true;
+            //  PERSISTENCIA
+            return await _unitOfWork.SaveChangesAsync() > 0;
         }
 
         // =========================
