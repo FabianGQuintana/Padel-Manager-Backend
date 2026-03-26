@@ -2,9 +2,6 @@
 using PadelManager.Domain.Entities;
 using PadelManager.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PadelManager.Infrastructure.Repositories
 {
@@ -21,7 +18,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.CoupleAvailabilities
                 .Include(ca => ca.Couple)
-                .Where(ca => ca.CoupleId == coupleId)
+                .Where(ca => ca.CoupleId == coupleId && ca.DeletedAt == null)
                 .ToListAsync();
         }
 
@@ -29,13 +26,14 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.CoupleAvailabilities
                 .Include(ca => ca.Couple)
+                .Where(ca => ca.DeletedAt == null)
                 .ToListAsync();
         }
 
-        public async Task DeleteAvailabilitiesByCoupleIdAsync(Guid coupleId)
+        public async Task SoftDeleteAvailabilitiesByCoupleIdAsync(Guid coupleId)
         {
             var availabilities = await _context.CoupleAvailabilities
-                .Where(ca => ca.CoupleId == coupleId)
+                .Where(ca => ca.CoupleId == coupleId && ca.DeletedAt == null)
                 .ToListAsync();
 
             foreach (var availability in availabilities)
@@ -45,8 +43,5 @@ namespace PadelManager.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
         }
-
-
-
     }
 }

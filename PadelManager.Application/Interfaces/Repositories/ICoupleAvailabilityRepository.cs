@@ -9,6 +9,6 @@ namespace PadelManager.Application.Interfaces.Repositories
     {
         Task<IEnumerable<CoupleAvailability>> GetAvailabilitiesByCoupleIdAsync(Guid coupleId);
         Task<IEnumerable<CoupleAvailability>> GetAvailabilitiesWithCouplesAsync();
-        Task DeleteAvailabilitiesByCoupleIdAsync(Guid coupleId);
+        Task SoftDeleteAvailabilitiesByCoupleIdAsync(Guid coupleId);
     }
 }
