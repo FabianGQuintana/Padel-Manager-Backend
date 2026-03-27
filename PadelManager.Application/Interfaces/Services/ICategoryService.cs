@@ -12,6 +12,8 @@ namespace PadelManager.Application.Interfaces.Services
 
         Task<CategoryResponseDto?> GetCategoryByIdAsync (Guid id);
 
+        Task<IEnumerable<CategoryResponseDto>> GetCategoryWithRegistrationsAsync(Guid id);
+
         Task<IEnumerable<CategoryResponseDto>> GetCategoriesByNameAsync(string name);
 
         Task<IEnumerable<CategoryResponseDto>> GetCategoriesByMaxTeamsAsync(int maxTeams);

@@ -6,20 +6,22 @@ using PadelManager.Application.Interfaces.Common;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PadelManager.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ManagersController : ControllerBase
     {
         private readonly IManagerService _managerService;
-        private readonly ICurrentUser _currentUser;
+       
 
-        public ManagersController(IManagerService managerService, ICurrentUser currentUser)
+        public ManagersController(IManagerService managerService)
         {
             _managerService = managerService;
-            _currentUser = currentUser;
+            
         }
 
         #region POST-PUT-PATCH
@@ -29,9 +31,7 @@ namespace PadelManager.API.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (!_currentUser.IsAuthenticated)
-                return Unauthorized("Debe estar autenticado para realizar esta operación.");
-
+ 
             try
             {
                 var result = await _managerService.AddNewManagerAsync(dto);
@@ -52,9 +52,7 @@ namespace PadelManager.API.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if (!_currentUser.IsAuthenticated)
-                return Unauthorized("Debe estar autenticado para realizar esta operación.");
-
+            
             try
             {
                 var success = await _managerService.UpdateManagerAsync(id, dto);
@@ -74,11 +72,10 @@ namespace PadelManager.API.Controllers
             }
         }
 
-        [HttpPatch("{id:guid}/toggle-status")]
+        [HttpPatch("{id:guid}/SoftDelete")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
-            if (!_currentUser.IsAuthenticated) return Unauthorized();
-
+            
             try
             {
                 var success = await _managerService.SoftDeleteToggleManagerAsync(id);

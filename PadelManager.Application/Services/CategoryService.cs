@@ -81,8 +81,14 @@ namespace PadelManager.Application.Services
         public async Task<CategoryResponseDto?> GetCategoryByIdAsync(Guid id)
         {
             
-            var category = await _categoryRepo.GetCategoryWithRegistrationsAsync(id);
+            var category = await _categoryRepo.GetByIdAsync(id);
             return category?.ToResponseDto();
+        }
+
+        public async Task<IEnumerable<CategoryResponseDto>> GetCategoryWithRegistrationsAsync(Guid id)
+        {
+            var categories = await _categoryRepo.GetCategoryWithRegistrationsAsync(id);
+            return categories.ToResponseDto();
         }
 
         public async Task<IEnumerable<CategoryResponseDto>> GetCategoriesByTournamentIdAsync(Guid tournamentId)

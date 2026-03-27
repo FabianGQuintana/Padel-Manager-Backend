@@ -16,7 +16,7 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         Task<Category?> GetCategoryWithDetailsByIdAsync(Guid categoryId);
 
-        Task<Category?> GetCategoryWithRegistrationsAsync(Guid id);
+        Task<IEnumerable<Category>> GetCategoryWithRegistrationsAsync(Guid id);
         Task<IEnumerable<Category>> GetCategoriesByTournamentWithRegistrationsAsync(Guid tournamentId);
 
         Task<IEnumerable<Category>> GetCategoriesByMaxTeamsWithRegistrationsAsync(int maxTeams);
