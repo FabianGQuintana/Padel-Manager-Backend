@@ -30,7 +30,7 @@ namespace PadelManager.API.Controllers
             try
             {
                 var result = await _registrationService.AddNewRegistrationAsync(dto);
-                // 🚀 Usamos GetById para cumplir con el estándar REST
+                //  Usamos GetById para cumplir con el estándar REST
                 return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
             }
             catch (InvalidOperationException ex)
@@ -62,7 +62,7 @@ namespace PadelManager.API.Controllers
             }
         }
 
-        [HttpPatch("{id:guid}/toggle-status")]
+        [HttpPatch("{id:guid}/SoftDelete")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
