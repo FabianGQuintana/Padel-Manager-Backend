@@ -35,7 +35,8 @@ namespace PadelManager.API.Controllers
                 var newCategory = await _categoryService.AddNewCategoryAsync(dto);
 
                 return CreatedAtAction(nameof(GetById), new { id = newCategory.Id }, newCategory);
-            }catch (InvalidOperationException ex)
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(new { message = ex.Message });
             }
@@ -45,8 +46,8 @@ namespace PadelManager.API.Controllers
             }
         }
 
-        [HttpPut("{id:guid}")]
-        
+
+        [HttpPut("{id:guid}")]  
         public async Task<IActionResult> Put(Guid id,  [FromBody] UpdateCategoryDto dto)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
@@ -75,7 +76,6 @@ namespace PadelManager.API.Controllers
 
 
         [HttpPatch("{id:guid}/SoftDelete")]
-      
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -112,7 +112,6 @@ namespace PadelManager.API.Controllers
         #region GETS
 
         [HttpGet("{id:guid}")]
- 
         public async Task<IActionResult> GetById(Guid id)
         {
             var category = await _categoryService.GetCategoryByIdAsync(id);
@@ -134,7 +133,6 @@ namespace PadelManager.API.Controllers
 
 
         [HttpGet("search/{id:guid}/WithRegistration")]
-
         public async Task<IActionResult> GetWithRegistrations(Guid id)
         {
             var result = await _categoryService.GetCategoryWithRegistrationsAsync(id);
@@ -144,7 +142,6 @@ namespace PadelManager.API.Controllers
 
 
         [HttpGet("search/{id:guid}/WithTournament")]
-
         public async Task<IActionResult> GetTournamentIdAsync(Guid id)
         {
             var result = await _categoryService.GetCategoriesByTournamentIdAsync(id);
@@ -152,8 +149,8 @@ namespace PadelManager.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("search/name/{name}")]
 
+        [HttpGet("search/name/{name}")]
         public async Task<IActionResult> GetNameAsync(string name)
         {
             var result = await _categoryService.GetCategoriesByNameAsync(name);
@@ -163,7 +160,6 @@ namespace PadelManager.API.Controllers
 
 
         [HttpGet("search/maxTeams/{maxTeams:int}")]
-
         public async Task<IActionResult> GetMaxTeamsAsync(int maxTeams)
         {
             var result = await _categoryService.GetCategoriesByMaxTeamsAsync(maxTeams);
