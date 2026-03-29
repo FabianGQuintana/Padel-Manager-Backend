@@ -83,6 +83,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             return Ok(await _coupleService.GetAllCouplesAsync());
