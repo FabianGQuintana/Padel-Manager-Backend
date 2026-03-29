@@ -19,6 +19,7 @@ namespace PadelManager.Application.Interfaces.Services
         // Trae la zona con sus Parejas y Partidos
         Task<ZoneResponseDto?> GetZoneWithDetailsAsync(Guid id);
         IEnumerable<int> GetZoneDistribution(int totalCouples);
+        Task<bool> GenerateZonesWithDrawAsync(Guid categoryId);
     }
 
 }
