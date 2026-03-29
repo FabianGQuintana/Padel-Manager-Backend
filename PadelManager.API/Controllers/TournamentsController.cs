@@ -100,6 +100,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var result = await _registrationService.GetAllRegistrationsAsync();
@@ -107,7 +108,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/tournament/{tournamentId:guid}")]
-        [AllowAnonymous] //permitir que los jugadores puedan ver la lista de inscriptos al torneo
+        
         public async Task<IActionResult> GetByTournamentId(Guid tournamentId)
         {
             var result = await _registrationService.GetRegistrationsByTournamentIdAsync(tournamentId);
