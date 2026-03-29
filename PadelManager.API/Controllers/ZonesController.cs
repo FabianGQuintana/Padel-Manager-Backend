@@ -106,6 +106,7 @@ namespace PadelManager.API.Controllers
         #region GETS
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var result = await _zoneService.GetAllZonesAsync();

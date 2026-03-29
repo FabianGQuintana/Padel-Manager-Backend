@@ -102,6 +102,7 @@ namespace PadelManager.API.Controllers
         #region GETS (Lectura)
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             var result = await _stageService.GetAllStagesAsync();
