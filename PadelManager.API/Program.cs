@@ -9,6 +9,9 @@ using PadelManager.Infrastructure.Services;
 using PadelManager.Application.Services;
 using Microsoft.AspNetCore.Identity;
 using PadelManager.Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,6 +94,34 @@ builder.Services.AddScoped<IManagerService, ManagerService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
+
+#region JWT Authorize
+
+builder.Services.AddAuthentication(options =>
+{
+    
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+});
+
+#endregion
+
+
+
 #region CONFIGURACIÓN DE SEGURIDAD Y CORS (Acceso desde el Frontend)
 // =========================================================================
 // 5. CONFIGURACIÓN DE SEGURIDAD Y CORS (Acceso desde el Frontend)
@@ -116,34 +147,29 @@ var app = builder.Build();
 
 #endregion
 
-
-#region PIPELINE DE LA APLICACIÓN (MIDDLEWARES)
+#region PIPELINE DE LA APP.
 // =========================================================================
-// 7. PIPELINE DE LA APLICACIÓN (MIDDLEWARES)
+// 7. PIPELINE DE LA APLICACIÓN (ORDEN CRÍTICO)
 // =========================================================================
 
-// Configuración para el entorno de desarrollo
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi(); // Esto habilita Swagger/OpenAPI
 }
 
 app.UseHttpsRedirection();
 
-// Importante: El UseCors debe ir DESPUÉS de HttpsRedirection y ANTES de Authorization
+// 1. CORS: Primero dejamos entrar la petición
 app.UseCors("PadelFrontendPolicy");
 
+// 2. AUTHENTICATION: ¿Quién sos? (Lee el Token)
+app.UseAuthentication();
+
+// 3. AUTHORIZATION: ¿Tenés permiso para esto? (Mira los Roles)
 app.UseAuthorization();
 
+// 4. ROUTING: Mandamos la petición al controlador
 app.MapControllers();
 
-
-#endregion
-
-#region LANZAMIENTO
-// =========================================================================
-// 8. LANZAMIENTO
-// =========================================================================
 app.Run();
-
 #endregion

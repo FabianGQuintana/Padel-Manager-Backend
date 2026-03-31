@@ -28,7 +28,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
                 .WithMany(s => s.Zones)
                 .HasForeignKey(z => z.StageId)
                 .OnDelete(DeleteBehavior.Restrict);
-           
+
 
             // 2. Relación con Statistics (1:N)
             builder.HasMany(z => z.Statistics)
@@ -36,13 +36,11 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
                 .HasForeignKey(s => s.ZoneId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+
             builder.HasMany(z => z.Couples)
-                .WithMany() // Si tu entidad Couple no tiene ICollection<Zone>, dejalo así.
-                .UsingEntity<Dictionary<string, object>>(
-                "ZoneCouples", // Nombre de la tabla intermedia en la DB
-                j => j.HasOne<Couple>().WithMany().HasForeignKey("CoupleId"),
-                j => j.HasOne<Zone>().WithMany().HasForeignKey("ZoneId")
-                );
+                .WithOne(c => c.Zone)
+                .HasForeignKey(c => c.ZoneId)
+                .OnDelete(DeleteBehavior.SetNull);
 
 
             // 3. Relación con Matches (1:N) - Opcional

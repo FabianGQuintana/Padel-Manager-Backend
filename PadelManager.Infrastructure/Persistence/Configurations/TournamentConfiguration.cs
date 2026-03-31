@@ -32,8 +32,6 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(50);
 
-            builder.ToTable(t => t.HasCheckConstraint("CK_Tournament_MaxTeams", "\"MaxTeamsPerCategory\" >= 6 AND \"MaxTeamsPerCategory\" <= 48"));
-
             // ==========================================
             // RELACIONES
             // ==========================================
