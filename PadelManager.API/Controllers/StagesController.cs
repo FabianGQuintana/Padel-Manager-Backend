@@ -24,6 +24,7 @@ namespace PadelManager.API.Controllers
         #region POST-PUT-PATCH (Escritura)
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreateStageDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -40,6 +41,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateStageDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -57,7 +59,8 @@ namespace PadelManager.API.Controllers
             }
         }
 
-        [HttpPatch("{id:guid}/toggle-status")]
+        [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -78,6 +81,7 @@ namespace PadelManager.API.Controllers
         #region LÓGICA DE NEGOCIO
 
         [HttpPost("{id:guid}/generate-automatic")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GenerateAutomatic(Guid id)
         {
             try
@@ -110,6 +114,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Tanteador")]
         public async Task<IActionResult> GetById(Guid id)
         {
             
@@ -119,6 +124,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("category/{categoryId:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByCategoryId(Guid categoryId)
         {
             var result = await _stageService.GetStagesByCategoryIdAsync(categoryId);
@@ -126,6 +132,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("type/{type}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByType(StageType type)
         {
          

@@ -22,6 +22,7 @@ namespace PadelManager.API.Controllers
         
         #region PUT-POST-PATCH
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreateZoneDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -44,6 +45,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id,[FromBody] UpdateZoneDto dto)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
@@ -67,6 +69,7 @@ namespace PadelManager.API.Controllers
 
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -147,6 +150,7 @@ namespace PadelManager.API.Controllers
         #region LÓGICA DE NEGOCIO (SORTEO)
 
         [HttpPost("generate-draw/{categoryId:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GenerateDraw(Guid categoryId)
         {
             try

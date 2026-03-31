@@ -14,7 +14,7 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task AddRefreshTokenAsync(RefreshToken token);
         Task<RefreshToken?> GetRefreshTokenAsync(string token);
         Task UpdateRefreshTokenAsync(RefreshToken token);
-
+        Task<User?> GetUserByIdWithRoleAsync(Guid id);
         // Método para traer al usuario con su perfil de Manager 
         Task<User?> GetUserWithManagerProfileAsync(Guid userId);
     }

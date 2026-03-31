@@ -22,6 +22,7 @@ namespace PadelManager.Infrastructure.Persistence
 
         #region DbSets (Tablas)
         public DbSet<User> Users { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Player> Players { get; set; }

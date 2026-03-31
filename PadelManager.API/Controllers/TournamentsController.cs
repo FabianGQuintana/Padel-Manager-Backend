@@ -28,6 +28,7 @@ namespace PadelManager.API.Controllers
         #region POST - PUT - PATCH
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreateTournamentDto dto)
 
         {
@@ -55,6 +56,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateTournamentDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -83,6 +85,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -107,6 +110,7 @@ namespace PadelManager.API.Controllers
 
 
         [HttpPatch("{id:guid}/Start")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> StartTournament(Guid id)
         {
             try
@@ -193,6 +197,7 @@ namespace PadelManager.API.Controllers
 
         // GETS POR MANAGER
         [HttpGet("search/manager/{managerId:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByManagerId(Guid managerId)
         {
             var result = await _tournamentService.GetTournamentsByManagerIdAsync(managerId);
@@ -201,6 +206,7 @@ namespace PadelManager.API.Controllers
 
 
         [HttpGet("search/manager/email/{email}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByManagerEmail(string email)
         {
             var result = await _tournamentService.GetTournamentsByManagerEmailAsync(email);
@@ -208,6 +214,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/manager/dni/{dni}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByManagerDni(string dni)
         {
             var result = await _tournamentService.GetTournamentsByManagerDniAsync(dni);
@@ -215,6 +222,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/manager/name/{name}")]
+        [Authorize(Roles = "Admin, Organizador")]
 
         public async Task<IActionResult> GetByManagerName(string name)
         {

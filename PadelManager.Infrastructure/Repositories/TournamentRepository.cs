@@ -73,25 +73,31 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Tournament>> GetTournamentsByManagerEmailAsync(string email)
         {
             return await _context.Tournaments
-                .Include(t => t.Managers) // Asumiendo la relación en tu entidad
-                .Where(t => t.Managers.Any(m => m.Email == email && t.DeletedAt == null))
+                .Include(t => t.Managers)
+                    .ThenInclude(m => m.User) //  Cargamos el User dentro de los Managers
+                .Where(t => t.DeletedAt == null &&
+                       t.Managers.Any(m => m.User.Email == email)) //  Acceso vía m.User
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByManagerDniAsync(string dni)
         {
             return await _context.Tournaments
-            .Include(t => t.Managers)
-            .Where(t => t.DeletedAt == null && t.Managers.Any(m => m.Dni == dni)) 
-            .ToListAsync();
+                .Include(t => t.Managers)
+                    .ThenInclude(m => m.User)
+                .Where(t => t.DeletedAt == null &&
+                       t.Managers.Any(m => m.User.Dni == dni)) // Acceso vía m.User
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByManagerNameAsync(string name)
         {
             return await _context.Tournaments
                 .Include(t => t.Managers)
+                    .ThenInclude(m => m.User)
                 .Where(t => t.DeletedAt == null &&
-                       t.Managers.Any(m => (m.Name + " " + m.LastName).ToLower().Contains(name.ToLower())))
+                       t.Managers.Any(m => (m.User.Name + " " + m.User.LastName)
+                                            .ToLower().Contains(name.ToLower()))) //Acceso vía m.User
                 .ToListAsync();
         }
 

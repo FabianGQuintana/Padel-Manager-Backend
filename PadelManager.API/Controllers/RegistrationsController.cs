@@ -23,6 +23,7 @@ namespace PadelManager.API.Controllers
         #region POST-PUT-PATCH (Escritura)
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> Post([FromBody] CreateRegistrationDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -45,6 +46,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateRegistrationDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -63,6 +65,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -87,6 +90,7 @@ namespace PadelManager.API.Controllers
         #region GETS (Lectura y Filtros)
 
         [HttpGet]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _registrationService.GetAllRegistrationsAsync();
@@ -94,6 +98,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _registrationService.GetRegistrationByIdAsync(id);
@@ -102,6 +107,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("tournament/{tournamentId:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByTournament(Guid tournamentId)
         {
             var result = await _registrationService.GetRegistrationsByTournamentIdAsync(tournamentId);
@@ -109,6 +115,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("category/{categoryId:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByCategory(Guid categoryId)
         {
             var result = await _registrationService.GetRegistrationsByCategoryIdAsync(categoryId);
@@ -116,6 +123,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("couple/{coupleId:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByCouple(Guid coupleId)
         {
             var result = await _registrationService.GetRegistrationsByCoupleIdAsync(coupleId);
@@ -123,6 +131,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("date/{date}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetByDate(string date)
         {
             // El servicio espera DateOnly, intentamos parsear lo que viene por URL

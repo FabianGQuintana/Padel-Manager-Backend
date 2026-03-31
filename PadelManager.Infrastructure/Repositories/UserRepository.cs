@@ -42,7 +42,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .FirstOrDefaultAsync(u => u.Id == userId && u.DeletedAt == null);
         }
 
-        public async Task<IEnumerable<User>> GetUserByNameAsync(string name)
+        public async Task<IEnumerable<User>> GetUsersByNameAsync(string name)
         {
             return await _context.Users
                 .Where(u => u.Name == name && u.DeletedAt == null)
@@ -50,12 +50,19 @@ namespace PadelManager.Infrastructure.Repositories
 
         }
 
-        public async Task<IEnumerable<User>> GetUserByLastNameAsync(string lastName)
+        public async Task<IEnumerable<User>> GetUsersByLastNameAsync(string lastName)
         {
             return await _context.Users
                 .Where(u => u.LastName == lastName && u.DeletedAt == null)
                 .ToListAsync();
 
+        }
+
+        public async Task<User?> GetUserByIdWithRoleAsync(Guid id)
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
         }
 
         public async Task<IEnumerable<User>> GetUsersByRoleNameAsync(string roleName)

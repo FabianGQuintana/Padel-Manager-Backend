@@ -136,7 +136,7 @@ namespace PadelManager.Application.Services
             var userId = Guid.Parse(userIdClaim.Value);
 
             // 3. Obtenemos el usuario con su perfil
-            var user = await _userRepository.GetUserWithManagerProfileAsync(userId);
+            var user = await _userRepository.GetUserByIdWithRoleAsync(userId);
 
             // Verificamos que el usuario exista y que el token realmente le pertenezca a él
             if (user == null || storedToken.UserId != user.Id)

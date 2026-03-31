@@ -20,6 +20,7 @@ namespace PadelManager.API.Controllers
         #region PUT-PATCH-POST
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> Post([FromBody] CreateCoupleAvailabilityDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -41,6 +42,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateCoupleAvailabilityDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -63,6 +65,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -83,6 +86,7 @@ namespace PadelManager.API.Controllers
         #region GETS
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _availabilityService.GetAvailabilityByIdAsync(id);
@@ -98,6 +102,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("couple/{coupleId:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> GetByCoupleId(Guid coupleId)
         {
             var result = await _availabilityService.GetAvailabilitiesByCoupleIdAsync(coupleId);
