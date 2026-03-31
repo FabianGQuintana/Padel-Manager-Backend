@@ -21,6 +21,8 @@ namespace PadelManager.Infrastructure.Persistence
         }
 
         #region DbSets (Tablas)
+        public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
         public DbSet<Match> Matches { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Couple> Couples { get; set; }
@@ -31,9 +33,10 @@ namespace PadelManager.Infrastructure.Persistence
         public DbSet<Statistic> Statistics { get; set; }
         public DbSet<Zone> Zones { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<CoupleAvailability> CoupleAvailabilities { get; set; }
         #endregion
 
-       public DbSet<CoupleAvailability> CoupleAvailabilities { get; set; }
+
 
         //Metodo que dispara cuando el sistema se inicia para dar las reglas de cada entidad.
         //Buscara en el proyecto las clases de configuracion de cada entidad y las aplicara.

@@ -7,6 +7,8 @@ using PadelManager.Infrastructure.Persistence;
 using PadelManager.Infrastructure.Repositories;
 using PadelManager.Infrastructure.Services;
 using PadelManager.Application.Services;
+using Microsoft.AspNetCore.Identity;
+using PadelManager.Infrastructure.Security;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,15 +48,17 @@ builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
 builder.Services.AddScoped<ICoupleRepository, CoupleRepository>();
-builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
 builder.Services.AddScoped<IStageRepository, StageRepository>();
 builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
 builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
 builder.Services.AddScoped<IMatchRepository,MatchRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICoupleAvailabilityRepository, CoupleAvailabilityRepository>();
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
+
 #endregion
 
 
@@ -65,22 +69,27 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // =========================================================================
 // Aquí irán los Services que consumirán los repositorios
 builder.Services.AddScoped<ITournamentService, TournamentService>();
-builder.Services.AddScoped<IManagerService, ManagerService>();
 builder.Services.AddScoped<IZoneService, ZoneService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();
 builder.Services.AddScoped<IStageService, StageService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
-
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMatchService, MatchService>();    
 builder.Services.AddScoped<ICoupleService, CoupleService>();    
 builder.Services.AddScoped<ICoupleService, CoupleService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<ICoupleAvailabilityService, CoupleAvailabilityService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IManagerService, ManagerService>();
+
 #endregion
 
-
+// Infraestructura / Seguridad
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 #region CONFIGURACIÓN DE SEGURIDAD Y CORS (Acceso desde el Frontend)
 // =========================================================================
