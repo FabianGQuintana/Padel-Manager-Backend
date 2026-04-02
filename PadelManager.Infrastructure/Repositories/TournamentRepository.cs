@@ -101,6 +101,24 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Tournament>> GetAllWithManagersAsync()
+        {
+            return await _context.Tournaments
+                .Include(t => t.Managers)         //  Entramos a la colección de Managers
+                    .ThenInclude(m => m.User)     //  Entramos al User para sacar el nombre
+                .Where(t => t.DeletedAt == null)
+                .ToListAsync();
+        }
+
+
+        public async Task<Tournament?> GetTournamentByIdWithManagersAsync(Guid id)
+        {
+            return await _context.Tournaments
+                .Include(t => t.Managers)         // Cargamos Managers
+                    .ThenInclude(m => m.User)     // Cargamos el User dentro del Manager
+                .FirstOrDefaultAsync(t => t.Id == id && t.DeletedAt == null);
+        }
+
         public async Task<Tournament?> GetTournamentWithCategoriesAsync(Guid id)
         {
             return await _context.Tournaments

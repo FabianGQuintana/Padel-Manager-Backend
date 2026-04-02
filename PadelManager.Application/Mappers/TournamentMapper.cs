@@ -19,9 +19,12 @@ namespace PadelManager.Application.Mappers
                 Name = tournament.Name,
                 StartDate = tournament.StartDate,
                 Regulations = tournament.Regulations,
-                Status = tournament.StatusType,
+                Status = tournament.StatusType.ToString(),
                 TournamentType = tournament.TournamentType,
                 ManagerId = tournament.ManagerId,
+                ManagerName = tournament.Managers != null && tournament.Managers.Any()
+                ? string.Join(", ", tournament.Managers.Select(m => $"{m.User?.Name} {m.User?.LastName}"))
+                : "Sin Organizador"
 
             };
         }
