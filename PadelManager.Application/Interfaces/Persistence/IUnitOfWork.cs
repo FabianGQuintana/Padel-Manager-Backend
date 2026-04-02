@@ -8,6 +8,8 @@ namespace PadelManager.Application.Interfaces.Persistence
     {
         // para cada entidad que tengamos, añadiremos un repositorio
         IGenericRepository<Manager> Managers { get; }
+        IGenericRepository<User> Users { get; }
+        IGenericRepository<Role> Roles { get; }
         IGenericRepository<Player> Players { get; }
         IGenericRepository<Couple> Couples { get; }
         IGenericRepository<Category> Categories { get; }
@@ -19,7 +21,7 @@ namespace PadelManager.Application.Interfaces.Persistence
         IGenericRepository<Zone> Zones { get; }
         IGenericRepository<CoupleAvailability> CoupleAvailabilities { get; }
 
-
+        IGenericRepository<RefreshToken> RefreshTokens { get; }
 
         Task<int> SaveChangesAsync(); // para guardar los cambios en la base de datos,
                                       // devuelve el número de filas afectadas

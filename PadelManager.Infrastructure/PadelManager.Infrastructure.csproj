@@ -8,9 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Utils\" />
-    <Folder Include="Services\" />
-    <Folder Include="Persistence\Factories\" />
     <Folder Include="Persistence\Specifications\" />
   </ItemGroup>
 

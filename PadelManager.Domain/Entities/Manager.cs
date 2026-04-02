@@ -6,15 +6,14 @@ namespace PadelManager.Domain.Entities
 {
     public class Manager : BaseEntity
     {
-        public required string Name { get; set; }
+        public byte? YearExperience {  get; set; }
 
-        public required string LastName { get; set; }
+        public string? LicenceAPA { get; set; }
 
-        public required string Dni { get; set; }
-
-        public required string PhoneNumber { get; set; }
-
-        public required string Email { get; set; }
+        //Fk
+        public Guid UserId { get; set; }
+        
+        public User User { get; set; } = null!;
 
         public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
     }

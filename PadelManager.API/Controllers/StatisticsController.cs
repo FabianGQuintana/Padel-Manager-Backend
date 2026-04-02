@@ -23,6 +23,7 @@ namespace PadelManager.API.Controllers
         #region PUT-PATCH-POST
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreateStatisticDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -43,6 +44,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateStatisticDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -67,6 +69,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -101,6 +104,7 @@ namespace PadelManager.API.Controllers
         #region GETS
 
         [HttpGet("{id:guid}")]
+        
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _statisticsService.GetStatisticByIdAsync(id);

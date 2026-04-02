@@ -25,7 +25,7 @@ namespace PadelManager.API.Controllers
         #region PUT-PATCH-POST
 
         [HttpPost]
-        //[Authorize] Haria falta poner en todos los metodos en este mismo lugar pero como lo puse de bajo del [ApiController] no hace falta
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreateMatchDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -47,6 +47,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateMatchDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -71,6 +72,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -102,6 +104,7 @@ namespace PadelManager.API.Controllers
 
         // Lógica de Negocio: Cargar Resultado
         [HttpPatch("{id:guid}/LoadResult")]
+        [Authorize(Roles = "Admin, Organizador, Tanteador")]
         public async Task<IActionResult> LoadResult(Guid id, [FromBody] LoadMatchResultDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -130,6 +133,7 @@ namespace PadelManager.API.Controllers
         #region GETS
 
         [HttpGet("{id:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetById(Guid id)
         {
             var match = await _matchService.GetMatchByIdAsync(id);
@@ -147,6 +151,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/date/{date}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByDateAsync(DateTime date)
         {
             var result = await _matchService.GetMatchesByDateAsync(date);
@@ -155,6 +160,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/status/{status}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByStatusAsync(MatchStatus status)
         {
             var result = await _matchService.GetMatchesByStatusAsync(status);
@@ -163,6 +169,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/stage/{stageId:guid}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByStageIdAsync(Guid stageId)
         {
             var result = await _matchService.GetMatchesByStageIdAsync(stageId);
@@ -171,6 +178,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/zone/{zoneId:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Tanteador")]
         public async Task<IActionResult> GetByZoneIdAsync(Guid zoneId)
         {
             var result = await _matchService.GetMatchesByZoneIdAsync(zoneId);
@@ -179,6 +187,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/couple/{coupleId:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Tanteador")]
         public async Task<IActionResult> GetByCoupleIdAsync(Guid coupleId)
         {
             var result = await _matchService.GetMatchesByCoupleIdAsync(coupleId);
@@ -187,6 +196,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/location/{locationName}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByLocationAsync(string locationName)
         {
             var result = await _matchService.GetMatchesByLocationAsync(locationName);
@@ -195,6 +205,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/court/{courtName}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByCourtAsync(string courtName)
         {
             var result = await _matchService.GetMatchesByCourtAsync(courtName);

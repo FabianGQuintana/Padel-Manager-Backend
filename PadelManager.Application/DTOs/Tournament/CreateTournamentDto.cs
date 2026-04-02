@@ -16,7 +16,5 @@ namespace PadelManager.Application.DTOs.Tournament
 
         public required Guid ManagerId { get; set; }
 
-        [Range(6, 48)]
-        public required int MaxTeamsPerCategory { get; set; }
     }
 }

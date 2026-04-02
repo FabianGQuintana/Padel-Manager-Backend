@@ -1,47 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PadelManager.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace PadelManager.Infrastructure.Persistence.Configurations
+public class ManagerConfiguration : IEntityTypeConfiguration<Manager>
 {
-    public class ManagerConfiguration : IEntityTypeConfiguration<Manager>
+    public void Configure(EntityTypeBuilder<Manager> builder)
     {
-        public void Configure(EntityTypeBuilder<Manager> builder)
-        {
-            //Naming the table
-            builder.ToTable("Managers");
+        builder.HasKey(m => m.Id);
+        builder.Property(m => m.Id).ValueGeneratedNever();
 
-            //Primary Key
-            builder.HasKey(m => m.Id);
-
-            builder.HasQueryFilter(t => t.DeletedAt == null);
-
-            //Properties configuration
-            builder.Property(m => m.Name)
-                .IsRequired()
-                .HasMaxLength(70);
-
-            builder.Property(m => m.LastName)
-                .IsRequired()
-                .HasMaxLength(70);
-
-            builder.Property(m => m.Dni)
-                .IsRequired();
-            builder.HasIndex(m => m.Dni)
-                .IsUnique();
-
-            builder.Property(m => m.PhoneNumber)
-                .IsRequired()
-                .HasMaxLength(30);
-
-            builder.Property(m => m.Email)
-                .IsRequired();
-            builder.HasIndex(m => m.Email)
-                .IsUnique();
-
-        }
+        builder.Property(m => m.LicenceAPA).HasMaxLength(100);
+        builder.Property(m => m.YearExperience); // byte es suficiente, no necesita MaxLength
+        builder.ToTable("Managers");
     }
 }

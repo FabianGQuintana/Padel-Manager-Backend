@@ -7,6 +7,11 @@ using PadelManager.Infrastructure.Persistence;
 using PadelManager.Infrastructure.Repositories;
 using PadelManager.Infrastructure.Services;
 using PadelManager.Application.Services;
+using Microsoft.AspNetCore.Identity;
+using PadelManager.Infrastructure.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,15 +51,17 @@ builder.Services.AddScoped<ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IStatisticRepository, StatisticRepository>();
 builder.Services.AddScoped<ICoupleRepository, CoupleRepository>();
-builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
 builder.Services.AddScoped<IStageRepository, StageRepository>();
 builder.Services.AddScoped<IRegistrationRepository, RegistrationRepository>();
 builder.Services.AddScoped<IZoneRepository, ZoneRepository>();
 builder.Services.AddScoped<IMatchRepository,MatchRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICoupleAvailabilityRepository, CoupleAvailabilityRepository>();
-
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
+
 #endregion
 
 
@@ -65,19 +72,52 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 // =========================================================================
 // Aquí irán los Services que consumirán los repositorios
 builder.Services.AddScoped<ITournamentService, TournamentService>();
-builder.Services.AddScoped<IManagerService, ManagerService>();
 builder.Services.AddScoped<IZoneService, ZoneService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IStatisticService, StatisticService>();
 builder.Services.AddScoped<IStageService, StageService>();
 builder.Services.AddScoped<IPlayerService, PlayerService>();
-
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IMatchService, MatchService>();    
 builder.Services.AddScoped<ICoupleService, CoupleService>();    
 builder.Services.AddScoped<ICoupleService, CoupleService>();
 builder.Services.AddScoped<IRegistrationService, RegistrationService>();
 builder.Services.AddScoped<ICoupleAvailabilityService, CoupleAvailabilityService>();
 builder.Services.AddScoped<IMatchService, MatchService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IManagerService, ManagerService>();
+
+#endregion
+
+// Infraestructura / Seguridad
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+
+
+#region JWT Authorize
+
+builder.Services.AddAuthentication(options =>
+{
+    
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
+    };
+});
+
 #endregion
 
 
@@ -107,34 +147,29 @@ var app = builder.Build();
 
 #endregion
 
-
-#region PIPELINE DE LA APLICACIÓN (MIDDLEWARES)
+#region PIPELINE DE LA APP.
 // =========================================================================
-// 7. PIPELINE DE LA APLICACIÓN (MIDDLEWARES)
+// 7. PIPELINE DE LA APLICACIÓN (ORDEN CRÍTICO)
 // =========================================================================
 
-// Configuración para el entorno de desarrollo
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi(); // Esto habilita Swagger/OpenAPI
 }
 
 app.UseHttpsRedirection();
 
-// Importante: El UseCors debe ir DESPUÉS de HttpsRedirection y ANTES de Authorization
+// 1. CORS: Primero dejamos entrar la petición
 app.UseCors("PadelFrontendPolicy");
 
+// 2. AUTHENTICATION: ¿Quién sos? (Lee el Token)
+app.UseAuthentication();
+
+// 3. AUTHORIZATION: ¿Tenés permiso para esto? (Mira los Roles)
 app.UseAuthorization();
 
+// 4. ROUTING: Mandamos la petición al controlador
 app.MapControllers();
 
-
-#endregion
-
-#region LANZAMIENTO
-// =========================================================================
-// 8. LANZAMIENTO
-// =========================================================================
 app.Run();
-
 #endregion

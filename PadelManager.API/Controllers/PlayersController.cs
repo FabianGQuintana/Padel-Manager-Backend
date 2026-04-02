@@ -20,6 +20,7 @@ namespace PadelManager.API.Controllers
         #region PUT-PATCH-POST
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreatePlayerDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -41,6 +42,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdatePlayerDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -65,6 +67,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -99,6 +102,7 @@ namespace PadelManager.API.Controllers
         #region GETS
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _playerService.GetPlayerByIdAsync(id);
@@ -115,6 +119,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/name/{name}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByName(string name)
         {
             var result = await _playerService.GetPlayerByNameAsync(name);
@@ -122,6 +127,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/lastname/{lastName}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByLastName(string lastName)
         {
             var result = await _playerService.GetPlayerByLastNameAsync(lastName);
@@ -129,6 +135,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/phone/{phoneNumber}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByPhoneNumber(string phoneNumber)
         {
             var result = await _playerService.GetPlayerByPhoneNumberAsync(phoneNumber);
@@ -137,6 +144,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/dni/{dni}")]
+        [Authorize(Roles = "Admin, Organizador,Jugador")]
         public async Task<IActionResult> GetByDni(string dni)
         {
             var result = await _playerService.GetPlayerByDniAsync(dni);
@@ -145,6 +153,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/age/{age}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByAge(byte age)
         {
             var result = await _playerService.GetPlayersByAgeAsync(age);
@@ -152,6 +161,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/availability/{availability}")]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> GetByAvailability(string availability)
         {
             var result = await _playerService.GetPlayersByAvailabilityAsync(availability);

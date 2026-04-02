@@ -45,13 +45,22 @@ namespace PadelManager.Application.Services
             var tournament = dto.ToEntity();
             var user = _currentUser.UserName ?? "System";
 
+            //PASO CLAVE: Buscamos al manager y lo agregamos a la colección
+            var creatorManager = await _managerRepo.GetByIdAsync(dto.ManagerId);
+            if (creatorManager != null)
+            {
+                tournament.Managers.Add(creatorManager); // Así se llena la tabla intermedia
+            }
+
             tournament.CreatedBy = user;
             tournament.LastModifiedBy = user;
 
-            var result = await _tournamentRepo.AddAsync(tournament);
+            await _tournamentRepo.AddAsync(tournament);
             await _unitOfWork.SaveChangesAsync();
 
-            return result.ToResponseDto(0);
+            // Re-hidratamos con los Includes
+            var enrichedTournament = await _tournamentRepo.GetTournamentByIdWithManagersAsync(tournament.Id);
+            return enrichedTournament!.ToResponseDto(0);
         }
 
         public async Task<bool> UpdateTournamentAsync(Guid id, UpdateTournamentDto dto)
@@ -121,7 +130,8 @@ namespace PadelManager.Application.Services
 
         public async Task<TournamentResponseDto?> GetTournamentByIdAsync(Guid tournamentId)
         {
-            var tournament = await _tournamentRepo.GetByIdAsync(tournamentId);
+            var tournament = await _tournamentRepo.GetTournamentByIdWithManagersAsync(tournamentId);
+
             if (tournament == null) return null;
 
             var count = await _registrationRepo.CountByTournamentIdAsync(tournamentId);
@@ -136,7 +146,7 @@ namespace PadelManager.Application.Services
 
         public async Task<IEnumerable<TournamentResponseDto>> GetAllTournamentsAsync()
         {
-            var tournaments = await _tournamentRepo.GetAllAsync();
+            var tournaments = await _tournamentRepo.GetAllWithManagersAsync();
             return tournaments.ToResponseDto();
         }
 

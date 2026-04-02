@@ -20,6 +20,7 @@ namespace PadelManager.API.Controllers
         #region PUT-PATCH-POST
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreateCoupleDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -36,6 +37,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateCoupleDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -47,6 +49,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPatch("{id:guid}/replace-player")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> ReplacePlayer(Guid id, [FromBody] ReplaceCouplePlayerDto dto)
         {
             try
@@ -63,6 +66,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             var success = await _coupleService.SoftDeleteToggleCoupleAsync(id);
@@ -75,6 +79,7 @@ namespace PadelManager.API.Controllers
         #region GETS
 
         [HttpGet("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetById(Guid id)
         {
             var couple = await _coupleService.GetCoupleByIdAsync(id);
@@ -90,6 +95,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/nickname/{nickname}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetByNickname(string nickname)
         {
             var couple = await _coupleService.GetCoupleByNicknameAsync(nickname);
@@ -98,12 +104,14 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/player/{playerId:guid}")]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> GetByPlayer(Guid playerId)
         {
             return Ok(await _coupleService.GetCouplesByPlayerIdAsync(playerId));
         }
 
         [HttpGet("no-zone")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetWithoutZone()
         {
             return Ok(await _coupleService.GetCouplesWithoutZoneAsync());

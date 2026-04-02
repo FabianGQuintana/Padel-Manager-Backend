@@ -23,14 +23,23 @@ namespace PadelManager.Infrastructure.Persistence
         private IGenericRepository<Registration>? _registrations;
         private IGenericRepository<Category>? _categories;
         private IGenericRepository<CoupleAvailability>? _coupleAvailabilities;
-
+        private IGenericRepository<User>? _users;
+        private IGenericRepository<Role>? _roles;
+        private IGenericRepository<RefreshToken>? _refreshTokens;
         public UnitOfWork(PadelManagerDbContext context)
         {
             _context = context;
         }
 
         // Propiedad para acceder al repositorio de Players
+        
         public IGenericRepository<Player> Players => _players ??= new GenericRepository<Player>(_context);
+        
+        // Propiedad para acceder al repositorio de Users
+        public IGenericRepository<User> Users => _users ??= new GenericRepository<User>(_context);
+        
+        // Propiedad para acceder al repositorio de Roles
+        public IGenericRepository<Role> Roles => _roles ??= new GenericRepository<Role>(_context);
 
         // Propiedad para acceder al repositorio de Matches
         public IGenericRepository<Match> Matches => _matches ??= new GenericRepository<Match>(_context);
@@ -61,6 +70,9 @@ namespace PadelManager.Infrastructure.Persistence
 
         // Propiedad para acceder al repositorio de CoupleAvailabilities
         public IGenericRepository<CoupleAvailability> CoupleAvailabilities => _coupleAvailabilities ??= new GenericRepository<CoupleAvailability>(_context);
+
+        // Propiedad para acceder al repositorio de RefreshToken
+        public IGenericRepository<RefreshToken> RefreshTokens => _refreshTokens ??= new GenericRepository<RefreshToken>(_context);
         // Guarda todos los cambios pendientes en la DB
         public async Task<int> SaveChangesAsync()
         {

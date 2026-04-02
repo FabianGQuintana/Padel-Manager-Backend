@@ -20,7 +20,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
                 .IsRequired(false);
 
             // ============================================================
-            // 🛡️ REGLA DE ORO: Unicidad de la Pareja
+            //  REGLA DE ORO: Unicidad de la Pareja
             // Evita que se cree la misma combinación de jugadores dos veces.
             // ============================================================
             builder.HasIndex(c => new { c.Player1Id, c.Player2Id })

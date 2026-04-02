@@ -25,6 +25,7 @@ namespace PadelManager.API.Controllers
         #region PUT-PATCH-POST
 
         [HttpPost]
+        [Authorize(Roles = "Admin, Organizador")]
         //[Authorize] Haria falta poner en todos los metodos en este mismo lugar pero como lo puse de bajo del [ApiController] no hace falta
         public async Task<IActionResult> Post([FromBody] CreateCategoryDto dto)
         {
@@ -47,7 +48,8 @@ namespace PadelManager.API.Controllers
         }
 
 
-        [HttpPut("{id:guid}")]  
+        [HttpPut("{id:guid}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id,  [FromBody] UpdateCategoryDto dto)
         {
             if(!ModelState.IsValid) return BadRequest(ModelState);
@@ -76,6 +78,7 @@ namespace PadelManager.API.Controllers
 
 
         [HttpPatch("{id:guid}/SoftDelete")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
             try
@@ -133,6 +136,7 @@ namespace PadelManager.API.Controllers
 
 
         [HttpGet("search/{id:guid}/WithRegistration")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetWithRegistrations(Guid id)
         {
             var result = await _categoryService.GetCategoryWithRegistrationsAsync(id);
@@ -142,6 +146,7 @@ namespace PadelManager.API.Controllers
 
 
         [HttpGet("search/{id:guid}/WithTournament")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetTournamentIdAsync(Guid id)
         {
             var result = await _categoryService.GetCategoriesByTournamentIdAsync(id);
@@ -151,6 +156,7 @@ namespace PadelManager.API.Controllers
 
 
         [HttpGet("search/name/{name}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetNameAsync(string name)
         {
             var result = await _categoryService.GetCategoriesByNameAsync(name);
@@ -160,6 +166,7 @@ namespace PadelManager.API.Controllers
 
 
         [HttpGet("search/maxTeams/{maxTeams:int}")]
+        [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetMaxTeamsAsync(int maxTeams)
         {
             var result = await _categoryService.GetCategoriesByMaxTeamsAsync(maxTeams);
