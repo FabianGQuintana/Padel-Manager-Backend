@@ -23,9 +23,17 @@ namespace PadelManager.Infrastructure.Repositories
 
         public async Task<Manager?> GetManagerByUserIdAsync(Guid userId)
         {
-            // Como usamos Shared Primary Key, buscamos por ID directamente
+               return await _context.Managers
+                 .Include(m => m.User)
+                 .FirstOrDefaultAsync(m => m.UserId == userId);
+        }
+
+        public async Task<IEnumerable<Manager>> GetAllWithUsersAsync()
+        {
             return await _context.Managers
-                .FirstOrDefaultAsync(m => m.UserId == userId );
+                .Include(m => m.User)           
+                .ThenInclude(u => u.Role)
+                .ToListAsync();
         }
     }
 }

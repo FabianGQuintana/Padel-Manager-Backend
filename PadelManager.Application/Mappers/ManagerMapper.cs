@@ -19,6 +19,11 @@ public static class ManagerMapper
         };
     }
 
+    public static IEnumerable<ManagerResponseDto> ToResponseDto(this IEnumerable<Manager> entities)
+    {
+        return entities.Select(e => e.ToResponseDto());
+    }
+
     public static void UpdateEntity(this Manager entity, UpdateManagerDto dto)
     {
         
