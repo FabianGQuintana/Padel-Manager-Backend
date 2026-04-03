@@ -13,7 +13,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             builder.HasKey(z => z.Id);
 
             // Filtro Global para Soft Delete
-            builder.HasQueryFilter(z => z.DeletedAt == null);
+            //builder.HasQueryFilter(z => z.DeletedAt == null);
 
             builder.Property(z => z.Name)
                 .IsRequired()

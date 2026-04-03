@@ -11,5 +11,6 @@ namespace PadelManager.Application.DTOs.CoupleAvailability
         public TimeOnly From { get; set; }
         public TimeOnly To { get; set; }
         public Guid CoupleId { get; set; }
+        public string IsActive { get; set; } = null!;
     }
 }

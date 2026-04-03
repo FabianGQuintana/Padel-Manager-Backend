@@ -12,6 +12,8 @@ namespace PadelManager.Application.DTOs.Registration
 
         public TimeOnly RegistrationTime { get; set; }
 
+        public string IsActive { get; set; } = null!;
+
         public Guid CoupleId { get; set; }
         public Guid CategoryId { get; set; }
         public Guid TournamentId { get; set; }

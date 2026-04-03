@@ -18,7 +18,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.CoupleAvailabilities
                 .Include(ca => ca.Couple)
-                .Where(ca => ca.CoupleId == coupleId && ca.DeletedAt == null)
+                .Where(ca => ca.CoupleId == coupleId )
                 .ToListAsync();
         }
 
@@ -26,14 +26,13 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.CoupleAvailabilities
                 .Include(ca => ca.Couple)
-                .Where(ca => ca.DeletedAt == null)
                 .ToListAsync();
         }
 
         public async Task SoftDeleteAvailabilitiesByCoupleIdAsync(Guid coupleId)
         {
             var availabilities = await _context.CoupleAvailabilities
-                .Where(ca => ca.CoupleId == coupleId && ca.DeletedAt == null)
+                .Where(ca => ca.CoupleId == coupleId )
                 .ToListAsync();
 
             foreach (var availability in availabilities)

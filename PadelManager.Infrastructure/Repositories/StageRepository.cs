@@ -41,7 +41,7 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Stages
                 .FirstOrDefaultAsync(s => s.CategoryId == categoryId
                                      && s.Type == StageType.GroupPhase 
-                                     && s.DeletedAt == null);
+                                    );
         }
 
         public async Task<IEnumerable<Stage>> GetStagesByTypeAsync(StageType type)
@@ -49,7 +49,7 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Stages
                 .AsNoTracking() //  Optimizamos memoria para lectura
                 .Include(s => s.Category) // Opcional: Incluimos la categoría por si necesitás el nombre
-                .Where(s => s.Type == type && s.DeletedAt == null)
+                .Where(s => s.Type == type )
                 .ToListAsync();
         }
 

@@ -12,8 +12,6 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
 
             builder.HasKey(c => c.Id);
 
-            // Filtro para Soft Delete
-            builder.HasQueryFilter(c => c.DeletedAt == null);
 
             builder.Property(c => c.Nickname)
                 .HasMaxLength(50)

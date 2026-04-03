@@ -15,10 +15,14 @@ namespace PadelManager.Application.DTOs.Tournament
 
         public  string Status { get; set; } = null!;
 
+        public string IsActive { get; set; } = null!;
+
         public string TournamentType { get; set; } = null!;
 
         public Guid ManagerId { get; set; }
 
         public string ManagerName { get; set; } = null!;
+
+
     }
 }

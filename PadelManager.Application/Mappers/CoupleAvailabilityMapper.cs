@@ -18,7 +18,8 @@ namespace PadelManager.Application.Mappers
                 Day = availability.Day,
                 From = availability.From,
                 To = availability.To,
-                CoupleId = availability.CoupleId
+                CoupleId = availability.CoupleId,
+                IsActive = availability.DeletedAt == null ? "Activo" : "Inactivo"
             };
         }
 

@@ -8,5 +8,6 @@ namespace PadelManager.Application.DTOs.Role
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = null!; // Aquí mandaremos el string del Enum
+        public string IsActive { get; set; } = null!;
     }
 }

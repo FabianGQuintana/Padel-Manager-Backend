@@ -27,14 +27,14 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Zone>> GetZonesByNameAsync(string name)
         {
             return await _context.Zones
-                .Where(z => z.Name == name && z.DeletedAt == null) // Filtro de borrado lógico
+                .Where(z => z.Name == name ) 
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Zone>> GetZonesByStageIdAsync(Guid stageId)
         {
             return await _context.Zones
-                .Where(z => z.StageId == stageId && z.DeletedAt == null)
+                .Where(z => z.StageId == stageId )
                 .ToListAsync();
         }
 
@@ -49,7 +49,7 @@ namespace PadelManager.Infrastructure.Repositories
                 .Include(z => z.Matches)
                 .Include(z => z.Couples)     
                 .Include(z => z.Statistics)  
-                .Where(z => z.Id == zoneId && z.DeletedAt == null)
+                .Where(z => z.Id == zoneId )
                 .FirstOrDefaultAsync();
         }
 
@@ -57,7 +57,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             // Usamos .Any() para buscar dentro de la colección de parejas de la zona
             return await _context.Zones
-                .Where(z => z.Couples.Any(c => c.Id == coupleId) && z.DeletedAt == null)
+                .Where(z => z.Couples.Any(c => c.Id == coupleId) )
                 .ToListAsync();
         }
 
@@ -65,7 +65,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             // Realiza un SELECT COUNT(*) directamente en la base de datos
             return await _context.Zones
-                .CountAsync(z => z.StageId == stageId && z.DeletedAt == null);
+                .CountAsync(z => z.StageId == stageId );
         }
 
 

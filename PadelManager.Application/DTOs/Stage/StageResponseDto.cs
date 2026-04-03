@@ -13,6 +13,7 @@ namespace PadelManager.Application.DTOs.Stage
 
         public int Order { get; set; }
 
+        public string IsActive { get; set; } = null!;
         public Guid CategoryId { get; set; }
 
         // Datos calculados opcionales

@@ -6,7 +6,7 @@ namespace PadelManager.Application.Mappers
 {
     public static class UserMapper
     {
-        // 🎯 FIX para el error de ToResponseDto
+  
         public static UserResponseDto ToResponseDto(this User entity)
         {
             if (entity == null) return null!;
@@ -19,7 +19,7 @@ namespace PadelManager.Application.Mappers
                 Dni = entity.Dni,
                 Email = entity.Email,
                 PhoneNumber = entity.PhoneNumber,
-                // Si la entidad Role está cargada (.Include), mostramos el nombre
+                IsActive = entity.DeletedAt == null ? "Activo" : "Inactivo",
                 RoleName = entity.Role?.NameRol.ToString() ?? "Sin Rol"
             };
         }

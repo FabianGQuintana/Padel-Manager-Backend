@@ -19,19 +19,19 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Users
                 .Include(u => u.Role) // Importante para saber qué permisos tiene al loguearse
-                .FirstOrDefaultAsync(u => u.Email == email && u.DeletedAt == null);
+                .FirstOrDefaultAsync(u => u.Email == email );
         }
 
         public async Task<User?> GetUserByDniAsync(string dni)
         {
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.Dni == dni && u.DeletedAt == null);
+                .FirstOrDefaultAsync(u => u.Dni == dni );
         }
 
         public async Task<User?> GetUserByPhoneNumberAsync(string phoneNumber)
         {
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.PhoneNumber ==  phoneNumber && u.DeletedAt == null);
+                .FirstOrDefaultAsync(u => u.PhoneNumber ==  phoneNumber );
         }
 
         public async Task<User?> GetUserWithManagerProfileAsync(Guid userId)
@@ -39,13 +39,13 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Users
                 .Include(u => u.Manager) // Traemos la info de LicenciaAPA, Experiencia, etc.
                 .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.Id == userId && u.DeletedAt == null);
+                .FirstOrDefaultAsync(u => u.Id == userId );
         }
 
         public async Task<IEnumerable<User>> GetUsersByNameAsync(string name)
         {
             return await _context.Users
-                .Where(u => u.Name == name && u.DeletedAt == null)
+                .Where(u => u.Name == name )
                 .ToListAsync();
 
         }
@@ -53,7 +53,7 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<User>> GetUsersByLastNameAsync(string lastName)
         {
             return await _context.Users
-                .Where(u => u.LastName == lastName && u.DeletedAt == null)
+                .Where(u => u.LastName == lastName )
                 .ToListAsync();
 
         }
@@ -62,7 +62,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Users
                 .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.Id == id && u.DeletedAt == null);
+                .FirstOrDefaultAsync(u => u.Id == id );
         }
 
         public async Task<IEnumerable<User>> GetUsersByRoleNameAsync(string roleName)
@@ -76,7 +76,7 @@ namespace PadelManager.Infrastructure.Repositories
             
             return await _context.Users
                 .Include(u => u.Role) 
-                .Where(u => u.Role.NameRol == roleEnum && u.DeletedAt == null)
+                .Where(u => u.Role.NameRol == roleEnum )
                 .ToListAsync();
         }
 

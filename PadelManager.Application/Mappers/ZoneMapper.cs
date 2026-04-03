@@ -13,6 +13,7 @@ namespace PadelManager.Application.Mappers
                 Id = zone.Id,
                 Name = zone.Name,
                 StageId = zone.StageId,
+                IsActive = zone.DeletedAt == null ? "Activo" : "Inactivo",
 
                 Couples = zone.Couples?.Select(c => c.ToResponseDto()).ToList() ?? new(),
 

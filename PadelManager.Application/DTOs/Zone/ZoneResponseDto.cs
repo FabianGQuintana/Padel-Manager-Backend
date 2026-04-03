@@ -12,6 +12,7 @@ namespace PadelManager.Application.DTOs.Zone
         public Guid Id { get; set; }
         public string Name { get; set; } = null!;
         public Guid StageId { get; set; }
+        public string IsActive { get; set; } = null!;
 
         // Relaciones transformadas a DTOs
         public List<CoupleResponseDto> Couples { get; set; } = new();

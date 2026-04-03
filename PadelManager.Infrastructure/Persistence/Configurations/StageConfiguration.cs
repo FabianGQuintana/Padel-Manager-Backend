@@ -12,8 +12,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
 
             builder.HasKey(s => s.Id);
 
-            // Filtro para Soft Delete: No trae etapas borradas lógicamente
-            builder.HasQueryFilter(s => s.DeletedAt == null);
+            //builder.HasQueryFilter(z => z.DeletedAt == null);
 
             builder.Property(s => s.Name)
                 .IsRequired()

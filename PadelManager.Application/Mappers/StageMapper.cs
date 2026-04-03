@@ -21,6 +21,7 @@ namespace PadelManager.Application.Mappers
                 Type = stage.Type,
                 Order = stage.Order,
                 CategoryId = stage.CategoryId,
+                IsActive = stage.DeletedAt == null ? "Activo" : "Inactivo",
 
                 // Datos calculados opcionales
                 ZonesCount = zonesCount,
