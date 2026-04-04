@@ -59,9 +59,11 @@ namespace PadelManager.Application.Mappers
                 Day = dto.Day,
                 From = dto.From,
                 To = dto.To,
-                CoupleId = dto.CoupleId
+                // Esto permite que el sistema funcione tanto si 
+                // creas la pareja de cero (null) como si agregas horarios después (con ID).
+                CoupleId = dto.CoupleId ?? Guid.Empty
 
-                
+
             };
         }
     }

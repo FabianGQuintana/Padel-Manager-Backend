@@ -30,8 +30,15 @@ namespace PadelManager.Application.Services
 
         public async Task<CoupleAvailabilityResponseDto> AddNewAvailabilityAsync(CreateCoupleAvailabilityDto dto)
         {
-            var couple = await _coupleRepository.GetCoupleWithRegistrationDetailsAsync(dto.CoupleId)
-                        ?? await _coupleRepository.GetByIdAsync(dto.CoupleId);
+            // 1. Validación de seguridad: Si no hay ID de pareja, no podemos agregarle disponibilidad.
+            if (!dto.CoupleId.HasValue || dto.CoupleId == Guid.Empty)
+                throw new Exception("Debe especificar el ID de la pareja para agregar una disponibilidad.");
+
+            // Al usar .Value, C# ya sabe que no es nulo y desaparece el error
+            var coupleId = dto.CoupleId.Value;
+
+            var couple = await _coupleRepository.GetCoupleWithRegistrationDetailsAsync(coupleId)
+                        ?? await _coupleRepository.GetByIdAsync(coupleId);
 
             if (couple == null)
                 throw new Exception("La pareja especificada no existe");
@@ -39,9 +46,10 @@ namespace PadelManager.Application.Services
             if (HasTournamentStarted(couple))
                 throw new Exception("No se pueden agregar disponibilidades una vez iniciado el torneo");
 
+            // 2. Aquí asegúrate de que ValidateAvailability también acepte el DTO con el Guid?
             ValidateAvailability(dto);
 
-            var existingAvailabilities = await _coupleAvailabilityRepository.GetAvailabilitiesByCoupleIdAsync(dto.CoupleId);
+            var existingAvailabilities = await _coupleAvailabilityRepository.GetAvailabilitiesByCoupleIdAsync(coupleId);
 
             ValidateAvailabilityOverlaps(
                 existingAvailabilities,
@@ -49,9 +57,14 @@ namespace PadelManager.Application.Services
                 dto.From,
                 dto.To);
 
+            // 3. El Mapper: Al llamar a dto.ToEntity(), usará el Guid.Empty que pusimos 
+            // en el ??, pero como aquí SÍ hay un valor en dto.CoupleId, se guardará correctamente.
             var availability = dto.ToEntity();
-            var user = _currentUser.UserName ?? "System";
 
+            // Forzamos el ID por si acaso el Mapper puso Empty
+            availability.CoupleId = coupleId;
+
+            var user = _currentUser.UserName ?? "System";
             availability.CreatedBy = user;
             availability.LastModifiedBy = user;
 

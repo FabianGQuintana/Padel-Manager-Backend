@@ -59,13 +59,9 @@ namespace PadelManager.Application.Mappers
                 Nickname = dto.Nickname,
                 Player1Id = dto.Player1Id,
                 Player2Id = dto.Player2Id,
+                // Reutilizamos el método de arriba de forma limpia
                 Availabilities = dto.Availabilities
-                    .Select(a => new CoupleAvailability
-                    {
-                        Day = a.Day,
-                        From = a.From,
-                        To = a.To
-                    })
+                    .Select(a => a.ToEntity())
                     .ToList()
             };
         }
