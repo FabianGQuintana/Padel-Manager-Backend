@@ -19,6 +19,7 @@ namespace PadelManager.Application.Mappers
                 MaxTeams = category.MaxTeams,
                 TournamentId = category.TournamentId,
                 RegistrationCount = count,
+                IsActive = category.DeletedAt == null ? "Activo" : "Inactivo",
                 // Usamos tus métodos de la entidad pura:
                 IsFull = category.IsFull(count),
                 CanStart = category.CanStart(count)

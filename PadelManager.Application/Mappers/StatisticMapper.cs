@@ -22,6 +22,7 @@ namespace PadelManager.Application.Mappers
                 GamesWon = statistic.GamesWon,
                 GamesLost = statistic.GamesLost,
                 CoupleId = statistic.CoupleId,
+                IsActive = statistic.DeletedAt == null ? "Activo" : "Inactivo",
                 ZoneId = statistic.ZoneId
             };
         }

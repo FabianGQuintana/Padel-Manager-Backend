@@ -14,7 +14,9 @@ namespace PadelManager.Application.DTOs.Couple
 
         public Guid Player2Id { get; set; }
         public string Player2Name { get; set; } = null!;
-        
+
+        public string IsActive { get; set; } = null!;
+
         public Guid? ZoneId { get; set; }
          public string? ZoneName { get; set; }
          public List<CoupleAvailabilityResponseDto> Availabilities { get; set; } = new();

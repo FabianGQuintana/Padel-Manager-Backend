@@ -12,8 +12,6 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
 
             builder.HasKey(t => t.Id);
 
-            builder.HasQueryFilter(t => t.DeletedAt == null);
-
             builder.Property(t => t.Name)
                 .IsRequired()
                 .HasMaxLength(100);

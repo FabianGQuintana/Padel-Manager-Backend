@@ -22,6 +22,7 @@ namespace PadelManager.Application.DTOs.Match
         public int Set2_coupleB { get; set; }
         public int? Set3_coupleA { get; set; }
         public int? Set3_coupleB { get; set; }
+        public string IsActive { get; set; } = null!;
 
         // Relations
         public Guid StageId { get; set; }

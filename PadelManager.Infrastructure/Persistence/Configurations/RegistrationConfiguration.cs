@@ -9,7 +9,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Registration> builder)
         {
-            builder.HasQueryFilter(t => t.DeletedAt == null);
+
 
             // Regla de Oro: Índice único compuesto
             // Evita que la Pareja X se inscriba dos veces en la Categoría Y

@@ -22,7 +22,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Set<Statistic>()
                 .Include(s => s.Couple) // Mostrar los nombres de la pareja en la tabla de posiciones
-                .Where(s => s.ZoneId == zoneId && s.DeletedAt == null)
+                .Where(s => s.ZoneId == zoneId)
                 //Esto es opcional pero sirve para ordenar directamente por puntos descendente para que la tabla ya venga armada
                 .OrderByDescending(s => s.Points)          // 1º Criterio: El que tiene más puntos
                 .ThenByDescending(s => s.MatchesWon)       // 2º Criterio (Desempate): El que ganó más partidos
@@ -35,14 +35,14 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Set<Statistic>()
                 .Include(s => s.Zone) // Opcional: para saber en qué zona hizo esos puntos
-                .Where(s => s.CoupleId == coupleId && s.DeletedAt == null)
+                .Where(s => s.CoupleId == coupleId)
                 .ToListAsync();
         }
 
         public async Task<Statistic?> GetStatisticByCoupleIdAndZoneIdAsync(Guid coupleId, Guid zoneId)
         {
             return await _context.Set<Statistic>()
-                .Where(s => s.CoupleId == coupleId && s.ZoneId == zoneId && s.DeletedAt == null)
+                .Where(s => s.CoupleId == coupleId && s.ZoneId == zoneId )
                 .FirstOrDefaultAsync();
         }
     }

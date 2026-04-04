@@ -19,28 +19,28 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Player>> GetPlayerByNameAsync(string name)
         {
             return await _context.Players
-                .Where(p => p.Name == name && p.DeletedAt == null)
+                .Where(p => p.Name == name )
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Player>> GetPlayerByLastNameAsync(string lastName)
         {
             return await _context.Players
-                .Where(p => p.LastName == lastName && p.DeletedAt == null)
+                .Where(p => p.LastName == lastName )
                 .ToListAsync();
         }
 
         public async Task<Player?> GetPlayerByPhoneNumberAsync(string phoneNumber)
         {
             return await _context.Players
-                .Where(p => p.PhoneNumber == phoneNumber && p.DeletedAt == null)
+                .Where(p => p.PhoneNumber == phoneNumber )
                 .FirstOrDefaultAsync();
         }
 
         public async Task<Player?> GetPlayerByDniAsync(string dni)
         {
             return await _context.Players
-                .Where(p => p.Dni == dni && p.DeletedAt == null)
+                .Where(p => p.Dni == dni )
                 .FirstOrDefaultAsync();
         }
 
@@ -49,15 +49,14 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Players
                 .AsNoTracking()
                 .Where(p => p.Availability != null &&
-                            p.Availability.Contains(availability) &&
-                            p.DeletedAt == null)
+                            p.Availability.Contains(availability))
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Player>> GetPlayerByAgeAsync(Byte age)
         {
             return await _context.Players
-                .Where(p => p.Age == age && p.DeletedAt == null)
+                .Where(p => p.Age == age )
                 .ToListAsync();
         }
 

@@ -22,7 +22,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Tournaments
                 .Include(t => t.Categories) // Incluir las categorías relacionadas
-                .Where(t => t.Name.ToLower() == name.ToLower() && t.DeletedAt == null) //De esta forma me puedo asegurar de filtrar los borrados lógicamente
+                .Where(t => t.Name.ToLower() == name.ToLower()) //De esta forma me puedo asegurar de filtrar los borrados lógicamente
                 .ToListAsync();
         }
 
@@ -30,14 +30,14 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Tournament>> GetTournamentsByStartDateAsync(DateTime startDate)
         {
             return await _context.Tournaments // Me aseguro de mirar la fecha unicamente y no la hora , por eso el .Date chicas
-                .Where (t => t.StartDate.Date == startDate.Date && t.DeletedAt == null)
+                .Where (t => t.StartDate.Date == startDate.Date)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByStatusAsync(TournamentStatus status)
         {
             return await _context.Tournaments
-                .Where(t => t.StatusType == status && t.DeletedAt == null)
+                .Where(t => t.StatusType == status)
                 .ToListAsync();
         }
 
@@ -45,28 +45,28 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Tournaments
                 .Include(t => t.Categories) // Importante cargar las categorías
-                .Where(t => t.Categories.Any(c => c.MaxTeams == maxTeams) && t.DeletedAt == null)
+                .Where(t => t.Categories.Any(c => c.MaxTeams == maxTeams))
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByTypeAsync(string tournamentType)
         {
             return await _context.Tournaments
-                .Where(t => t.TournamentType == tournamentType && t.DeletedAt == null)
+                .Where(t => t.TournamentType == tournamentType)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByManagerIdAsync(Guid managerId)
         {
             return await _context.Tournaments
-                .Where(t => t.ManagerId == managerId && t.DeletedAt == null)
+                .Where(t => t.ManagerId == managerId)
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByCategoryIdAsync(Guid categoryId)
         {
             return await _context.Tournaments
-                .Where(t => t.Categories.Any(c => c.Id == categoryId) && t.DeletedAt == null)
+                .Where(t => t.Categories.Any(c => c.Id == categoryId))
                 .ToListAsync();
         }
 
@@ -75,7 +75,7 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Tournaments
                 .Include(t => t.Managers)
                     .ThenInclude(m => m.User) //  Cargamos el User dentro de los Managers
-                .Where(t => t.DeletedAt == null &&
+                .Where(t => 
                        t.Managers.Any(m => m.User.Email == email)) //  Acceso vía m.User
                 .ToListAsync();
         }
@@ -85,7 +85,7 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Tournaments
                 .Include(t => t.Managers)
                     .ThenInclude(m => m.User)
-                .Where(t => t.DeletedAt == null &&
+                .Where(t => 
                        t.Managers.Any(m => m.User.Dni == dni)) // Acceso vía m.User
                 .ToListAsync();
         }
@@ -95,7 +95,7 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Tournaments
                 .Include(t => t.Managers)
                     .ThenInclude(m => m.User)
-                .Where(t => t.DeletedAt == null &&
+                .Where(t =>
                        t.Managers.Any(m => (m.User.Name + " " + m.User.LastName)
                                             .ToLower().Contains(name.ToLower()))) //Acceso vía m.User
                 .ToListAsync();
@@ -105,8 +105,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Tournaments
                 .Include(t => t.Managers)         //  Entramos a la colección de Managers
-                    .ThenInclude(m => m.User)     //  Entramos al User para sacar el nombre
-                .Where(t => t.DeletedAt == null)
+                .ThenInclude(m => m.User)     //  Entramos al User para sacar el nombre
                 .ToListAsync();
         }
 
@@ -116,14 +115,14 @@ namespace PadelManager.Infrastructure.Repositories
             return await _context.Tournaments
                 .Include(t => t.Managers)         // Cargamos Managers
                     .ThenInclude(m => m.User)     // Cargamos el User dentro del Manager
-                .FirstOrDefaultAsync(t => t.Id == id && t.DeletedAt == null);
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<Tournament?> GetTournamentWithCategoriesAsync(Guid id)
         {
             return await _context.Tournaments
                 .Include(t => t.Categories)
-                .Where(t => t.Id == id && t.DeletedAt == null)
+                .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
         }
     }

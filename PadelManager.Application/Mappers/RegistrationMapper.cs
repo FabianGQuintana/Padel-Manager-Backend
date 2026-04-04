@@ -20,6 +20,7 @@ namespace PadelManager.Application.Mappers
                 CoupleId = registration.CoupleId,
                 CategoryId = registration.CategoryId,
                 TournamentId = registration.TournamentId,
+                IsActive = registration.DeletedAt == null ? "Activo" : "Inactivo",
 
                 // Si el servicio nos manda los nombres por parámetro, los usamos.
                 // Si no, intentamos sacarlos de las propiedades de navegación (si el Repositorio usó .Include())

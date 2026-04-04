@@ -12,8 +12,6 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
 
             builder.HasKey(c => c.Id);
 
-            // Filtro Global para Soft Delete
-            builder.HasQueryFilter(c => c.DeletedAt == null);
 
             // ==========================================
             // CONFIGURACIÓN DE PROPIEDADES
@@ -24,7 +22,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
                 .HasMaxLength(50);
 
             builder.Property(c => c.Description)
-                .HasMaxLength(500);
+                .HasMaxLength(1000);
 
             // ==========================================
             // No pueden haber dos categorías con el mismo nombre en el mismo torneo.

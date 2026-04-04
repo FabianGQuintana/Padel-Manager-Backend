@@ -15,6 +15,7 @@ namespace PadelManager.Application.Mappers
                 PhoneNumber = player.PhoneNumber,
                 Dni = player.Dni,
                 Age = player.Age,
+                IsActive = player.DeletedAt == null ? "Activo" : "Inactivo",
                 Availability = player.Availability ?? string.Empty
             };
         }

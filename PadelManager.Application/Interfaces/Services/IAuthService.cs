@@ -9,7 +9,7 @@ namespace PadelManager.Application.Interfaces.Services
     public interface IAuthService
     {
         // Registro específico para Managers (Crea User + Perfil Manager)
-        Task<AuthResponseDto> RegisterManagerAsync(RegisterManagerDto dto);
+        Task<RegisterResponseDto> RegisterManagerAsync(RegisterManagerDto dto);
 
         // Login tradicional
         Task<AuthResponseDto> LoginAsync(LoginUserDto dto);

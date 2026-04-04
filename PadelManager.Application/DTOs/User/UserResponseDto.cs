@@ -13,5 +13,6 @@ namespace PadelManager.Application.DTOs.User
         public string Email { get; set; } = null!;
         public string PhoneNumber { get; set; } = null!;
         public string RoleName { get; set; } = null!; // "Organizador", "Invitado", etc.
+        public string IsActive { get; set; } = null!;
     }
 }

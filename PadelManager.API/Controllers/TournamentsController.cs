@@ -95,7 +95,7 @@ namespace PadelManager.API.Controllers
                 if (!success)
                     return NotFound(new { message = $"No se encontró el torneo con ID: {id}" });
 
-                return Ok(new { message = "Estado del torneo (SoftDelete) actualizado con éxito." });
+                return Ok(new { message = "Estado del torneo actualizado con éxito." });
             }
 
             catch (UnauthorizedAccessException)

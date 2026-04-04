@@ -18,14 +18,14 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Managers
                 .Include(m => m.User) // Eager Loading para traer los datos personales
-                .FirstOrDefaultAsync(m => m.Id == managerId && m.DeletedAt == null);
+                .FirstOrDefaultAsync(m => m.Id == managerId );
         }
 
         public async Task<Manager?> GetManagerByUserIdAsync(Guid userId)
         {
             // Como usamos Shared Primary Key, buscamos por ID directamente
             return await _context.Managers
-                .FirstOrDefaultAsync(m => m.UserId == userId && m.DeletedAt == null);
+                .FirstOrDefaultAsync(m => m.UserId == userId );
         }
     }
 }

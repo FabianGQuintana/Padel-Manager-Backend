@@ -35,13 +35,16 @@ namespace PadelManager.Application.Services
 
         #region REGISTRO Y LOGIN
 
-        public async Task<AuthResponseDto> RegisterManagerAsync(RegisterManagerDto dto)
+        public async Task<RegisterResponseDto> RegisterManagerAsync(RegisterManagerDto dto)
         {
             if (await _userRepository.GetUserByEmailAsync(dto.Email) != null)
-                return new AuthResponseDto { Success = false, Message = "El email ya está registrado." };
+                return new RegisterResponseDto { Success = false, Message = "El email ya está registrado." };
 
             if (await _userRepository.GetUserByDniAsync(dto.Dni) != null)
-                return new AuthResponseDto { Success = false, Message = "El DNI ya está registrado." };
+                return new RegisterResponseDto { Success = false, Message = "El DNI ya está registrado." };
+
+            if (await _userRepository.GetUserByPhoneNumberAsync(dto.PhoneNumber) != null)
+                return new RegisterResponseDto { Success = false, Message = "El Número de celular ya está registrado." };
 
             var user = new User
             {
@@ -51,7 +54,7 @@ namespace PadelManager.Application.Services
                 Dni = dto.Dni,
                 PhoneNumber = dto.PhoneNumber,
                 Email = dto.Email,
-                PasswordHash = _passwordHasher.Hash(dto.Password), //  Usamos el hasher
+                PasswordHash = _passwordHasher.Hash(dto.Password),
                 RoleId = dto.RoleId,
                 CreatedAt = DateTime.UtcNow,
                 CreatedBy = "System"
@@ -68,11 +71,17 @@ namespace PadelManager.Application.Services
             };
 
             await _userRepository.AddAsync(user);
-            await _managerRepository.AddAsync(managerProfile); //  FIX: Adiós al error del Set<Manager>
-
+            await _managerRepository.AddAsync(managerProfile);
             await _unitOfWork.SaveChangesAsync();
 
-            return new AuthResponseDto { Success = true, Message = "Registro exitoso.", UserId = user.Id };
+           
+            return new RegisterResponseDto
+            {
+                Success = true,
+                Message = "Registro exitoso.",
+                UserId = user.Id,
+                UserName = $"{user.Name} {user.LastName}"
+            };
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginUserDto dto)

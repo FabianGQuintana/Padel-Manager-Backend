@@ -42,6 +42,13 @@ namespace PadelManager.Application.Services
 
         public async Task<TournamentResponseDto> AddNewTournamentAsync(CreateTournamentDto dto)
         {
+
+            if (dto.StartDate.Date < DateTime.UtcNow.Date)
+            {
+                throw new ArgumentException("La fecha de inicio del torneo no puede ser anterior a hoy.");
+            }
+
+
             var tournament = dto.ToEntity();
             var user = _currentUser.UserName ?? "System";
 

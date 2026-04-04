@@ -17,8 +17,6 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             // CONFIGURACIÓN DE PROPIEDADES
             // ==========================================
 
-            // Filtro para Soft Delete
-            builder.HasQueryFilter(m => m.DeletedAt == null);
 
             // Mapeo del Enum como String (más fácil de leer en pgAdmin)
             builder.Property(m => m.StatusType)

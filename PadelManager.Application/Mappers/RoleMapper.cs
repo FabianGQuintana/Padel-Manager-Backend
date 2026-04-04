@@ -15,6 +15,7 @@ namespace PadelManager.Application.Mappers
             return new RoleResponseDto
             {
                 Id = entity.Id,
+                IsActive = entity.DeletedAt == null ? "Activo" : "Inactivo",
                 Name = entity.NameRol.ToString()
             };
         }

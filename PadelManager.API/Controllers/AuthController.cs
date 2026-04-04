@@ -24,11 +24,11 @@ namespace PadelManager.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register-manager")]
-        public async Task<IActionResult> RegisterManager([FromBody] RegisterManagerDto dto)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterManagerDto dto)
         {
             var result = await _authService.RegisterManagerAsync(dto);
-
+             
             if (!result.Success)
             {
                 return BadRequest(new { message = result.Message });

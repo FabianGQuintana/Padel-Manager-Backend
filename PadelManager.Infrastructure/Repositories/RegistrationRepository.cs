@@ -22,7 +22,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Registrations
                 .Include(r => r.Couple) 
-                .Where(r => r.CategoryId == categoryId && r.DeletedAt == null)
+                .Where(r => r.CategoryId == categoryId )
                 .Select(r => r.Couple) 
                 .Distinct()        
                 .ToListAsync();
@@ -31,35 +31,35 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Registration>> GetRegistrationsByDateAsync(DateTime date)
         {
             return await _context.Registrations
-                .Where(r => r.RegistrationDate == DateOnly.FromDateTime(date) && r.DeletedAt == null)
+                .Where(r => r.RegistrationDate == DateOnly.FromDateTime(date) )
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Registration>> GetRegistrationsByTimeAsync(TimeOnly time)
         {
             return await _context.Registrations
-                .Where(r => r.RegistrationTime == time && r.DeletedAt == null)
+                .Where(r => r.RegistrationTime == time )
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Registration>> GetRegistrationsByCoupleIdAsync(Guid coupleId)
         {
             return await _context.Registrations
-                .Where(r => r.CoupleId == coupleId && r.DeletedAt == null)
+                .Where(r => r.CoupleId == coupleId )
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Registration>> GetRegistrationsByCategoryIdAsync(Guid categoryId)
         {
             return await _context.Registrations
-                .Where(r => r.CategoryId == categoryId && r.DeletedAt == null)
+                .Where(r => r.CategoryId == categoryId )
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Registration>> GetRegistrationsByTournamentIdAsync(Guid tournamentId)
         {
             return await _context.Registrations
-                .Where(r => r.TournamentId == tournamentId && r.DeletedAt == null)
+                .Where(r => r.TournamentId == tournamentId )
                 .ToListAsync();
         }
 
@@ -73,29 +73,29 @@ namespace PadelManager.Infrastructure.Repositories
                 .Where(r => r.RegistrationDate == DateOnly.FromDateTime(date) &&
                             r.RegistrationTime == time &&
                             r.CoupleId == coupleId &&
-                            r.CategoryId == categoryId &&
-                            r.DeletedAt == null)
+                            r.CategoryId == categoryId 
+                           )
                 .ToListAsync();
         }
 
         public async Task<int> CountRegistrationsByCategoryIdAsync(Guid categoryId)
         {
             return await _context.Registrations
-                .CountAsync(r => r.CategoryId == categoryId && r.DeletedAt == null);
+                .CountAsync(r => r.CategoryId == categoryId );
         }
 
         public async Task<int> CountByTournamentIdAsync(Guid tournamentId)
         {
             return await _context.Registrations
-                .CountAsync(r => r.TournamentId == tournamentId && r.DeletedAt == null);
+                .CountAsync(r => r.TournamentId == tournamentId );
         }
 
         public async Task<bool> ExistsByCoupleAndTournamentAsync(Guid coupleId, Guid tournamentId)
         {
             return await _context.Registrations
                 .AnyAsync(r => r.CoupleId == coupleId &&
-                               r.TournamentId == tournamentId &&
-                               r.DeletedAt == null);
+                               r.TournamentId == tournamentId
+                              );
         }
     }
 }

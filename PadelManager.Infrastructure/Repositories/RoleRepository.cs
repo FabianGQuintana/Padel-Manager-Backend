@@ -18,7 +18,7 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<Role?> GetByNameAsync(TypeUser roleName)
         {
             return await _context.Roles
-                .FirstOrDefaultAsync(r => r.NameRol == roleName && r.DeletedAt == null);
+                .FirstOrDefaultAsync(r => r.NameRol == roleName);
         }
     }
 }

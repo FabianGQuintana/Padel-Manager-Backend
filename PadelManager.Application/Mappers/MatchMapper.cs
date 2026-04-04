@@ -31,7 +31,7 @@ namespace PadelManager.Application.Mappers
                 Set2_coupleB = match.Set2_coupleB,
                 Set3_coupleA = match.Set3_coupleA,
                 Set3_coupleB = match.Set3_coupleB,
-
+                IsActive = match.DeletedAt == null ? "Activo" : "Inactivo",
                 // Relaciones
                 StageId = match.StageId,
                 ZoneId = match.ZoneId,

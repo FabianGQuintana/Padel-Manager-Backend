@@ -22,6 +22,8 @@ namespace PadelManager.Application.DTOs.Statistic
 
         public int GamesLost { get; set; }
 
+        public string IsActive { get; set; } = null!;
+
         public Guid CoupleId { get; set; }
 
         public Guid ZoneId { get; set; }

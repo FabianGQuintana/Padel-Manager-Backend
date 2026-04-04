@@ -28,7 +28,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(ca => new { ca.CoupleId, ca.Day });
 
-            builder.HasQueryFilter(ca => ca.DeletedAt == null);
+            
         }
     }
 }

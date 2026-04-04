@@ -14,6 +14,7 @@ public static class ManagerMapper
             Dni = entity.User.Dni,
             YearExperience = entity.YearExperience,
             LicenceAPA = entity.LicenceAPA,
+            IsActive = entity.DeletedAt == null ? "Activo" : "Inactivo",
             RoleName = entity.User.Role?.NameRol.ToString() ?? "Sin Rol"
         };
     }

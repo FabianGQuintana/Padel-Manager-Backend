@@ -22,6 +22,7 @@ namespace PadelManager.Application.Mappers
                 Status = tournament.StatusType.ToString(),
                 TournamentType = tournament.TournamentType,
                 ManagerId = tournament.ManagerId,
+                IsActive = tournament.DeletedAt == null ? "Activo" : "Inactivo",
                 ManagerName = tournament.Managers != null && tournament.Managers.Any()
                 ? string.Join(", ", tournament.Managers.Select(m => $"{m.User?.Name} {m.User?.LastName}"))
                 : "Sin Organizador"

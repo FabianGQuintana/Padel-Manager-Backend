@@ -12,6 +12,7 @@ namespace PadelManager.Application.DTOs.Category
         public string? Description { get; set; }
         public int MaxTeams { get; set; }
         public Guid TournamentId { get; set; }
+        public string IsActive { get; set; } = null!;
 
         // Datos calculados para React/Vite
         public int RegistrationCount { get; set; }

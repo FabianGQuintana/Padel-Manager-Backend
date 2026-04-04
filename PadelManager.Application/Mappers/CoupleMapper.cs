@@ -31,6 +31,7 @@ namespace PadelManager.Application.Mappers
                 ZoneName = couple.Zone != null
                     ? couple.Zone.Name
                     : null,
+                IsActive = couple.DeletedAt == null ? "Activo" : "Inactivo",
 
                 Availabilities = couple.Availabilities
                     .Select(a => new CoupleAvailabilityResponseDto

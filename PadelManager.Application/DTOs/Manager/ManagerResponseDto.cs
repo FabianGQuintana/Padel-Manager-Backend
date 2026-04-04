@@ -13,5 +13,6 @@ namespace PadelManager.Application.DTOs.Manager
         public byte? YearExperience { get; set; }
         public string? LicenceAPA { get; set; }
         public string RoleName { get; set; } = null!;
+        public string IsActive { get; set; } = null!;
     }
 }
