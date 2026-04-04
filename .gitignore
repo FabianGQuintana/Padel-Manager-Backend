@@ -62,3 +62,5 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+/PadelManager.API/appsettings.json
+/PadelManager.Infrastructure/Persistence/Factories/DesignTimeDbContextFactory.cs
