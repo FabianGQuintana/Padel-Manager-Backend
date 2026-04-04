@@ -10,7 +10,7 @@ namespace PadelManager.Infrastructure.Persistence.Factories
         {
             var optionsBuilder = new DbContextOptionsBuilder<PadelManagerDbContext>();
 
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=PadelManagerDB;Username=postgres;Password=Mike44713980");
+            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=PadelManagerDB;Username=postgres;Password=maxiximo21");
 
           
             var designTimeUser = new DesignTimeCurrentUser();

@@ -12,7 +12,7 @@ using PadelManager.Infrastructure.Persistence;
 namespace PadelManager.Infrastructure.Migrations
 {
     [DbContext(typeof(PadelManagerDbContext))]
-    [Migration("20260331215648_InitialDataBaseStatup")]
+    [Migration("20260402212925_InitialDataBaseStatup")]
     partial class InitialDataBaseStatup
     {
         /// <inheritdoc />
