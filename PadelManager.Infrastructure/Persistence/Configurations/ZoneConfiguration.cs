@@ -37,11 +37,6 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade);
 
 
-            builder.HasMany(z => z.Couples)
-                .WithOne(c => c.Zone)
-                .HasForeignKey(c => c.ZoneId)
-                .OnDelete(DeleteBehavior.SetNull);
-
 
             // 3. Relación con Matches (1:N) - Opcional
             // Ya la configuramos en MatchConfiguration, pero EF la reconoce aquí también.

@@ -27,10 +27,7 @@ namespace PadelManager.Application.Mappers
                     ? $"{couple.Player2.Name} {couple.Player2.LastName}"
                     : string.Empty,
 
-                ZoneId = couple.ZoneId,
-                ZoneName = couple.Zone != null
-                    ? couple.Zone.Name
-                    : null,
+
                 IsActive = couple.DeletedAt == null ? "Activo" : "Inactivo",
 
                 Availabilities = couple.Availabilities

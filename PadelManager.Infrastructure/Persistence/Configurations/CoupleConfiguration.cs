@@ -40,14 +40,6 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
                 .HasForeignKey(c => c.Player2Id)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // ============================================================
-            // RELACIÓN CON ZONE (Opcional)
-            // ============================================================
-            builder.HasOne(c => c.Zone)
-                .WithMany(z => z.Couples)
-                .HasForeignKey(c => c.ZoneId)
-                .OnDelete(DeleteBehavior.SetNull);
-            // Si la zona desaparece, la pareja sigue existiendo (queda libre).
         }
     }
 }
