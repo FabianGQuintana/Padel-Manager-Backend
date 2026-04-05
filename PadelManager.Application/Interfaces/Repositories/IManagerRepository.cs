@@ -11,5 +11,7 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<Manager?> GetManagerWithUserAsync(Guid managerId);
 
         Task<Manager?> GetManagerByUserIdAsync(Guid userId);
+
+        Task<IEnumerable<Manager>> GetAllWithUsersAsync();
     }
 }

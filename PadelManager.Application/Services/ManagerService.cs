@@ -36,9 +36,9 @@ namespace PadelManager.Application.Services
         {
             // Nota: Aquí podrías necesitar un método en el repo que traiga a todos con su User
             // Por ahora usamos el genérico y mapeamos
-            var managers = await _managerRepo.GetAllAsync();
+            var managers = await _managerRepo.GetAllWithUsersAsync();
 
-            return managers.Select(m => m.ToResponseDto());
+            return managers.ToResponseDto();
         }
 
         public async Task<bool> UpdateManagerProfileAsync(Guid id, UpdateManagerDto dto)

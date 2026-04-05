@@ -17,11 +17,6 @@ namespace PadelManager.Domain.Entities
         public Guid Player2Id { get; set; }
         public Player Player2 { get; set; } = null!;
 
-        // Relación FK
-        public Guid? ZoneId { get; set; }
-
-        // Propiedad de navegación
-        public  Zone? Zone { get; set; } = null!;
 
        public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
        public ICollection<CoupleAvailability> Availabilities { get; set; } = new List<CoupleAvailability>();

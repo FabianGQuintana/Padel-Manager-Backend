@@ -10,6 +10,9 @@ namespace PadelManager.Domain.Entities
 
         public required TimeOnly RegistrationTime { get; set; }
 
+        public decimal TotalAmount { get; set; }
+        public decimal Discount { get; set; }
+
         //Relations FK
         public  Guid CoupleId { get; set; }
 
