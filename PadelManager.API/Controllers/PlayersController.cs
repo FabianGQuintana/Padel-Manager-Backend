@@ -23,8 +23,6 @@ namespace PadelManager.API.Controllers
         [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreatePlayerDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             try
             {
                 var newPlayer = await _playerService.AddNewPlayerAsync(dto);
@@ -34,6 +32,10 @@ namespace PadelManager.API.Controllers
             catch (InvalidOperationException ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateException)
+            {
+                return Conflict(new { message = "Ya existe un jugador registrado con esos datos (DNI o Teléfono duplicado)." });
             }
             catch (Exception ex)
             {
@@ -45,8 +47,6 @@ namespace PadelManager.API.Controllers
         [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdatePlayerDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             try
             {
                 var success = await _playerService.UpdatePlayerAsync(id, dto);
@@ -144,7 +144,7 @@ namespace PadelManager.API.Controllers
         }
 
         [HttpGet("search/dni/{dni}")]
-        [Authorize(Roles = "Admin, Organizador,Jugador")]
+        [Authorize(Roles = "Admin, Organizador, Jugador")]
         public async Task<IActionResult> GetByDni(string dni)
         {
             var result = await _playerService.GetPlayerByDniAsync(dni);
