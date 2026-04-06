@@ -30,5 +30,9 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<Tournament?> GetTournamentByIdWithManagersAsync(Guid id);
 
         Task<IEnumerable<Tournament>> GetAllWithManagersAsync();
+
+
+        // Trae el torneo con TODA la cadena de datos para la contabilidad
+        Task<Tournament?> GetTournamentAccountingAsync(Guid tournamentId);
     }
 }

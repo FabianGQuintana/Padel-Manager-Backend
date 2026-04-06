@@ -125,5 +125,24 @@ namespace PadelManager.Infrastructure.Repositories
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
         }
+
+        public async Task<Tournament?> GetTournamentAccountingAsync(Guid tournamentId)
+        {
+            return await _context.Tournaments
+                .Include(t => t.Registrations)
+                    .ThenInclude(r => r.Payments)
+                .Include(t => t.Registrations)
+                    .ThenInclude(r => r.Couple)
+                        .ThenInclude(c => c.Player1) 
+                .Include(t => t.Registrations)
+                    .ThenInclude(r => r.Couple)
+                        .ThenInclude(c => c.Player2) 
+                .Include(t => t.Registrations)
+                    .ThenInclude(r => r.Couple)
+                        .ThenInclude(c => c.Availabilities)
+                .Include(t => t.Categories)
+                .FirstOrDefaultAsync(t => t.Id == tournamentId);
+        }
+
     }
 }

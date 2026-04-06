@@ -18,5 +18,8 @@ namespace PadelManager.Domain.Entities
         public Byte? Age { get; set; }
 
         public string? Availability { get; set; }
+
+        public ICollection<Sanction> Sanctions { get; set; } = new List<Sanction>();
+
     }
 }

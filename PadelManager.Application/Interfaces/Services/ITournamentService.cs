@@ -1,4 +1,5 @@
-﻿using PadelManager.Application.DTOs.Tournament;
+﻿using PadelManager.Application.DTOs.Payment;
+using PadelManager.Application.DTOs.Tournament;
 using PadelManager.Domain.Enum;
 
 public interface ITournamentService
@@ -25,4 +26,8 @@ public interface ITournamentService
     Task<IEnumerable<TournamentResponseDto>> GetTournamentsByManagerEmailAsync(string email);
     Task<IEnumerable<TournamentResponseDto>> GetTournamentsByManagerDniAsync(string dni);
     Task<IEnumerable<TournamentResponseDto>> GetTournamentsByManagerNameAsync(string name);
+
+    //Contabilidad y finanzas.
+    Task<TournamentFinancialSummaryDto?> GetFinancialSummaryAsync(Guid tournamentId);
+    Task<List<CategoryPaymentGridDto>> GetCategoryPaymentGridsAsync(Guid tournamentId);
 }

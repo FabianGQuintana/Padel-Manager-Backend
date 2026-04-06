@@ -28,5 +28,7 @@ namespace PadelManager.Domain.Entities
 
         public Tournament Tournament { get; set; } = null!;
 
+        public ICollection<Payment> Payments { get; set; } = new List<Payment>();
+
     }
 }

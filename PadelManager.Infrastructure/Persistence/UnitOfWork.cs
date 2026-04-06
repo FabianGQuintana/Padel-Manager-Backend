@@ -26,6 +26,11 @@ namespace PadelManager.Infrastructure.Persistence
         private IGenericRepository<User>? _users;
         private IGenericRepository<Role>? _roles;
         private IGenericRepository<RefreshToken>? _refreshTokens;
+        private IGenericRepository<Venue>? _venues;
+        private IGenericRepository<Court>? _courts;
+        private IGenericRepository<TournamentFinance>? _tournamentFinances;
+        private IGenericRepository<Payment>? _payments;
+        private IGenericRepository<Sanction>? _santions;
         public UnitOfWork(PadelManagerDbContext context)
         {
             _context = context;
@@ -73,6 +78,22 @@ namespace PadelManager.Infrastructure.Persistence
 
         // Propiedad para acceder al repositorio de RefreshToken
         public IGenericRepository<RefreshToken> RefreshTokens => _refreshTokens ??= new GenericRepository<RefreshToken>(_context);
+
+        public IGenericRepository<Sanction> Santions => _santions ??= new GenericRepository<Sanction>(_context);
+
+        public IGenericRepository<Court> Courts => _courts ??= new GenericRepository<Court>(_context);
+
+        public IGenericRepository<Venue> Venues => _venues ??= new GenericRepository<Venue>(_context);
+
+        public IGenericRepository<Payment> Payments => _payments ??= new GenericRepository<Payment>(_context);
+
+        public IGenericRepository<TournamentFinance> TournamentFinances => _tournamentFinances ??= new GenericRepository<TournamentFinance>(_context);
+
+
+
+
+
+
         // Guarda todos los cambios pendientes en la DB
         public async Task<int> SaveChangesAsync()
         {

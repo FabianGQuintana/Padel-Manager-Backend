@@ -11,7 +11,7 @@ namespace PadelManager.Domain.Entities
         public DateTime PaymentDate { get; set; } = DateTime.UtcNow;
         public required PaymentMethodTypes PaymentMethod { get; set; }
         public required PaymentStatusTypes PaymentStatus { get; set; } = PaymentStatusTypes.Pending;
-        
+        public required PaymentType Type { get; set; } // Es seña o saldo
         //FKs
         public Guid RegistrationId { get; set; }
 

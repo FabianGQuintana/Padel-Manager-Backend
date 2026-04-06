@@ -1,8 +1,9 @@
-﻿using PadelManager.Application.DTOs.Tournament;
+﻿using PadelManager.Application.DTOs.Payment;
+using PadelManager.Application.DTOs.Tournament;
+using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
-using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Mappers;
 using PadelManager.Domain.Entities;
 using PadelManager.Domain.Enum;
@@ -201,6 +202,31 @@ namespace PadelManager.Application.Services
         {
             var tournaments = await _tournamentRepo.GetTournamentsByManagerNameAsync(name);
             return tournaments.ToResponseDto();
+        }
+
+        #endregion
+
+        #region CONTABILIDAD Y FINANZAS 
+
+        public async Task<TournamentFinancialSummaryDto?> GetFinancialSummaryAsync(Guid tournamentId)
+        {
+            
+            var tournament = await _tournamentRepo.GetTournamentAccountingAsync(tournamentId);
+
+            if (tournament == null) return null;
+
+            // El Mapper hace toda la matemática que definimos (Señas, Descuentos, Deuda)
+            return tournament.ToFinancialSummaryDto();
+        }
+
+        public async Task<List<CategoryPaymentGridDto>> GetCategoryPaymentGridsAsync(Guid tournamentId)
+        {
+            var tournament = await _tournamentRepo.GetTournamentAccountingAsync(tournamentId);
+
+            if (tournament == null) return new List<CategoryPaymentGridDto>();
+
+            // Genera las grillas agrupadas por categoría tal cual el PDF
+            return tournament.ToCategoryGrids();
         }
 
         #endregion

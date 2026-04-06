@@ -11,7 +11,7 @@ namespace PadelManager.Domain.Entities
 
         public required StatusSeverity Severity { get; set; }
 
-        public  DateTime? ExpirationAt { get; set; }
+        public  DateTime? ExpirationDate { get; set; }
 
         //Fk
         public Guid PlayerId { get; set; }

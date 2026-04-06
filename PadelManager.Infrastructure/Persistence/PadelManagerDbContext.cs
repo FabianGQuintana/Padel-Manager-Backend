@@ -35,6 +35,11 @@ namespace PadelManager.Infrastructure.Persistence
         public DbSet<Zone> Zones { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<CoupleAvailability> CoupleAvailabilities { get; set; }
+        public DbSet<Venue> Venues { get; set; }
+        public DbSet<Court> Courts { get; set; }
+        public DbSet<Sanction> Sanctions { get; set; }
+        public DbSet<TournamentFinance> TournamentFinances { get; set; }
+        public DbSet<Payment> Payments { get; set; }
         #endregion
 
 

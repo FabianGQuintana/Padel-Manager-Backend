@@ -61,7 +61,11 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
-
+builder.Services.AddScoped<ISanctionRepository, SanctionRepository>();
+builder.Services.AddScoped<ITournamentFinanceRepository, TournamentFinanceRepository>();
+builder.Services.AddScoped<ICourtRepository, CourtRepository>();
+builder.Services.AddScoped<IVenueRepository, VenueRepository>();
+builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
 #endregion
 
 
@@ -90,9 +94,14 @@ builder.Services.AddScoped<IManagerService, ManagerService>();
 
 #endregion
 
-// Infraestructura / Seguridad
+
+
+#region Infraestructura / Seguridad
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+#endregion
+
 
 
 #region JWT Authorize

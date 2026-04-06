@@ -20,8 +20,12 @@ namespace PadelManager.Application.Interfaces.Persistence
         IGenericRepository<Match> Matches { get; }
         IGenericRepository<Zone> Zones { get; }
         IGenericRepository<CoupleAvailability> CoupleAvailabilities { get; }
-
         IGenericRepository<RefreshToken> RefreshTokens { get; }
+         IGenericRepository<Venue> Venues { get; }
+        IGenericRepository<Court> Courts { get; }
+        IGenericRepository<TournamentFinance> TournamentFinances { get; }
+        IGenericRepository<Payment> Payments { get; }
+        IGenericRepository<Sanction> Sanctions { get; }
 
         Task<int> SaveChangesAsync(); // para guardar los cambios en la base de datos,
                                       // devuelve el número de filas afectadas
