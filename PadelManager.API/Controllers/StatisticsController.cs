@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PadelManager.Application.DTOs.Statistic;
 using PadelManager.Application.Interfaces.Services;
-using PadelManager.Application.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -26,12 +26,14 @@ namespace PadelManager.API.Controllers
         [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Post([FromBody] CreateStatisticDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             try
             {
                 var newStatistics = await _statisticsService.AddNewStatisticAsync(dto);
                 return CreatedAtAction(nameof(GetById), new { id = newStatistics.Id }, newStatistics);
+            }
+            catch (DbUpdateException ex)
+            {
+                return Conflict(new { message = "Error de integridad: Posible duplicado o datos relacionados inexistentes.", detail = ex.InnerException?.Message });
             }
             catch (InvalidOperationException ex)
             {
@@ -47,8 +49,6 @@ namespace PadelManager.API.Controllers
         [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> Put(Guid id, [FromBody] UpdateStatisticDto dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             try
             {
                 var success = await _statisticsService.UpdateStatisticAsync(id, dto);
@@ -57,6 +57,10 @@ namespace PadelManager.API.Controllers
                     return NotFound(new { message = $"Estadística con ID: {id} no encontrada." });
 
                 return Ok(new { message = "Estadística actualizada con éxito." });
+            }
+            catch (DbUpdateException ex)
+            {
+                return Conflict(new { message = "Error al actualizar: conflicto de datos en el servidor.", detail = ex.InnerException?.Message });
             }
             catch (InvalidOperationException ex)
             {
@@ -85,7 +89,7 @@ namespace PadelManager.API.Controllers
             {
                 return Forbid();
             }
-            catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+            catch (DbUpdateException ex)
             {
                 return Conflict(new { message = "Conflicto de integridad en la base de datos.", detail = ex.InnerException?.Message });
             }
@@ -104,7 +108,6 @@ namespace PadelManager.API.Controllers
         #region GETS
 
         [HttpGet("{id:guid}")]
-        
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _statisticsService.GetStatisticByIdAsync(id);
