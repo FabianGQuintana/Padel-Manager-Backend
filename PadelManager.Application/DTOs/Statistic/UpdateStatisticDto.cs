@@ -4,8 +4,6 @@ namespace PadelManager.Application.DTOs.Statistic
 {
     public class UpdateStatisticDto
     {
-        public required Guid Id { get; set; }
-
         public Guid? CoupleId { get; set; }
 
         public Guid? ZoneId { get; set; }
