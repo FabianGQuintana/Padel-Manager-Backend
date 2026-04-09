@@ -31,11 +31,11 @@ namespace PadelManager.Infrastructure.Repositories
 
         }
 
-        public async Task<Venue?> GetVenueByNameAsync(string name)
+        public async Task<IEnumerable<Venue>> GetVenueByNameAsync(string name)
         {
             return await _context.Venues
                 .Where(v => v.Name == name)
-                .FirstOrDefaultAsync();
+                .ToListAsync();
 
         }
 

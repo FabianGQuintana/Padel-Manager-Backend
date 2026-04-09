@@ -18,29 +18,18 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Payment>> GetPaymentsByStatusAsync(string status)
+        public async Task<IEnumerable<Payment>> GetPaymentsByStatusAsync(PaymentStatusTypes status)
         {
-            if(!Enum.TryParse<PaymentStatusTypes>(status,true, out var statusEnum))
-            {
-                return Enumerable.Empty<Payment>(); 
-            }
-
 
             return await _context.Payments
-                .Where(p => p.PaymentStatus == statusEnum)
+                .Where(p => p.PaymentStatus == status)
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Payment>> GetPaymentsByMethodPayAsync(string method)
+        public async Task<IEnumerable<Payment>> GetPaymentsByMethodAsync(PaymentMethodTypes method)
         {
-            if (!Enum.TryParse<PaymentMethodTypes>(method, true, out var statusEnum))
-            {
-                return Enumerable.Empty<Payment>();
-            }
-
-
             return await _context.Payments
-                .Where(p => p.PaymentMethod == statusEnum)
+                .Where(p => p.PaymentMethod == method)
                 .ToListAsync();
         }
 

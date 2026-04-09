@@ -25,14 +25,11 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Sanction>> GetSanctionsBySeverityAsync(string severity)
+        public async Task<IEnumerable<Sanction>> GetSanctionsBySeverityAsync(StatusSeverity severity)
         {
-            if(!Enum.TryParse<StatusSeverity>(severity,true,out var statusEnum)){
-                return Enumerable.Empty<Sanction>();
-            }
             
             return await _context.Sanctions
-               .Where(s => s.Severity == statusEnum)
+               .Where(s => s.Severity == severity)
                .ToListAsync();
         }
     }

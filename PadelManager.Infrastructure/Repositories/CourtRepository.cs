@@ -17,10 +17,10 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Court>> GetCourtsBySuperfaceTypeAsync(string superfaceType)
+        public async Task<IEnumerable<Court>> GetCourtsBySurfaceTypeAsync(string surfaceType)
         {
             return await _context.Courts
-                .Where(c => c.SurfaceType.ToLower() == superfaceType.ToLower())
+                .Where(c => c.SurfaceType.ToLower().Contains(surfaceType.ToLower()))
                 .ToListAsync();
         }
 
@@ -31,14 +31,11 @@ namespace PadelManager.Infrastructure.Repositories
              .ToListAsync();
         }
 
-        public async Task<IEnumerable<Court>> GetCourtsByAvailabilityAsync(string availability)
+        public async Task<IEnumerable<Court>> GetCourtsByAvailabilityAsync(CourtAvailabilityType availability)
         {
-            if (!Enum.TryParse<CourtAvailabilityType>(availability, true, out var statusEnum))
-            {
-                return Enumerable.Empty<Court>();
-            }
+            
             return await _context.Courts
-                .Where(c => c.CourtAvailability == statusEnum)
+                .Where(c => c.CourtAvailability == availability)
                 .ToListAsync();
         }
     }
