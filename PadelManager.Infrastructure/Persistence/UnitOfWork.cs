@@ -30,7 +30,7 @@ namespace PadelManager.Infrastructure.Persistence
         private IGenericRepository<Court>? _courts;
         private IGenericRepository<TournamentFinance>? _tournamentFinances;
         private IGenericRepository<Payment>? _payments;
-        private IGenericRepository<Sanction>? _santions;
+        private IGenericRepository<Sanction>? _sanctions;
         public UnitOfWork(PadelManagerDbContext context)
         {
             _context = context;
@@ -79,7 +79,7 @@ namespace PadelManager.Infrastructure.Persistence
         // Propiedad para acceder al repositorio de RefreshToken
         public IGenericRepository<RefreshToken> RefreshTokens => _refreshTokens ??= new GenericRepository<RefreshToken>(_context);
 
-        public IGenericRepository<Sanction> Santions => _santions ??= new GenericRepository<Sanction>(_context);
+        public IGenericRepository<Sanction> Sanctions => _sanctions ??= new GenericRepository<Sanction>(_context);
 
         public IGenericRepository<Court> Courts => _courts ??= new GenericRepository<Court>(_context);
 
