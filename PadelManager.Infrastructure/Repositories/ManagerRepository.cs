@@ -7,11 +7,11 @@ namespace PadelManager.Infrastructure.Repositories
 {
     public class ManagerRepository : GenericRepository<Manager>, IManagerRepository
     {
-        private readonly PadelManagerDbContext _context;
+        
 
         public ManagerRepository(PadelManagerDbContext context) : base(context)
         {
-            _context = context;
+            
         }
 
         public async Task<Manager?> GetManagerWithUserAsync(Guid managerId)

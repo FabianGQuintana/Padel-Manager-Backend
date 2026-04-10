@@ -16,7 +16,7 @@ namespace PadelManager.Application.Interfaces.Repositories
 
         Task<T> UpdateAsync(T entity); // Actualizar una entidad existente
          
-        Task<T> SoftDeleteToggleAsync(Guid id); // Eliminar una entidad por su ID
+        Task<T?> SoftDeleteToggleAsync(Guid id); // Eliminar una entidad por su ID
 
     }
 }

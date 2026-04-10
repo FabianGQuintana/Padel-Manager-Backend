@@ -40,7 +40,7 @@ namespace PadelManager.Infrastructure.Repositories
         }
 
         // Soft Delete Toggle: Si está borrado, lo restaura. Si no, lo borra.
-        public async Task<T> SoftDeleteToggleAsync(Guid id)
+        public async Task<T?> SoftDeleteToggleAsync(Guid id)
         {
             var entity = await _dbSet.FindAsync(id);
 
