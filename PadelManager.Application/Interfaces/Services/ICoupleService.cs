@@ -17,7 +17,6 @@ namespace PadelManager.Application.Interfaces.Services
         Task<CoupleResponseDto?> GetCoupleByNicknameAsync(string nickname);
         Task<IEnumerable<CoupleResponseDto>> GetAllCouplesAsync();
         Task<IEnumerable<CoupleResponseDto>> GetCouplesByPlayerIdAsync(Guid playerId);
-        Task<IEnumerable<CoupleResponseDto>> GetCouplesByZoneIdAsync(Guid zoneId);
-        Task<IEnumerable<CoupleResponseDto>> GetCouplesWithoutZoneAsync();
+
     }
 }

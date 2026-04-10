@@ -10,8 +10,6 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<Couple?> GetCoupleByNicknameAsync(string nickname);
         Task<IEnumerable<Couple>> GetCouplesByPlayerIdAsync(Guid playerId);
         
-        Task<IEnumerable<Couple>> GetCouplesByZoneIdAsync(Guid zoneId);
-        Task<IEnumerable<Couple>> GetCouplesWithoutZoneAsync();
 
         Task <Couple?> GetCoupleWithRegistrationDetailsAsync(Guid coupleId);
 

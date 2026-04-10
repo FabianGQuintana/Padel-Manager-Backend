@@ -36,7 +36,7 @@ namespace PadelManager.Application.Services
         public async Task<CoupleResponseDto> AddNewCoupleAsync(CreateCoupleDto dto)
         {
             await ValidatePlayersAsync(dto.Player1Id, dto.Player2Id);
-            ValidateAvailabilities(dto.Availabilities);
+            ValidateAvailabilities(dto.Availabilities ?? new List<CreateCoupleAvailabilityDto>());
 
             // Verificación de existencia (podrías mover esto a un método específico en el repo para eficiencia)
             var existingCouples = await _coupleRepository.GetAllAsync();
@@ -171,17 +171,9 @@ namespace PadelManager.Application.Services
             return couples.ToResponseDto();
         }
 
-        public async Task<IEnumerable<CoupleResponseDto>> GetCouplesByZoneIdAsync(Guid zoneId)
-        {
-            var couples = await _coupleRepository.GetCouplesByZoneIdAsync(zoneId);
-            return couples.ToResponseDto();
-        }
 
-        public async Task<IEnumerable<CoupleResponseDto>> GetCouplesWithoutZoneAsync()
-        {
-            var couples = await _coupleRepository.GetCouplesWithoutZoneAsync();
-            return couples.ToResponseDto();
-        }
+
+
 
         // =========================
         // VALIDACIONES PRIVADAS
@@ -234,13 +226,16 @@ namespace PadelManager.Application.Services
                     throw new Exception("La hora de inicio debe ser menor que la hora de fin.");
             }
 
+            // Filtra antes de hacer el Select para asegurar que From y To tienen valores
             ValidateAvailabilityOverlaps(
-                availabilities.Select(a => new AvailabilityCheckDto
-                {
-                    Day = a.Day,
-                    From = a.From.Value,
-                    To = a.To.Value
-                }).ToList());
+                availabilities
+                    .Where(a => a.From.HasValue && a.To.HasValue)
+                    .Select(a => new AvailabilityCheckDto
+                    {
+                        Day = a.Day,
+                        From = a.From!.Value, // El ! confirma que ya validamos el nulo arriba
+                        To = a.To!.Value
+                    }).ToList());
         }
 
         private static void ValidateAvailabilityOverlaps(List<AvailabilityCheckDto> availabilities)

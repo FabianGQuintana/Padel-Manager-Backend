@@ -110,12 +110,7 @@ namespace PadelManager.API.Controllers
             return Ok(await _coupleService.GetCouplesByPlayerIdAsync(playerId));
         }
 
-        [HttpGet("no-zone")]
-        [Authorize(Roles = "Admin, Organizador")]
-        public async Task<IActionResult> GetWithoutZone()
-        {
-            return Ok(await _coupleService.GetCouplesWithoutZoneAsync());
-        }
+
 
         #endregion
     }

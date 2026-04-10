@@ -57,9 +57,9 @@ namespace PadelManager.Application.Mappers
                 Player1Id = dto.Player1Id,
                 Player2Id = dto.Player2Id,
                 // Reutilizamos el método de arriba de forma limpia
-                Availabilities = dto.Availabilities
-                    .Select(a => a.ToEntity())
-                    .ToList()
+                Availabilities = dto.Availabilities != null
+                    ? dto.Availabilities.Select(a => a.ToEntity()).ToList()//Si Availabilities trae datos, hace el mapeo
+                    : new List<CoupleAvailability>()// Si el DTO no trae Availabilities, se asigna una lista vacía para evitar problemas de nullabilidad.
             };
         }
 
@@ -70,14 +70,15 @@ namespace PadelManager.Application.Mappers
             couple.Player1Id = dto.Player1Id;
             couple.Player2Id = dto.Player2Id;
 
-            if (updateAvailabilities)
+            if (updateAvailabilities && dto.Availabilities != null)
             {
                 couple.Availabilities = dto.Availabilities
+                    .Where(a => a.Day.HasValue && a.From.HasValue && a.To.HasValue) // Solo si están los 3 datos
                     .Select(a => new CoupleAvailability
                     {
-                        Day = (DayOfWeek)a.Day,
-                        From = a.From.Value,
-                        To = a.To.Value,
+                        Day = (DayOfWeek)a.Day!.Value, // El ! le dice: "Ya sé que no es nulo por el Where"
+                        From = a.From!.Value,
+                        To = a.To!.Value,
                         CoupleId = couple.Id
                     })
                     .ToList();
