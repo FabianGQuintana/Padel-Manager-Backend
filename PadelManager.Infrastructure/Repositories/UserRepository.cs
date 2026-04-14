@@ -66,17 +66,10 @@ namespace PadelManager.Infrastructure.Repositories
         }
 
         public async Task<IEnumerable<User>> GetUsersByRoleNameAsync(string roleName)
-        {
-           
-            if (!Enum.TryParse<TypeUser>(roleName, true, out var roleEnum))
-            {
-                return Enumerable.Empty<User>();
-            }
-
-            
+        {           
             return await _context.Users
                 .Include(u => u.Role) 
-                .Where(u => u.Role.NameRol == roleEnum )
+                .Where(u => u.Role.NameRol == roleName)
                 .ToListAsync();
         }
 

@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Domain.Entities;
-using PadelManager.Domain.Enum;
 using PadelManager.Infrastructure.Persistence;
 
 namespace PadelManager.Infrastructure.Repositories
@@ -15,7 +14,7 @@ namespace PadelManager.Infrastructure.Repositories
             
         }
 
-        public async Task<Role?> GetByNameAsync(TypeUser roleName)
+        public async Task<Role?> GetByNameAsync(string roleName)
         {
             return await _context.Roles
                 .FirstOrDefaultAsync(r => r.NameRol == roleName);
