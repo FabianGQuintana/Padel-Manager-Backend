@@ -21,15 +21,19 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Tournament>> GetTournamentsByNameAsync(string name)
         {
             return await _context.Tournaments
-                .Include(t => t.Categories) // Incluir las categorías relacionadas
-                .Where(t => t.Name.ToLower() == name.ToLower()) //De esta forma me puedo asegurar de filtrar los borrados lógicamente
+                .Include(t => t.Categories) 
+                .Include(t => t.Managers)
+                .ThenInclude(m => m.User)
+                .Where(t => t.Name.ToLower() == name.ToLower()) 
                 .ToListAsync();
         }
 
-
+       
         public async Task<IEnumerable<Tournament>> GetTournamentsByStartDateAsync(DateTime startDate)
         {
             return await _context.Tournaments // Me aseguro de mirar la fecha unicamente y no la hora , por eso el .Date chicas
+                 .Include(t => t.Managers)
+                 .ThenInclude(m => m.User)
                 .Where (t => t.StartDate.Date == startDate.Date)
                 .ToListAsync();
         }
@@ -37,6 +41,8 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Tournament>> GetTournamentsByStatusAsync(TournamentStatus status)
         {
             return await _context.Tournaments
+                 .Include(t => t.Managers)
+                 .ThenInclude(m => m.User)
                 .Where(t => t.StatusType == status)
                 .ToListAsync();
         }
@@ -45,6 +51,8 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Tournaments
                 .Include(t => t.Categories) // Importante cargar las categorías
+                .Include(t => t.Managers)
+                .ThenInclude(m => m.User)
                 .Where(t => t.Categories.Any(c => c.MaxTeams == maxTeams))
                 .ToListAsync();
         }
@@ -52,13 +60,17 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Tournament>> GetTournamentsByTypeAsync(string tournamentType)
         {
             return await _context.Tournaments
-                .Where(t => t.TournamentType == tournamentType)
+                .Include(t => t.Managers)
+                .ThenInclude(m => m.User)
+                .Where(t => t.TournamentType.ToLower() == tournamentType.ToLower())
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsByManagerIdAsync(Guid managerId)
         {
             return await _context.Tournaments
+                .Include(t => t.Managers)
+                .ThenInclude(m => m.User)
                 .Where(t => t.ManagerId == managerId)
                 .ToListAsync();
         }
@@ -66,6 +78,8 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Tournament>> GetTournamentsByCategoryIdAsync(Guid categoryId)
         {
             return await _context.Tournaments
+                .Include(t => t.Managers)
+                .ThenInclude(m => m.User)
                 .Where(t => t.Categories.Any(c => c.Id == categoryId))
                 .ToListAsync();
         }

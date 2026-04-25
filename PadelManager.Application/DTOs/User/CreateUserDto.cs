@@ -21,6 +21,8 @@ namespace PadelManager.Application.DTOs.User
 
         [Required(ErrorMessage = "El email es obligatorio")]
         [EmailAddress(ErrorMessage = "Formato de email inválido")]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$",
+        ErrorMessage = "El email debe tener un formato válido (ejemplo@dominio.com).")]
         public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = "La contraseña es obligatoria")]

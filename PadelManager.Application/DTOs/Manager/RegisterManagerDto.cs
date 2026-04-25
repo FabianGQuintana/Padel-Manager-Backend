@@ -19,7 +19,8 @@ namespace PadelManager.Application.DTOs.Manager
 
         // 2. Email: Validación automática de formato (que tenga @, punto, etc.)
         [Required(ErrorMessage = "El correo electrónico es obligatorio.")]
-        [EmailAddress(ErrorMessage = "El formato del correo electrónico no es válido.")]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$",
+        ErrorMessage = "El email debe tener un formato válido (ejemplo@dominio.com).")]
         public required string Email { get; set; }
 
         [Required(ErrorMessage = "La contraseña es obligatoria.")]
