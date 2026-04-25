@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PadelManager.Infrastructure.Persistence;
@@ -11,9 +12,11 @@ using PadelManager.Infrastructure.Persistence;
 namespace PadelManager.Infrastructure.Migrations
 {
     [DbContext(typeof(PadelManagerDbContext))]
-    partial class PadelManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260425204802_PadelManagerDBFull")]
+    partial class PadelManagerDBFull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
