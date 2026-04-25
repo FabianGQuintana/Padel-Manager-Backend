@@ -29,7 +29,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
 
             builder.Property(p => p.Dni)
                 .IsRequired()
-                .HasMaxLength(8); // Argentina's DNI has 8 digits
+                .HasMaxLength(8); 
             builder.HasIndex(p => p.Dni)
                 .IsUnique();
 
