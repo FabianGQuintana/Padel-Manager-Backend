@@ -46,8 +46,7 @@ ScaffoldingReadMe.txt
 # dotenv environment variables file
 .env
 
-# Configuración local - NO subir al repo (cada developer tiene el suyo)
-appsettings.json
+
 
 # Others
 ~$*
@@ -66,4 +65,4 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 /.claude
-/PadelManager.API/appsettings.json
+
