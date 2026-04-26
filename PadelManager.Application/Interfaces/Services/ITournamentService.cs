@@ -10,8 +10,8 @@ public interface ITournamentService
     Task<bool> SoftDeleteToggleTournamentAsync(Guid id);
 
     // LÓGICA DE NEGOCIO
-    // Este método es el que valida el mínimo de 6 y el cupo máximo
     Task<bool> CloseRegistrationsAndStartAsync(Guid tournamentId);
+    Task<bool> OpenTournamentRegistrationsAsync(Guid id);
 
     // LECTURA
     Task<TournamentResponseDto?> GetTournamentByIdAsync(Guid tournamentId);

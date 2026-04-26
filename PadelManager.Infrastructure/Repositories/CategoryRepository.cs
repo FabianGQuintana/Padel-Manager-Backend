@@ -67,7 +67,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Categories
                 .Include(c => c.Registrations)
-                .Where(c => c.TournamentId == tournamentId )
+                .Where(c => c.TournamentId == tournamentId && c.DeletedAt == null) // FILTRO CRÍTICO
                 .ToListAsync();
         }
 

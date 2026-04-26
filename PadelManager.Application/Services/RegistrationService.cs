@@ -72,10 +72,15 @@ namespace PadelManager.Application.Services
             registration.CreatedBy = user;
             registration.LastModifiedBy = user;
 
-            var result = await _registrationRepo.AddAsync(registration);
+            await _registrationRepo.AddAsync(registration);
             await _unitOfWork.SaveChangesAsync();
 
-            return result.ToResponseDto();
+            var enrichedRegistration = await _registrationRepo.GetRegistrationByIdWithDetailsAsync(registration.Id);
+
+            if (enrichedRegistration == null)
+                throw new Exception("Error crítico: No se pudo recuperar la inscripción creada.");
+
+            return enrichedRegistration.ToResponseDto();
         }
 
         public async Task<bool> UpdateRegistrationAsync(Guid id, UpdateRegistrationDto dto)
