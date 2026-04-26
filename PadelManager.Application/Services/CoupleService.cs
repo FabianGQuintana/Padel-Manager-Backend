@@ -93,21 +93,38 @@ namespace PadelManager.Application.Services
 
         public async Task<bool> SoftDeleteToggleCoupleAsync(Guid id)
         {
-            var existingCouple = await _coupleRepository.GetByIdAsync(id);
+            var existingCouple = await _coupleRepository.GetCoupleWithRegistrationDetailsAsync(id);
+
             if (existingCouple == null) return false;
 
-            // AUDITORÍA
+            if (existingCouple.DeletedAt == null)
+            {
+                // Validación de Jugadores
+                if (existingCouple.Player1Id != Guid.Empty || existingCouple.Player2Id != Guid.Empty)
+                {
+                    throw new InvalidOperationException("No se puede eliminar la pareja: aún tiene jugadores asignados.");
+                }
+
+                
+                if (existingCouple.Registrations != null && existingCouple.Registrations.Any(r => r.DeletedAt == null))
+                {
+                    
+                    var categoryName = existingCouple.Registrations.First().Category?.Name ?? "un torneo";
+                    throw new InvalidOperationException($"La pareja está inscrita en {categoryName}. Debés dar de baja la inscripción primero.");
+                }
+
+                existingCouple.DeletedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                existingCouple.DeletedAt = null;
+            }
+
+       
             existingCouple.LastModifiedBy = _currentUser.UserName ?? "System";
             existingCouple.LastModifiedAt = DateTime.UtcNow;
 
-            if (existingCouple.DeletedAt == null)
-                existingCouple.DeletedAt = DateTime.UtcNow;
-            else
-                existingCouple.DeletedAt = null;
-
             await _coupleRepository.UpdateAsync(existingCouple);
-
-            //  PERSISTENCIA
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 

@@ -88,5 +88,13 @@ namespace PadelManager.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<Category?> GetByIdWithChildrenAsync(Guid id)
+        {
+            return await _context.Categories
+                .Include(c => c.Stages)
+                .Include(c => c.Registrations)
+                .FirstOrDefaultAsync(c => c.Id == id);
+        }
+
     }
 }

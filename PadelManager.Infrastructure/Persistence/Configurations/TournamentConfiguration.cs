@@ -44,7 +44,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             builder.HasMany(t => t.Categories)
                 .WithOne(c => c.Tournament)
                 .HasForeignKey(c => c.TournamentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
 
         }

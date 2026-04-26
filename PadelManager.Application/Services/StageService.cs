@@ -66,11 +66,22 @@ namespace PadelManager.Application.Services
 
         public async Task<bool> SoftDeleteToggleStageAsync(Guid id)
         {
-            var existingStage = await _stageRepo.GetByIdAsync(id);
-            if (existingStage == null) return false;
+            // 1. Buscamos con hijos
+            var stage = await _stageRepo.GetByIdWithChildrenAsync(id);
+            if (stage == null) return false;
 
-            existingStage.LastModifiedBy = _currentUser.UserName ?? "System";
-            existingStage.LastModifiedAt = DateTime.UtcNow;
+            // 2. Validación de negocio
+            if (!stage.IsDeleted)
+            {
+                if (stage.Zones.Any(z => !z.IsDeleted))
+                    throw new InvalidOperationException("No se puede eliminar la etapa: tiene zonas creadas.");
+
+                if (stage.Matches.Any(m => !m.IsDeleted))
+                    throw new InvalidOperationException("No se puede eliminar la etapa: ya tiene partidos generados.");
+            }
+
+            stage.LastModifiedBy = _currentUser.UserName ?? "System";
+            stage.LastModifiedAt = DateTime.UtcNow;
 
             await _stageRepo.SoftDeleteToggleAsync(id);
             return await _unitOfWork.SaveChangesAsync() > 0;

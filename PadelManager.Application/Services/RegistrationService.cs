@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using PadelManager.Application.DTOs.Registration;
+﻿using PadelManager.Application.DTOs.Registration;
+using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
-using PadelManager.Application.Interfaces.Common;
 using PadelManager.Application.Mappers;
+using PadelManager.Domain.Enum;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace PadelManager.Application.Services
 {
@@ -31,6 +32,34 @@ namespace PadelManager.Application.Services
 
         public async Task<RegistrationResponseDto> AddNewRegistrationAsync(CreateRegistrationDto dto)
         {
+            
+            var tournament = await _unitOfWork.Tournaments.GetByIdAsync(dto.TournamentId);
+
+            if (tournament == null)
+                throw new InvalidOperationException("El torneo especificado no existe.");
+
+            
+            if (tournament.IsDeleted || tournament.Status != "Active")
+            {
+                throw new InvalidOperationException("No se pueden realizar inscripciones en un torneo eliminado o inactivo.");
+            }
+
+           
+            if (tournament.StatusType != TournamentStatus.RegistrationOpen)
+            {
+                string mensaje = tournament.StatusType switch
+                {
+                    TournamentStatus.Draft => "Las inscripciones aún no están abiertas (Torneo en Borrador).",
+                    TournamentStatus.InProgress => "El torneo ya está en progreso. Las inscripciones están cerradas.",
+                    TournamentStatus.Finished => "El torneo ya ha finalizado.",
+                    TournamentStatus.Cancelled => "El torneo ha sido cancelado.",
+                    _ => "No se pueden realizar inscripciones en este momento."
+                };
+
+                throw new InvalidOperationException(mensaje);
+            }
+
+            
             bool alreadyExists = await IsCoupleAlreadyRegisteredAsync(dto.CoupleId, dto.CategoryId);
             if (alreadyExists)
             {

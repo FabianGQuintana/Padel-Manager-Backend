@@ -28,11 +28,15 @@ namespace PadelManager.API.Controllers
         public async Task<IActionResult> Post([FromBody] CreateStageDto dto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
             try
             {
                 var result = await _stageService.AddNewStageAsync(dto);
                 return CreatedAtAction(nameof(GetById), new { id = result.Id }, result);
+            }
+            // Capturamos por si el Service valida algo al crear
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
@@ -70,9 +74,14 @@ namespace PadelManager.API.Controllers
 
                 return Ok(new { message = "Estado de la etapa actualizado correctamente." });
             }
+            
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Error inesperado.", detail = ex.Message });
+                return StatusCode(500, new { message = "Error inesperado al intentar borrar la etapa.", detail = ex.Message });
             }
         }
 

@@ -41,20 +41,20 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             builder.HasOne(c => c.Tournament)
                 .WithMany(t => t.Categories)
                 .HasForeignKey(c => c.TournamentId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
             // Si borras el torneo, se borran todas sus categorías.
 
             // 2. Relación con Stage (1:N)
             builder.HasMany(c => c.Stages)
                 .WithOne(s => s.Category)
                 .HasForeignKey(s => s.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // 3. Relación con Registration (1:N)
             builder.HasMany(c => c.Registrations)
                 .WithOne(r => r.Category)
                 .HasForeignKey(r => r.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

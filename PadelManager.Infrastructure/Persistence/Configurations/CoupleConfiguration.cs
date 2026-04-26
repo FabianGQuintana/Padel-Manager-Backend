@@ -22,8 +22,8 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             // Evita que se cree la misma combinación de jugadores dos veces.
             // ============================================================
             builder.HasIndex(c => new { c.Player1Id, c.Player2Id })
-                .IsUnique();
-
+                .IsUnique()
+                .HasFilter("\"DeletedAt\" IS NULL"); //Solo valida unicidad en parejas ACTIVAS
             // ============================================================
             // RELACIONES CON PLAYERS (Doble FK a la misma tabla)
             // ============================================================

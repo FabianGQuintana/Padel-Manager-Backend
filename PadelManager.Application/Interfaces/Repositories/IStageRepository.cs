@@ -12,5 +12,6 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<Stage?> GetStageByCategoryIdAndOrderAsync(Guid categoryId, int order);
         Task<Stage?> GetGroupStageByCategoryAsync(Guid categoryId);
         Task<IEnumerable<Stage>> GetStagesByTypeAsync(StageType type);
+        Task<Stage?> GetByIdWithChildrenAsync(Guid id);
     }
 }

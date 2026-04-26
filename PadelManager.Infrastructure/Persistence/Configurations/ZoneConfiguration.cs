@@ -34,7 +34,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             builder.HasMany(z => z.Statistics)
                 .WithOne(s => s.Zone)
                 .HasForeignKey(s => s.ZoneId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
 
 

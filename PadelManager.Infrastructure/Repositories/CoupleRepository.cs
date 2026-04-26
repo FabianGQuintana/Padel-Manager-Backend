@@ -37,8 +37,6 @@ namespace PadelManager.Infrastructure.Repositories
         }
 
 
-
-
         public async Task<Couple?> GetCoupleWithRegistrationDetailsAsync(Guid coupleId)
         {
             return await _context.Couples

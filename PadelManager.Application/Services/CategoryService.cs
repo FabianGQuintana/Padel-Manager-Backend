@@ -1,9 +1,10 @@
 ﻿using PadelManager.Application.DTOs.Category;
+using PadelManager.Application.Interfaces.Common; 
 using PadelManager.Application.Interfaces.Persistence;
 using PadelManager.Application.Interfaces.Repositories;
 using PadelManager.Application.Interfaces.Services;
-using PadelManager.Application.Interfaces.Common; // Agregado para ICurrentUser
 using PadelManager.Application.Mappers;
+using PadelManager.Domain.Enum;
 using System;
 
 namespace PadelManager.Application.Services
@@ -12,12 +13,12 @@ namespace PadelManager.Application.Services
     {
         private readonly ICategoryRepository _categoryRepo;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ICurrentUser _currentUser; //  Agregado
+        private readonly ICurrentUser _currentUser;
 
         public CategoryService(
             ICategoryRepository categoryRepo,
             IUnitOfWork unitOfWork,
-            ICurrentUser currentUser) //  Inyectado
+            ICurrentUser currentUser) 
         {
             _categoryRepo = categoryRepo;
             _unitOfWork = unitOfWork;
@@ -30,6 +31,27 @@ namespace PadelManager.Application.Services
 
         public async Task<CategoryResponseDto> AddNewCategoryAsync(CreateCategoryDto dto)
         {
+            // 1. Buscamos el torneo
+            var tournament = await _unitOfWork.Tournaments.GetByIdAsync(dto.TournamentId);
+
+            // 2. Validaciones de existencia y estado de BaseEntity
+            if (tournament == null)
+                throw new InvalidOperationException("El torneo especificado no existe.");
+
+            // Validamos que el torneo esté "Activo" y no esté borrado (Soft Delete)
+            // Usamos el atributo 'Status' y 'IsDeleted' de tu BaseEntity
+            if (tournament.IsDeleted || tournament.Status != "Active")
+            {
+                throw new InvalidOperationException("No se pueden agregar categorías a un torneo que ha sido eliminado o desactivado.");
+            }
+
+            // 3. REGLA DE NEGOCIO: Solo en estado Draft
+            if (tournament.StatusType != TournamentStatus.Draft)
+            {
+                throw new InvalidOperationException(
+                    $"Las categorías solo pueden gestionarse mientras el torneo está en Borrador. " +
+                    $"Estado actual: {tournament.StatusType}.");
+            }
             var category = dto.ToEntity();
 
             // AUDITORÍA
@@ -60,17 +82,24 @@ namespace PadelManager.Application.Services
 
         public async Task<bool> SoftDeleteToggleCategoryAsync(Guid id)
         {
-            // Buscamos la categoría primero para poder auditar quién hace el toggle
-            var category = await _categoryRepo.GetByIdAsync(id);
+            // 1. Buscamos con sus hijos incluidos
+            var category = await _categoryRepo.GetByIdWithChildrenAsync(id);
             if (category == null) return false;
 
-            //  AUDITORÍA
+            // 2. Si lo estamos por ELIMINAR (Soft Delete), validamos:
+            if (!category.IsDeleted)
+            {
+                if (category.Stages.Any(s => !s.IsDeleted))
+                    throw new InvalidOperationException("No se puede eliminar la categoría: tiene etapas activas.");
+
+                if (category.Registrations.Any(r => !r.IsDeleted))
+                    throw new InvalidOperationException("No se puede eliminar la categoría: ya tiene parejas inscritas.");
+            }
+
             category.LastModifiedBy = _currentUser.UserName ?? "System";
             category.LastModifiedAt = DateTime.UtcNow;
 
-            // Ejecutamos el toggle
             await _categoryRepo.SoftDeleteToggleAsync(id);
-
             return await _unitOfWork.SaveChangesAsync() > 0;
         }
 

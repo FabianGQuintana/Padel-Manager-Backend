@@ -87,8 +87,18 @@ namespace PadelManager.Application.Services
 
         public async Task<bool> SoftDeleteToggleTournamentAsync(Guid id)
         {
-            var tournament = await _tournamentRepo.GetByIdAsync(id);
+            var tournament = await _tournamentRepo.GetTournamentWithCategoriesAsync(id);
+
             if (tournament == null) return false;
+
+          
+            if (!tournament.IsDeleted) 
+            {
+                if (tournament.Categories != null && tournament.Categories.Any())
+                {
+                    throw new InvalidOperationException("No se puede eliminar el torneo porque tiene categorías asignadas.");
+                }
+            }
 
             tournament.LastModifiedBy = _currentUser.UserName ?? "System";
             tournament.LastModifiedAt = DateTime.UtcNow;

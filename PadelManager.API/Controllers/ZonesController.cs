@@ -156,16 +156,19 @@ namespace PadelManager.API.Controllers
             try
             {
                 var success = await _zoneService.GenerateZonesWithDrawAsync(categoryId);
-
                 if (!success)
-                    return BadRequest(new { message = "No se pudieron generar las zonas. Verifique que la categoría tenga un Stage de grupos activo." });
+                    return BadRequest(new { message = "No se pudieron generar las zonas. Verifique el Stage activo." });
 
-                return Ok(new { message = "Sorteo realizado y zonas generadas con éxito." });
+                return Ok(new { message = "Sorteo realizado con éxito." });
+            }
+            // errores del algoritmo (ej: cantidad impar de parejas)
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                // Capturamos el "No hay suficientes parejas" o cualquier error del algoritmo
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(500, new { message = "Error crítico en el algoritmo de sorteo.", detail = ex.Message });
             }
         }
 

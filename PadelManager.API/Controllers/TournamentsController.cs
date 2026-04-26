@@ -97,14 +97,22 @@ namespace PadelManager.API.Controllers
 
                 return Ok(new { message = "Estado del torneo actualizado con éxito." });
             }
-
+            
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
             catch (UnauthorizedAccessException)
             {
                 return Forbid();
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = "Error inesperado en el servidor al intentar eliminar.", detail = ex.Message });
+                return StatusCode(500, new
+                {
+                    message = "Error inesperado en el servidor al intentar cambiar el estado.",
+                    detail = ex.Message
+                });
             }
         }
 

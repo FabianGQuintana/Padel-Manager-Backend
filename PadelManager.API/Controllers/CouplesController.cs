@@ -42,10 +42,17 @@ namespace PadelManager.API.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var success = await _coupleService.UpdateCoupleAsync(id, dto);
-            if (!success) return NotFound();
+            try
+            {
+                var success = await _coupleService.UpdateCoupleAsync(id, dto);
+                if (!success) return NotFound(new { message = "Pareja no encontrada." });
 
-            return Ok(new { message = "Pareja actualizada correctamente." });
+                return Ok(new { message = "Pareja actualizada correctamente." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpPatch("{id:guid}/replace-player")]
@@ -69,9 +76,22 @@ namespace PadelManager.API.Controllers
         [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> SoftDelete(Guid id)
         {
-            var success = await _coupleService.SoftDeleteToggleCoupleAsync(id);
-            if (!success) return NotFound();
-            return Ok(new { message = "Estado de la pareja actualizado." });
+            try
+            {
+                var success = await _coupleService.SoftDeleteToggleCoupleAsync(id);
+                if (!success) return NotFound(new { message = "Pareja no encontrada." });
+
+                return Ok(new { message = "Estado de la pareja actualizado correctamente." });
+            }
+            // Capturamos: "No se puede borrar porque tiene jugadores" o "está inscrita en un torneo"
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error inesperado al procesar la pareja.", detail = ex.Message });
+            }
         }
 
         #endregion

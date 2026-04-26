@@ -12,8 +12,7 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
 
             builder.HasKey(s => s.Id);
 
-            //builder.HasQueryFilter(z => z.DeletedAt == null);
-
+  
             builder.Property(s => s.Name)
                 .IsRequired()
                 .HasMaxLength(100);
@@ -32,25 +31,25 @@ namespace PadelManager.Infrastructure.Persistence.Configurations
             // ==========================================
 
             // 1. Relación con Category (N:1) - Obligatoria
-            // Si se borra la categoría (ej: 4ta), se borran todas sus etapas (8vos, 4tos, etc.)
+            
             builder.HasOne(s => s.Category)
                 .WithMany(c => c.Stages)
                 .HasForeignKey(s => s.CategoryId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // 2. Relación con Zone (1:N)
-            // Ya la definimos en ZoneConfiguration, pero aquí confirmamos el vínculo
+            
             builder.HasMany(s => s.Zones)
                 .WithOne(z => z.Stage)
                 .HasForeignKey(z => z.StageId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             // 3. Relación con Match (1:N)
-            // Lo mismo para los partidos
+           
             builder.HasMany(s => s.Matches)
                 .WithOne(m => m.Stage)
                 .HasForeignKey(m => m.StageId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

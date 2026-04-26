@@ -1,20 +1,24 @@
-﻿
-using System.Collections.Generic;
-using System.Text;
-using System;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace PadelManager.Application.DTOs.Registration
 {
     public class CreateRegistrationDto
     {
-        // Solo necesitamos saber qué pareja se anota, a qué categoría y a qué torneo
-        public required Guid CoupleId { get; set; }
+        [Required(ErrorMessage = "El monto total es obligatorio.")]
+        [Range(0, double.MaxValue, ErrorMessage = "El monto total no puede ser negativo.")]
+        public decimal TotalAmount { get; set; }
 
-        public required Guid CategoryId { get; set; }
+        [Range(0, double.MaxValue, ErrorMessage = "El descuento no puede ser negativo.")]
+        public decimal Discount { get; set; } = 0; // Por defecto 0 si no mandan nada
 
-        public required Guid TournamentId { get; set; }
+        [Required(ErrorMessage = "La pareja es obligatoria.")]
+        public Guid CoupleId { get; set; }
 
-        // RegistrationDate y RegistrationTime no van acá
-        // El Service se va a encargar de poner DateOnly.FromDateTime(DateTime.Now)
+        [Required(ErrorMessage = "La categoría es obligatoria.")]
+        public Guid CategoryId { get; set; }
+
+        [Required(ErrorMessage = "El torneo es obligatorio.")]
+        public Guid TournamentId { get; set; }
     }
 }

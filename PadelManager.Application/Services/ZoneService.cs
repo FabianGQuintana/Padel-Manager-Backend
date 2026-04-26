@@ -72,23 +72,29 @@ namespace PadelManager.Application.Services
             zone.LastModifiedBy = user;
             zone.LastModifiedAt = DateTime.UtcNow;
 
-            if (zone.DeletedAt.HasValue)
+            // 2. Si la estamos intentando desactivar (Soft Delete)
+            if (!zone.DeletedAt.HasValue)
             {
-                zone.DeletedAt = null;
-                zone.Status = "Active";
+                // REGLA: No se borra si tiene partidos generados
+                if (zone.Matches != null && zone.Matches.Any(m => m.DeletedAt == null))
+                {
+                    throw new InvalidOperationException("No se puede eliminar la Zona: ya tiene partidos asignados.");
+                }
+
+                
+                if (zone.Statistics != null && zone.Statistics.Any(s => s.DeletedAt == null))
+                {
+                    throw new InvalidOperationException("No se puede eliminar la Zona: tiene parejas registradas en el grupo.");
+                }
+
+                zone.DeletedAt = DateTime.UtcNow;
+                zone.Status = "Inactive";
             }
             else
             {
-                zone.DeletedAt = DateTime.UtcNow;
-                zone.Status = "Inactive";
-
-                foreach (var match in zone.Matches)
-                {
-                    match.DeletedAt = DateTime.UtcNow;
-                    match.StatusType = MatchStatus.Canceled;
-                    match.LastModifiedBy = user;
-                    match.LastModifiedAt = DateTime.UtcNow;
-                }
+                
+                zone.DeletedAt = null;
+                zone.Status = "Active";
             }
 
             await _zoneRepo.UpdateAsync(zone);
