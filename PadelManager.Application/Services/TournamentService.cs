@@ -53,7 +53,7 @@ namespace PadelManager.Application.Services
             var tournament = dto.ToEntity();
             var user = _currentUser.UserName ?? "System";
 
-            //PASO CLAVE: Buscamos al manager y lo agregamos a la colección
+          
             var creatorManager = await _managerRepo.GetByIdAsync(dto.ManagerId);
             if (creatorManager != null)
             {
@@ -116,26 +116,66 @@ namespace PadelManager.Application.Services
             var tournament = await _tournamentRepo.GetByIdAsync(tournamentId);
             if (tournament == null) return false;
 
-            var categories = await _categoryRepo.GetCategoriesByTournamentWithRegistrationsAsync(tournamentId);
+            // 1. Traemos las categorías y filtramos las que NO están borradas
+            var allCategories = await _categoryRepo.GetCategoriesByTournamentWithRegistrationsAsync(tournamentId);
 
-            if (!categories.Any())
+            // 🎯 FILTRO 1: Solo categorías activas (donde DeletedAt es null)
+            var activeCategories = allCategories.Where(c => c.DeletedAt == null).ToList();
+
+            if (!activeCategories.Any())
             {
-                throw new InvalidOperationException("No se puede iniciar un torneo sin categorías.");
+                throw new InvalidOperationException("No se puede iniciar un torneo sin categorías activas.");
             }
 
-            foreach (var category in categories)
+            foreach (var category in activeCategories)
             {
-                int totalRegistrations = category.Registrations.Count;
+                // FILTRO 2: Contamos solo las inscripciones activas de esa categoría
+                int totalActiveRegistrations = category.Registrations.Count(r => r.DeletedAt == null);
 
-                if (!category.CanStart(totalRegistrations))
+                if (!category.CanStart(totalActiveRegistrations))
                 {
                     throw new InvalidOperationException(
                         $"La categoría '{category.Name}' no cumple el mínimo APA de 6 parejas. " +
-                        $"Actual tiene: {totalRegistrations}. Por favor, revisá los cupos antes de iniciar.");
+                        $"Actualmente tiene: {totalActiveRegistrations}. Por favor, revisá los cupos o eliminá la categoría.");
                 }
             }
 
+            // Si pasó todas las validaciones de las categorías activas:
             tournament.StatusType = TournamentStatus.InProgress;
+            tournament.LastModifiedBy = _currentUser.UserName ?? "System";
+            tournament.LastModifiedAt = DateTime.UtcNow;
+
+            return await _unitOfWork.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> OpenTournamentRegistrationsAsync(Guid id)
+        {
+            
+            var tournament = await _tournamentRepo.GetTournamentWithCategoriesAsync(id);
+            if (tournament == null) return false;
+
+            
+            if (tournament.IsDeleted || tournament.Status != "Active")
+            {
+                throw new InvalidOperationException("No se pueden abrir inscripciones en un torneo eliminado o desactivado.");
+            }
+
+            
+            if (tournament.StatusType != TournamentStatus.Draft)
+            {
+                throw new InvalidOperationException($"El torneo no está en modo Borrador. Estado actual: {tournament.StatusType}");
+            }
+
+            
+            if (tournament.Categories == null || !tournament.Categories.Any())
+            {
+                throw new InvalidOperationException("No podés abrir las inscripciones de un torneo que no tiene categorías configuradas.");
+            }
+
+            //  Cambio de estado
+            tournament.StatusType = TournamentStatus.RegistrationOpen;
+
+            // Auditoría
             tournament.LastModifiedBy = _currentUser.UserName ?? "System";
             tournament.LastModifiedAt = DateTime.UtcNow;
 

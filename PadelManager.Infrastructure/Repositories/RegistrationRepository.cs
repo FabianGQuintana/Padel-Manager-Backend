@@ -59,7 +59,13 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<IEnumerable<Registration>> GetRegistrationsByTournamentIdAsync(Guid tournamentId)
         {
             return await _context.Registrations
-                .Where(r => r.TournamentId == tournamentId )
+                .AsNoTracking() 
+                .Include(r => r.Category)
+                .Include(r => r.Couple)
+                    .ThenInclude(c => c.Player1)
+                .Include(r => r.Couple)
+                    .ThenInclude(c => c.Player2)
+                .Where(r => r.TournamentId == tournamentId && r.DeletedAt == null)
                 .ToListAsync();
         }
 
@@ -96,6 +102,18 @@ namespace PadelManager.Infrastructure.Repositories
                 .AnyAsync(r => r.CoupleId == coupleId &&
                                r.TournamentId == tournamentId
                               );
+        }
+
+        public async Task<Registration?> GetRegistrationByIdWithDetailsAsync(Guid id)
+        {
+            return await _context.Registrations
+                .Include(r => r.Category)
+                .Include(r => r.Tournament)
+                .Include(r => r.Couple)
+                    .ThenInclude(c => c.Player1) 
+                .Include(r => r.Couple)
+                    .ThenInclude(c => c.Player2)
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
     }
 }

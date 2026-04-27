@@ -144,6 +144,30 @@ namespace PadelManager.API.Controllers
             }
         }
 
+        [HttpPatch("{id:guid}/OpenRegistrations")]
+        [Authorize(Roles = "Admin, Organizador")]
+        public async Task<IActionResult> OpenRegistrations(Guid id)
+        {
+            try
+            {
+                var success = await _tournamentService.OpenTournamentRegistrationsAsync(id);
+
+                if (!success)
+                    return NotFound(new { message = $"No se encontró el torneo con ID: {id}" });
+
+                return Ok(new { message = "¡Inscripciones abiertas! El torneo ya es visible para los jugadores." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                //  Aquí es donde React recibe el mensaje de "Faltan categorías"
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error inesperado al intentar abrir las inscripciones.", detail = ex.Message });
+            }
+        }
+
         #endregion
 
         #region GETS
