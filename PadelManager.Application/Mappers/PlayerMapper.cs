@@ -16,7 +16,7 @@ namespace PadelManager.Application.Mappers
                 Dni = player.Dni,
                 Age = player.Age,
                 IsActive = player.DeletedAt == null ? "Activo" : "Inactivo",
-                Availability = player.Availability ?? string.Empty
+                Availability = player.Availability
             };
         }
 
@@ -31,21 +31,20 @@ namespace PadelManager.Application.Mappers
             if (dto.LastName != null) existingEntity.LastName = dto.LastName.Trim();
             if (dto.PhoneNumber != null) existingEntity.PhoneNumber = dto.PhoneNumber;
             if (dto.Dni != null) existingEntity.Dni = dto.Dni;
-            if (dto.Availability != null) existingEntity.Availability = dto.Availability;
-            if (dto.Age.HasValue)
-                existingEntity.Age = dto.Age.Value;
+            if (dto.Availability != null) existingEntity.Availability = string.IsNullOrWhiteSpace(dto.Availability) ? null : dto.Availability;
+            if (dto.Age.HasValue) existingEntity.Age = dto.Age.Value;
         }
 
         public static Player ToEntity(this CreatePlayerDto dto)
         {
             return new Player
             {
-                Name = dto.Name,
-                LastName = dto.LastName,
+                Name = dto.Name.Trim(),
+                LastName = dto.LastName.Trim(),
                 PhoneNumber = dto.PhoneNumber,
                 Dni = dto.Dni,
                 Age = dto.Age,
-                Availability = dto.Availability
+                Availability = string.IsNullOrWhiteSpace(dto.Availability) ? null : dto.Availability
             };
         }
     }
