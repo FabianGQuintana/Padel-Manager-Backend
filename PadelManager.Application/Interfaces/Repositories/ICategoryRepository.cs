@@ -22,5 +22,6 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<IEnumerable<Category>> GetCategoriesByMaxTeamsWithRegistrationsAsync(int maxTeams);
         Task<IEnumerable<Category>> GetCategoriesByNameWithRegistrationsAsync(string name);
         Task<Category?> GetByIdWithChildrenAsync(Guid id);
+        Task<IEnumerable<Category>> GetAllCategoriesWithDetailsAsync();
     }
 }

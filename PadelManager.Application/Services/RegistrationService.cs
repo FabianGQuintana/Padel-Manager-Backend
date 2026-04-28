@@ -32,13 +32,12 @@ namespace PadelManager.Application.Services
 
         public async Task<RegistrationResponseDto> AddNewRegistrationAsync(CreateRegistrationDto dto)
         {
-            
+          
             var tournament = await _unitOfWork.Tournaments.GetByIdAsync(dto.TournamentId);
 
             if (tournament == null)
                 throw new InvalidOperationException("El torneo especificado no existe.");
 
-            
             if (tournament.IsDeleted || tournament.Status != "Active")
             {
                 throw new InvalidOperationException("No se pueden realizar inscripciones en un torneo eliminado o inactivo.");
@@ -55,18 +54,17 @@ namespace PadelManager.Application.Services
                     TournamentStatus.Cancelled => "El torneo ha sido cancelado.",
                     _ => "No se pueden realizar inscripciones en este momento."
                 };
-
                 throw new InvalidOperationException(mensaje);
             }
 
-            
             bool alreadyExists = await IsCoupleAlreadyRegisteredAsync(dto.CoupleId, dto.CategoryId);
             if (alreadyExists)
             {
                 throw new InvalidOperationException("La pareja ya se encuentra inscripta en esta categoría.");
             }
 
-            var registration = dto.ToEntity();
+          
+            var registration = dto.ToEntity(); 
             var user = _currentUser.UserName ?? "System";
 
             registration.CreatedBy = user;
@@ -75,10 +73,11 @@ namespace PadelManager.Application.Services
             await _registrationRepo.AddAsync(registration);
             await _unitOfWork.SaveChangesAsync();
 
+           
             var enrichedRegistration = await _registrationRepo.GetRegistrationByIdWithDetailsAsync(registration.Id);
 
             if (enrichedRegistration == null)
-                throw new Exception("Error crítico: No se pudo recuperar la inscripción creada.");
+                throw new Exception("Error crítico al recuperar la inscripción recién creada.");
 
             return enrichedRegistration.ToResponseDto();
         }

@@ -8,10 +8,9 @@ namespace PadelManager.Application.Mappers
 {
     public static class RegistrationMapper
     {
-       
         public static RegistrationResponseDto ToResponseDto(this Registration registration, string? coupleNames = null, string? categoryName = null, string? tournamentName = null)
         {
-            // Logica para armar "Apellido / Apellido" automáticamente si no viene el string
+           
             var names = coupleNames ?? (registration.Couple != null
                 ? $"{registration.Couple.Player1?.LastName} / {registration.Couple.Player2?.LastName}"
                 : null);
@@ -20,7 +19,10 @@ namespace PadelManager.Application.Mappers
             {
                 Id = registration.Id,
                 RegistrationDate = registration.RegistrationDate,
-                RegistrationTime = registration.RegistrationTime,
+
+                
+                RegistrationTime = new TimeOnly(registration.RegistrationTime.Hour, registration.RegistrationTime.Minute, registration.RegistrationTime.Second),
+
                 CoupleId = registration.CoupleId,
                 CategoryId = registration.CategoryId,
                 TournamentId = registration.TournamentId,
@@ -32,17 +34,15 @@ namespace PadelManager.Application.Mappers
             };
         }
 
-        // Colección de Entidades -> Colección de DTOs
-        // Se usa cuando hacen un GetAll o traemos una lista de inscriptos.
+
         public static IEnumerable<RegistrationResponseDto> ToResponseDto(this IEnumerable<Registration> registrations)
         {
             return registrations.Select(r => r.ToResponseDto());
         }
 
-        // Este método "mapea" los cambios del DTO a la Entidad que ya existe
+        
         public static void MapToEntity(this Registration existingEntity, UpdateRegistrationDto dto)
         {
-            // Con Guid usamos .HasValue porque en el UpdateDto son opcionales (Guid?)
             if (dto.CoupleId.HasValue)
                 existingEntity.CoupleId = dto.CoupleId.Value;
 
@@ -63,8 +63,10 @@ namespace PadelManager.Application.Mappers
                 CoupleId = dto.CoupleId,
                 CategoryId = dto.CategoryId,
                 TournamentId = dto.TournamentId,
+                TotalAmount = dto.TotalAmount,
+                Discount = dto.Discount,
                 RegistrationDate = DateOnly.FromDateTime(currentDateTime),
-                RegistrationTime = TimeOnly.FromDateTime(currentDateTime)
+                RegistrationTime = new TimeOnly(currentDateTime.Hour, currentDateTime.Minute, currentDateTime.Second)
             };
         }
     }

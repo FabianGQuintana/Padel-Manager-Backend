@@ -55,6 +55,15 @@ namespace PadelManager.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Category>> GetAllCategoriesWithDetailsAsync()
+        {
+            return await _dbContext.Categories
+                .Include(c => c.Tournament)
+                .Include(c => c.Stages)
+                .Include(c => c.Registrations)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Category>> GetCategoryWithRegistrationsAsync(Guid id)
         {
             return await _context.Categories

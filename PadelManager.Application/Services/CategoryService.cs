@@ -109,8 +109,8 @@ namespace PadelManager.Application.Services
 
         public async Task<CategoryResponseDto?> GetCategoryByIdAsync(Guid id)
         {
-            
-            var category = await _categoryRepo.GetByIdAsync(id);
+
+            var category = await _categoryRepo.GetByIdWithChildrenAsync(id);
             return category?.ToResponseDto();
         }
 
@@ -134,13 +134,18 @@ namespace PadelManager.Application.Services
 
         public async Task<IEnumerable<CategoryResponseDto>> GetCategoriesByMaxTeamsAsync(int maxTeams)
         {
+            if (maxTeams <6 || maxTeams >48)
+            {
+                 throw new InvalidOperationException("Las parejas tienen que tener un rango oficial de 6 hasta 48 por categoria.");
+            }
             var categories = await _categoryRepo.GetCategoriesByMaxTeamsWithRegistrationsAsync(maxTeams);
             return categories.ToResponseDto();
+
         }
 
         public async Task<IEnumerable<CategoryResponseDto>> GetAllCategoriesAsync()
         {
-            var categories = await _categoryRepo.GetAllAsync();
+            var categories = await _categoryRepo.GetAllCategoriesWithDetailsAsync();
             return categories.ToResponseDto();
         }
     }

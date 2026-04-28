@@ -119,7 +119,7 @@ namespace PadelManager.Application.Services
             // 1. Traemos las categorías y filtramos las que NO están borradas
             var allCategories = await _categoryRepo.GetCategoriesByTournamentWithRegistrationsAsync(tournamentId);
 
-            // 🎯 FILTRO 1: Solo categorías activas (donde DeletedAt es null)
+            //  FILTRO 1: Solo categorías activas (donde DeletedAt es null)
             var activeCategories = allCategories.Where(c => c.DeletedAt == null).ToList();
 
             if (!activeCategories.Any())
