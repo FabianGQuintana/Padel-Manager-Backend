@@ -18,7 +18,7 @@ namespace PadelManager.Application.DTOs.Player
 
         public Byte? Age { get; set; }
 
-        public string Availability { get; set; } = null!;
+        public string? Availability { get; set; }
         public string IsActive { get; set; } = null!;
     }
 }

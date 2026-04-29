@@ -14,18 +14,26 @@ namespace PadelManager.Application.Services
     public class PlayerService : IPlayerService
     {
         private readonly IPlayerRepository _playerRepo;
+        private readonly ICoupleRepository _coupleRepo;
         private readonly ICurrentUser _currentUser;
         private readonly IUnitOfWork _unitOfWork;
 
-        public PlayerService(IPlayerRepository playerRepo, ICurrentUser currentUser, IUnitOfWork unitOfWork)
+        public PlayerService(IPlayerRepository playerRepo, ICoupleRepository coupleRepo, ICurrentUser currentUser, IUnitOfWork unitOfWork)
         {
             _playerRepo = playerRepo;
+            _coupleRepo = coupleRepo;
             _currentUser = currentUser;
             _unitOfWork = unitOfWork;
         }
 
         public async Task<PlayerResponseDto> AddNewPlayerAsync(CreatePlayerDto dto)
         {
+            if (await _playerRepo.GetPlayerByDniAsync(dto.Dni) != null)
+                throw new InvalidOperationException("Ya existe un jugador con ese DNI.");
+
+            if (await _playerRepo.GetPlayerByPhoneNumberAsync(dto.PhoneNumber) != null)
+                throw new InvalidOperationException("Ya existe un jugador con ese número de teléfono.");
+
             var player = dto.ToEntity();
             var user = _currentUser.UserName ?? "System";
 
@@ -43,6 +51,24 @@ namespace PadelManager.Application.Services
             var existingPlayer = await _playerRepo.GetByIdAsync(id);
             if (existingPlayer == null) return false;
 
+            if (dto.Dni != null)
+            {
+                var byDni = await _playerRepo.GetPlayerByDniAsync(dto.Dni);
+                if (byDni != null && byDni.Id != id)
+                    throw new InvalidOperationException("Ya existe un jugador con ese DNI.");
+            }
+
+            if (dto.PhoneNumber != null)
+            {
+                var byPhone = await _playerRepo.GetPlayerByPhoneNumberAsync(dto.PhoneNumber);
+                if (byPhone != null && byPhone.Id != id)
+                    throw new InvalidOperationException("Ya existe un jugador con ese número de teléfono.");
+            }
+
+            if (dto.Name == null && dto.LastName == null && dto.PhoneNumber == null &&
+                dto.Dni == null && dto.Age == null && dto.Availability == null)
+                throw new InvalidOperationException("Debe enviar al menos un campo para actualizar.");
+
             existingPlayer.MapToEntity(dto);
 
             existingPlayer.LastModifiedBy = _currentUser.UserName ?? "System";
@@ -56,6 +82,13 @@ namespace PadelManager.Application.Services
         {
             var existingPlayer = await _playerRepo.GetByIdAsync(id);
             if (existingPlayer == null) return false;
+
+            if (existingPlayer.DeletedAt == null)
+            {
+                var couples = await _coupleRepo.GetCouplesByPlayerIdAsync(id);
+                if (couples.Any(c => c.DeletedAt == null))
+                    throw new InvalidOperationException("No se puede eliminar el jugador: pertenece a una o más parejas activas.");
+            }
 
             existingPlayer.LastModifiedBy = _currentUser.UserName ?? "System";
             existingPlayer.LastModifiedAt = DateTime.UtcNow;
