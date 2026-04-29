@@ -115,5 +115,20 @@ namespace PadelManager.Infrastructure.Repositories
                     .ThenInclude(c => c.Player2)
                 .FirstOrDefaultAsync(r => r.Id == id);
         }
+
+
+      
+        public async Task<bool> IsAnyPlayerAlreadyRegisteredInTournamentAsync(Guid tournamentId, Guid player1Id, Guid player2Id)
+        {
+            return await _context.Registrations
+                .AsNoTracking()
+                .Include(r => r.Couple)
+                .AnyAsync(r => r.TournamentId == tournamentId &&
+                               r.DeletedAt == null && 
+                               (r.Couple.Player1Id == player1Id ||
+                                r.Couple.Player1Id == player2Id ||
+                                r.Couple.Player2Id == player1Id ||
+                                r.Couple.Player2Id == player2Id));
+        }
     }
 }

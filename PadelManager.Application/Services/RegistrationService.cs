@@ -32,18 +32,18 @@ namespace PadelManager.Application.Services
 
         public async Task<RegistrationResponseDto> AddNewRegistrationAsync(CreateRegistrationDto dto)
         {
-          
+            // Validar existencia del Torneo
             var tournament = await _unitOfWork.Tournaments.GetByIdAsync(dto.TournamentId);
-
             if (tournament == null)
                 throw new InvalidOperationException("El torneo especificado no existe.");
 
+            // Validar que el Torneo esté activo y no borrado
             if (tournament.IsDeleted || tournament.Status != "Active")
             {
                 throw new InvalidOperationException("No se pueden realizar inscripciones en un torneo eliminado o inactivo.");
             }
 
-           
+            // Validar fase del Torneo (Solo en RegistrationOpen)
             if (tournament.StatusType != TournamentStatus.RegistrationOpen)
             {
                 string mensaje = tournament.StatusType switch
@@ -57,28 +57,42 @@ namespace PadelManager.Application.Services
                 throw new InvalidOperationException(mensaje);
             }
 
-            bool alreadyExists = await IsCoupleAlreadyRegisteredAsync(dto.CoupleId, dto.CategoryId);
-            if (alreadyExists)
+            //  BUSCAR LA PAREJA: Necesitamos los IDs de los jugadores para el bloqueo total
+            var couple = await _unitOfWork.Couples.GetByIdAsync(dto.CoupleId);
+            if (couple == null)
+                throw new InvalidOperationException("La pareja especificada no existe.");
+
+            //Bloqueo de jugadores para TODO el torneo
+            // Este método revisa si Player1 o Player2 ya están en alguna categoría de este torneo
+            bool playerAlreadyInTournament = await _registrationRepo.IsAnyPlayerAlreadyRegisteredInTournamentAsync(
+                dto.TournamentId,
+                couple.Player1Id,
+                couple.Player2Id
+            );
+
+            if (playerAlreadyInTournament)
             {
-                throw new InvalidOperationException("La pareja ya se encuentra inscripta en esta categoría.");
+                throw new InvalidOperationException("Uno o ambos jugadores ya están inscriptos en este torneo. Solo se permite una inscripción por persona.");
             }
 
-          
-            var registration = dto.ToEntity(); 
+            
+            var registration = dto.ToEntity();
             var user = _currentUser.UserName ?? "System";
 
             registration.CreatedBy = user;
             registration.LastModifiedBy = user;
 
+      
             await _registrationRepo.AddAsync(registration);
             await _unitOfWork.SaveChangesAsync();
 
-           
+            //RE-HIDRATAR: Buscamos la info completa (Includes) para que el DTO tenga los nombres
             var enrichedRegistration = await _registrationRepo.GetRegistrationByIdWithDetailsAsync(registration.Id);
 
             if (enrichedRegistration == null)
                 throw new Exception("Error crítico al recuperar la inscripción recién creada.");
 
+            
             return enrichedRegistration.ToResponseDto();
         }
 
