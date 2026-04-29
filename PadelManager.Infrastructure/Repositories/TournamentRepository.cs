@@ -70,8 +70,8 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Tournaments
                 .Include(t => t.Managers)
-                .ThenInclude(m => m.User)
-                .Where(t => t.ManagerId == managerId)
+                .ThenInclude(m => m.User) 
+                .Where(t => t.Managers.Any(m => m.Id == managerId))
                 .ToListAsync();
         }
 
@@ -127,9 +127,9 @@ namespace PadelManager.Infrastructure.Repositories
         public async Task<Tournament?> GetTournamentByIdWithManagersAsync(Guid id)
         {
             return await _context.Tournaments
-                .Include(t => t.Managers)         // Cargamos Managers
-                    .ThenInclude(m => m.User)     // Cargamos el User dentro del Manager
-                .FirstOrDefaultAsync(t => t.Id == id);
+                 .Include(t => t.Managers)
+                 .ThenInclude(m => m.User) 
+                 .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<Tournament?> GetTournamentWithCategoriesAsync(Guid id)
@@ -138,6 +138,14 @@ namespace PadelManager.Infrastructure.Repositories
                 .Include(t => t.Categories)
                 .Where(t => t.Id == id)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<Tournament?> GetTournamentWithDetailsAsync(Guid id)
+        {
+            return await _context.Tournaments
+                .Include(t => t.Categories)
+                .Include(t => t.Managers) 
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<Tournament?> GetTournamentAccountingAsync(Guid tournamentId)

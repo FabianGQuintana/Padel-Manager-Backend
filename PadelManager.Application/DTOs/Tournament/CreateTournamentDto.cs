@@ -14,7 +14,7 @@ namespace PadelManager.Application.DTOs.Tournament
 
         public required string TournamentType { get; set; } 
 
-        public required Guid ManagerId { get; set; }
+        public List<Guid>? ManagerIds { get; set; } = new List<Guid>();
 
     }
 }

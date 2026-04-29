@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PadelManager.Application.DTOs.Payment;
 using PadelManager.Application.DTOs.Tournament;
 using PadelManager.Domain.Enum; // Necesario para el Enum de Status
 
@@ -144,6 +145,30 @@ namespace PadelManager.API.Controllers
             }
         }
 
+        [HttpPatch("{id:guid}/OpenRegistrations")]
+        [Authorize(Roles = "Admin, Organizador")]
+        public async Task<IActionResult> OpenRegistrations(Guid id)
+        {
+            try
+            {
+                var success = await _tournamentService.OpenTournamentRegistrationsAsync(id);
+
+                if (!success)
+                    return NotFound(new { message = $"No se encontró el torneo con ID: {id}" });
+
+                return Ok(new { message = "¡Inscripciones abiertas! El torneo ya es visible para los jugadores." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                //  Aquí es donde React recibe el mensaje de "Faltan categorías"
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error inesperado al intentar abrir las inscripciones.", detail = ex.Message });
+            }
+        }
+
         #endregion
 
         #region GETS
@@ -237,8 +262,62 @@ namespace PadelManager.API.Controllers
             var result = await _tournamentService.GetTournamentsByManagerNameAsync(name);
             return Ok(result);
         }
-    }
 
         #endregion
+
+        #region INFORMACIÓN FINANCIERA Y PAGOS
+
+        [HttpGet("{id:guid}/financial-summary")]
+        [Authorize(Roles = "Admin, Organizador")]
+        public async Task<IActionResult> GetFinancialSummary(Guid id)
+        {
+            try
+            {
+                var summary = await _tournamentService.GetFinancialSummaryAsync(id);
+
+                if (summary == null)
+                    return NotFound(new { message = $"No se encontró información contable para el torneo con ID: {id}" });
+
+                return Ok(summary);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Error al generar el resumen financiero.",
+                    detail = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("{id:guid}/payment-grids")]
+        [Authorize(Roles = "Admin, Organizador")]
+        public async Task<IActionResult> GetPaymentGrids(Guid id)
+        {
+            try
+            {
+                var result = await _tournamentService.GetCategoryPaymentGridsAsync(id);
+
+                // Si la lista viene vacía, verificamos si es que el torneo no existe
+                if (result == null || !result.Any())
+                {
+                    // Podrías hacer un chequeo extra aquí o simplemente devolver la lista vacía
+                    return Ok(result ?? new List<CategoryPaymentGridDto>());
+                }
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    message = "Error al recuperar las grillas de pago por categoría.",
+                    detail = ex.Message
+                });
+            }
+        }
+
+        #endregion
+    }
 
 }

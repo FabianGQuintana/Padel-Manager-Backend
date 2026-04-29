@@ -169,9 +169,23 @@ namespace PadelManager.API.Controllers
         [Authorize(Roles = "Admin, Organizador")]
         public async Task<IActionResult> GetMaxTeamsAsync(int maxTeams)
         {
-            var result = await _categoryService.GetCategoriesByMaxTeamsAsync(maxTeams);
-            if (result == null) return NotFound();
-            return Ok(result);
+            try
+            {
+                var result = await _categoryService.GetCategoriesByMaxTeamsAsync(maxTeams);
+
+                
+                return Ok(result);
+            }
+           
+            catch (InvalidOperationException ex)
+            {
+               
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error interno al buscar categorías.", detail = ex.Message });
+            }
         }
 
   

@@ -26,5 +26,7 @@ namespace PadelManager.Application.Interfaces.Repositories
         Task<bool> ExistsByCoupleAndTournamentAsync(Guid coupleId, Guid tournamentId);
 
         Task<IEnumerable<Registration>> GetRegistrationsByTournamentIdAsync(Guid tournamentId);
+        Task<Registration?> GetRegistrationByIdWithDetailsAsync(Guid id);
+        Task<bool> IsAnyPlayerAlreadyRegisteredInTournamentAsync(Guid tournamentId, Guid player1Id, Guid player2Id);
     }
 }

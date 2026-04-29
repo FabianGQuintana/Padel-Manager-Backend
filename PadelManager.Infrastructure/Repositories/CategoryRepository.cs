@@ -55,6 +55,15 @@ namespace PadelManager.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Category>> GetAllCategoriesWithDetailsAsync()
+        {
+            return await _dbContext.Categories
+                .Include(c => c.Tournament)
+                .Include(c => c.Stages)
+                .Include(c => c.Registrations)
+                .ToListAsync();
+        }
+
         public async Task<IEnumerable<Category>> GetCategoryWithRegistrationsAsync(Guid id)
         {
             return await _context.Categories
@@ -67,7 +76,7 @@ namespace PadelManager.Infrastructure.Repositories
         {
             return await _context.Categories
                 .Include(c => c.Registrations)
-                .Where(c => c.TournamentId == tournamentId )
+                .Where(c => c.TournamentId == tournamentId && c.DeletedAt == null) // FILTRO CRÍTICO
                 .ToListAsync();
         }
 

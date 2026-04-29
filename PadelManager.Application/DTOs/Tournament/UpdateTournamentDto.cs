@@ -15,7 +15,7 @@ namespace PadelManager.Application.DTOs.Tournament
 
         public DateTime? StartDate { get; set; }
 
-        public Guid? ManagerId { get; set; }
+        public List<Guid>? ManagerIds { get; set; } = new List<Guid>();
 
         public  int? MaxTeamsPerCategory { get; set; }
 

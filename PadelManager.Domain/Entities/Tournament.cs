@@ -18,10 +18,6 @@ namespace PadelManager.Domain.Entities
 
         public required string TournamentType { get; set; } //Para diferenciar si es "Veteranos", "Libres" o "Menores".
 
-    
-
-        //Relationships FK
-        public Guid ManagerId { get; set; }
         
         //Navigation properties
         public  ICollection<Category> Categories { get; set; } = new List<Category>();
@@ -30,15 +26,7 @@ namespace PadelManager.Domain.Entities
 
         public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
 
-        public bool CanChangeStatusToInProgress(IEnumerable<Category> categoriesWithCounts)
-        {
-            // El torneo solo puede empezar si está en borrador
-            if (StatusType != TournamentStatus.Draft) return false;
-
-            // Regla de negocio global: ¿Necesitamos que TODAS las categorías estén listas?
-            // O quizás que al menos una tenga el mínimo para arrancar.
-            return categoriesWithCounts.All(c => c.CanStartCategory(c.Registrations.Count));
-        }
+       
 
     }
 }
